@@ -3,7 +3,7 @@
  ofxKinectFeatures
  Universitat Pompeu Fabra / Escola Superior de Música de Catalunya
  
- Copyright (c) 2014 Álvaro Sarasúa <alvaro.sarasua@upf.edu>
+ Copyright (c) 2014 Álvaro Sarasúa <http://alvarosarasua.wordpress.com>
  
  Permission is hereby granted, free of charge, to any person
  obtaining a copy of this software and associated documentation

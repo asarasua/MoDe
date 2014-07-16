@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "ofApp::setup():ofApp.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "kinect.getWidth()">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "ofApp::draw():ofApp.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "kinect.getWidth()">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>
