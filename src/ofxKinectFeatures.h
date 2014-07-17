@@ -35,16 +35,6 @@
 #include "ofxMocapElement.h"
 #include <numeric>
 
-namespace coord
-{
-	enum
-	{
-		X = 0,
-		Y = 1,
-		Z = 2
-	};    
-} // namespace coord
-
 namespace filter
 {
     enum
@@ -62,33 +52,36 @@ public:
     void update();
     ofxMocapElement* getElement(Joint _id);
     
-    void setKinect(ofxOpenNI* device);
+    void setKinect(ofxOpenNI* kinect);
     void setFilterLevel(int filterLevel);
     
-    void setDepth(int newDepth);
+    void setDepth(int depth);
     int getDepth();
     
     //DESCIPTOR GETTERS
     //JOINT DESCRIPTORS
-    float getPos(Joint j, unsigned int axis);
-    ofPoint get3DPos(Joint j);
+    ofPoint getPosition(Joint j);
+    vector<ofPoint> getPositionHistory(Joint j);
     
-    float getFiltPos(Joint j, unsigned int axis);
-    ofPoint get3DFiltPos(Joint j);
-    vector<ofPoint> get3DFiltPosVector(Joint j);
+    ofPoint getPositionFiltered(Joint j);
+    vector<ofPoint> getPositionFilteredHistory(Joint j);
     
-    float getVel(Joint j, unsigned int axis);
-    ofPoint get3DVel(Joint j);
+    ofPoint getVelocity(Joint j);
+    vector<ofPoint> getVelocityHistory(Joint j);
+    float getVelocityMagnitude(Joint j);
     
-    float getAcc(Joint j, unsigned int axis);
-    vector<float> getAccVector(Joint j, unsigned int axis);
+    ofPoint getAcceleration(Joint j);
+    vector<ofPoint> getAccelerationHistory(Joint j);
+    float getAccelerationMagnitude(Joint j);
     
-    float getAccTr(Joint j);
-    vector<float> getAccTrVector (Joint j);
+    float getAccelerationTrajectory(Joint j);
+    vector<float> getAccelerationTrajectoryHistory(Joint j);
     
-    float getDistToTorso(Joint j);
+    float getDistanceToTorso(Joint j);
+    vector<float> getDistanceToTorsoHistory(Joint j);
     
-    float getRelPosToTorso(Joint j, unsigned int axis);
+    ofPoint getRelativePositionToTorso(Joint j);
+    vector<ofPoint> getRelativePositionToTorsoHistory(Joint j);
     
     //OVERALL DESCRIPTORS
     float getQom();
@@ -99,6 +92,9 @@ public:
     bool isNewDataAvailable();
     
 private:
+    template <typename T>
+    vector<T> createVector (T element);
+    
     float *aFilter;
     float *bFilter;
     float *aLpd1;
@@ -107,21 +103,20 @@ private:
     float *bLpd2;
     
     //overall descriptors
-    float qom, ci, symmetry, yMaxHands;
-    vector<float> meanVels;
+    float qom_, ci_, symmetry_, yMaxHands_;
+    vector<float> meanVels_;
     
-    bool newValues;
+    bool newValues_;
     
-    ofxOpenNI* kinect;
-    vector<ofxMocapElement> elements;
+    ofxOpenNI* kinect_;
+    vector<ofxMocapElement> elements_;
     
-    int depth;
+    int depth_;
     
     void computeJointDescriptors(ofxOpenNIJoint joint, const float &h);
-    void computeOverallDescriptors();
     ofPoint applyFilter (vector<ofPoint> x, vector<ofPoint> y, float *a, float *b);
     
-    //Functor to look for elements matching an id
+    //Functor to look for mocap elements matching a Joint
     struct MatchId
     {
         MatchId(const Joint& j) : j_(j) {}

@@ -48,8 +48,8 @@ void ofApp::draw(){
     kinect.drawImage();
     kinect.drawSkeletons();
     
-    ofPoint jointProjectivePosition = kinect.worldToProjective(featExtractor.get3DPos((Joint)j));
-    font.drawString(ofToString(featExtractor.getRelPosToTorso((Joint)j, coord::X)), jointProjectivePosition.x, jointProjectivePosition.y);
+    ofPoint jointProjectivePosition = kinect.worldToProjective(featExtractor.getPosition((Joint)j));
+    font.drawString(ofToString(featExtractor.getRelativePositionToTorso((Joint)j).x), jointProjectivePosition.x, jointProjectivePosition.y);
 }
 
 //--------------------------------------------------------------

@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../addons/ofxKinectFeatures/src/ofxKinectFeatures.cpp"
-            timestampString = "427209471.605631"
+            timestampString = "427302903.639845"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "240"
-            endingLineNumber = "240"
+            startingLineNumber = "235"
+            endingLineNumber = "235"
             landmarkName = "ofxKinectFeatures::getElement(Joint _id)"
             landmarkType = "5">
          </BreakpointContent>

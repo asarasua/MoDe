@@ -39,34 +39,31 @@ public:
     ofxMocapElement();
     ofxMocapElement(int depth);
     
-    string getElementName();
-    void setElementName(string name);
-    
     unsigned int getElementId();
     void setElementId(Joint newId);
     
     void setHistoryDepth(int depth);    
     
-    vector<ofPoint> getPos();
-    void setPos(ofPoint currentPosition);
+    vector<ofPoint> getPosition();
+    void setPosition(ofPoint position);
     
-    vector<ofPoint> getFiltPos();
-    void setFiltPos(ofPoint currentFiltPos);
+    vector<ofPoint> getPositionFiltered();
+    void setPositionFiltered(ofPoint positionFiltered);
     
-    vector<ofPoint> getVel();
-    void setVel(ofPoint currentVel);
+    vector<ofPoint> getVelocity();
+    void setVelocity(ofPoint velocity);
     
-    vector<ofPoint> getAcc();
-    void setAcc(ofPoint currentAcc);
+    vector<ofPoint> getAcceleration();
+    void setAcceleration(ofPoint acceleration);
     
-    vector<float> getAccTr();
-    void setAccTr(float currentAccTr);
+    vector<float> getAccelerationTrajectory();
+    void setAccelerationTrajectory(float accelerationTrajectory);
     
-    float getDistToTorso();
-    void setDistToTorso(float currentDistToTorso);
+    vector<float> getDistanceToTorso();
+    void setDistanceToTorso(float distanceToTorso);
     
-    ofPoint getRelPosToTorso();
-    void setRelPosToTorso(ofPoint currentRelPosToTorso);
+    vector<ofPoint> getRelativePositionToTorso();
+    void setRelativePositionToTorso(ofPoint relativePositionToTorso);
 
 private:
     int historyDepth;
@@ -74,13 +71,13 @@ private:
     //string elementName;
     Joint elementId;
     
-    vector<ofPoint> pos;
-    vector<ofPoint> filtPos;
-    vector<ofPoint> vel;
-    vector<ofPoint> acc;
-    vector<float> accTr;
-    float distToTorso;
-    ofPoint relPosToTorso;
+    vector<ofPoint> position_;
+    vector<ofPoint> positionFiltered_;
+    vector<ofPoint> velocity_;
+    vector<ofPoint> acceleration_;
+    vector<float> accelerationTrajectory_;
+    vector<float> distanceToTorso_;
+    vector<ofPoint> relativePositionToTorso_;
 };
 
 #endif

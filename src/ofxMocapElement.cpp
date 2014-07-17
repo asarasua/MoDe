@@ -32,128 +32,25 @@
 ofxMocapElement::ofxMocapElement(){
     ofPoint zeros = ofPoint(0.0,0.0,0.0);
     for (int i = i; i < historyDepth; i++) {
-        setPos(zeros);
-        setFiltPos(zeros);
-        setVel(zeros);
-        setAcc(zeros);
+        setPosition(zeros);
+        setPositionFiltered(zeros);
+        setVelocity(zeros);
+        setAcceleration(zeros);
+        setRelativePositionToTorso(zeros);
     }
-    setRelPosToTorso(zeros);
 }
 
 ofxMocapElement::ofxMocapElement(int depth){
     historyDepth = depth;
     ofPoint zeros = ofPoint(0.0,0.0,0.0);
     for (int i = 1; i < historyDepth; i++) {
-        setPos(zeros);
-        setFiltPos(zeros);
-        setVel(zeros);
-        setAcc(zeros);
+        setPosition(zeros);
+        setPositionFiltered(zeros);
+        setVelocity(zeros);
+        setAcceleration(zeros);
+        setRelativePositionToTorso(zeros);
     }
-    setRelPosToTorso(zeros);
 }
-
-vector<ofPoint> ofxMocapElement::getPos(){
-    return pos;
-}
-
-void ofxMocapElement::setPos(ofPoint currentPosition){
-    // Add position to history
-	if (pos.size() <= historyDepth) {
-        pos.insert(pos.begin(), currentPosition);
-	}
-    
-	// remove positions from history
-	if (pos.size() > historyDepth) {
-		pos.pop_back();
-	}
-}
-
-vector<ofPoint> ofxMocapElement::getFiltPos(){
-    return pos;
-}
-
-void ofxMocapElement::setFiltPos(ofPoint currentFiltPos){
-    // Add position to history
-	if (filtPos.size() <= historyDepth) {
-        filtPos.insert(filtPos.begin(), currentFiltPos);
-	}
-    
-	// remove positions from history
-	if (filtPos.size() > historyDepth) {
-		filtPos.pop_back();
-	}
-}
-
-vector<ofPoint> ofxMocapElement::getVel(){
-    return vel;
-}
-
-void ofxMocapElement::setVel(ofPoint currentVel){
-    // Add position to history
-	if (vel.size() <= historyDepth) {
-        vel.insert(vel.begin(), currentVel);
-	}
-    
-	// remove positions from history
-	if (vel.size() > historyDepth) {
-		vel.pop_back();
-	}
-}
-
-vector<ofPoint> ofxMocapElement::getAcc(){
-    return acc;
-}
-
-void ofxMocapElement::setAcc(ofPoint currentAcc){
-    // Add position to history
-	if (acc.size() <= historyDepth) {
-        acc.insert(acc.begin(), currentAcc);
-	}
-    
-	// remove positions from history
-	if (acc.size() > historyDepth) {
-		acc.pop_back();
-	}
-}
-
-vector<float> ofxMocapElement::getAccTr(){
-    return accTr;
-}
-
-void ofxMocapElement::setAccTr(float currentAccTr){
-    if (accTr.size() <= historyDepth) {
-        accTr.insert(accTr.begin(), currentAccTr);
-	}
-    
-	// remove positions from history
-	if (accTr.size() > historyDepth) {
-		accTr.pop_back();
-	}
-}
-
-float ofxMocapElement::getDistToTorso(){
-    return distToTorso;
-}
-
-void ofxMocapElement::setDistToTorso(float currentDistToTorso){
-    distToTorso = currentDistToTorso;
-}
-
-ofPoint ofxMocapElement::getRelPosToTorso(){
-    return relPosToTorso;
-}
-
-void ofxMocapElement::setRelPosToTorso(ofPoint currentRelPosToTorso){
-    relPosToTorso = currentRelPosToTorso;
-}
-
-//string ofxMocapElement::getElementName(){
-//    return elementName;
-//}
-//
-//void ofxMocapElement::setElementName(string name){
-//    elementName = name;
-//}
 
 unsigned int ofxMocapElement::getElementId(){
     return elementId;
@@ -166,5 +63,116 @@ void ofxMocapElement::setElementId(Joint newId){
 
 void ofxMocapElement::setHistoryDepth(int depth){
     historyDepth = depth;
+}
+
+//Getters & setters
+
+vector<ofPoint> ofxMocapElement::getPosition(){
+    return position_;
+}
+
+void ofxMocapElement::setPosition(ofPoint position){
+    // Add position to history
+	if (position_.size() <= historyDepth) {
+        position_.insert(position_.begin(), position);
+	}
+    
+	// remove positions from history
+	if (position_.size() > historyDepth) {
+		position_.pop_back();
+	}
+}
+
+vector<ofPoint> ofxMocapElement::getPositionFiltered(){
+    return positionFiltered_;
+}
+
+void ofxMocapElement::setPositionFiltered(ofPoint positionFiltered){
+    // Add position to history
+	if (positionFiltered_.size() <= historyDepth) {
+        positionFiltered_.insert(positionFiltered_.begin(), positionFiltered);
+	}
+    
+	// remove positions from history
+	if (positionFiltered_.size() > historyDepth) {
+		positionFiltered_.pop_back();
+	}
+}
+
+vector<ofPoint> ofxMocapElement::getVelocity(){
+    return velocity_;
+}
+
+void ofxMocapElement::setVelocity(ofPoint velocity){
+    // Add position to history
+	if (velocity_.size() <= historyDepth) {
+        velocity_.insert(velocity_.begin(), velocity);
+	}
+    
+	// remove positions from history
+	if (velocity_.size() > historyDepth) {
+		velocity_.pop_back();
+	}
+}
+
+vector<ofPoint> ofxMocapElement::getAcceleration(){
+    return acceleration_;
+}
+
+void ofxMocapElement::setAcceleration(ofPoint acceleration){
+    // Add position to history
+	if (acceleration_.size() <= historyDepth) {
+        acceleration_.insert(acceleration_.begin(), acceleration);
+	}
+    
+	// remove positions from history
+	if (acceleration_.size() > historyDepth) {
+		acceleration_.pop_back();
+	}
+}
+
+vector<float> ofxMocapElement::getAccelerationTrajectory(){
+    return accelerationTrajectory_;
+}
+
+void ofxMocapElement::setAccelerationTrajectory(float accelerationTrajectory){
+    if (accelerationTrajectory_.size() <= historyDepth) {
+        accelerationTrajectory_.insert(accelerationTrajectory_.begin(), accelerationTrajectory);
+	}
+    
+	// remove positions from history
+	if (accelerationTrajectory_.size() > historyDepth) {
+		accelerationTrajectory_.pop_back();
+	}
+}
+
+vector<float> ofxMocapElement::getDistanceToTorso(){
+    return distanceToTorso_;
+}
+
+void ofxMocapElement::setDistanceToTorso(float distanceToTorso){
+    if (distanceToTorso_.size() <= historyDepth) {
+        distanceToTorso_.insert(distanceToTorso_.begin(), distanceToTorso);
+	}
+    
+	// remove positions from history
+	if (distanceToTorso_.size() > historyDepth) {
+		distanceToTorso_.pop_back();
+	}
+}
+
+vector<ofPoint> ofxMocapElement::getRelativePositionToTorso(){
+    return relativePositionToTorso_;
+}
+
+void ofxMocapElement::setRelativePositionToTorso(ofPoint relativePositionToTorso){
+    if (relativePositionToTorso_.size() <= historyDepth) {
+        relativePositionToTorso_.insert(relativePositionToTorso_.begin(), relativePositionToTorso);
+	}
+    
+	// remove positions from history
+	if (relativePositionToTorso_.size() > historyDepth) {
+		relativePositionToTorso_.pop_back();
+	}
 }
 

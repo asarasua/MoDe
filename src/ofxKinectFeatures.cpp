@@ -56,7 +56,7 @@ float lpd2_hard_b[] = {-0.0738989849,0.1351624829,-0.0512998379,-0.0072918334,-0
 //____________________________________________________ofxKinectFeatures
 
 ofxKinectFeatures::ofxKinectFeatures(){
-    newValues = false;
+    newValues_ = false;
     setDepth(30);
     aFilter = lpf_soft_a;
     bFilter = lpf_soft_b;
@@ -67,8 +67,8 @@ ofxKinectFeatures::ofxKinectFeatures(){
     //TODO
 }
 
-void ofxKinectFeatures::setKinect(ofxOpenNI* device){
-    kinect = device;
+void ofxKinectFeatures::setKinect(ofxOpenNI* kinect){
+    kinect_ = kinect;
 }
 
 void ofxKinectFeatures::setFilterLevel(int filterLevel){
@@ -101,97 +101,96 @@ void ofxKinectFeatures::setFilterLevel(int filterLevel){
     }
 }
 
-void ofxKinectFeatures::setDepth(int newDepth){
-    depth = newDepth;
+void ofxKinectFeatures::setDepth(int depth){
+    depth_ = depth;
 }
 
 int ofxKinectFeatures::getDepth(){
-    return depth;
+    return depth_;
 }
 
 void ofxKinectFeatures::update(){
-    if (kinect->getNumTrackedUsers()) {
-        ofxOpenNIUser user = kinect->getTrackedUser(0);
+    if (kinect_->getNumTrackedUsers()) {
+        ofxOpenNIUser user = kinect_->getTrackedUser(0);
         
         //Initialize elements
-        if (elements.empty()) {
+        if (elements_.empty()) {
             for (int i = 0; i < user.getNumJoints(); i++) {
                 ofxOpenNIJoint joint = user.getJoint((Joint)i);
-                ofxMocapElement newElement(depth);
+                ofxMocapElement newElement(depth_);
                 newElement.setElementId(joint.getType());
-                elements.push_back(newElement);
+                elements_.push_back(newElement);
             }
         }
         
         //Compute descriptors
         //Hard-coded way to check if skeleton (bSkeleton doesn't work) and new data (isNewDataAvailable doesn't work)
         if (user.getJoint((Joint)0).getWorldPosition() != ofPoint(0,0,0) &&
-            user.getJoint((Joint)0).getWorldPosition() != getElement((Joint)0)->getPos()[0] ) {
-            newValues = true;
+            user.getJoint((Joint)0).getWorldPosition() != getElement((Joint)0)->getPosition()[0] ) {
+            newValues_ = true;
             
-            //Joint descriptors
             ofPoint headPos = user.getJoint(JOINT_HEAD).getWorldPosition();
             ofPoint torsoPos = user.getJoint(JOINT_TORSO).getWorldPosition();
             float h = headPos.distance(torsoPos);
-            
             float meanVel = 0.0; //for qom
-            
             //for CI
             float xMax, yMax, zMax = numeric_limits<float>::min();
             float xMin, yMin, zMin = numeric_limits<float>::max();
             
             for (int i = 0; i < user.getNumJoints(); i++) {
                 ofxOpenNIJoint joint = user.getJoint((Joint)i);
+                Joint j = (Joint) i;
                 computeJointDescriptors(joint, h);
                 
                 //qom
-                meanVel += get3DVel((Joint)i).length();
+                meanVel += getVelocityMagnitude(j);
+                //meanVel += get3DVel((Joint)i).length();
                 
                 //ci
-                if ( getFiltPos((Joint) i, 0) > xMax ){
-                    xMax = getFiltPos((Joint) i, coord::X);
+                if (getPositionFiltered(j).x > xMax) {
+                    xMax = getPositionFiltered(j).x;
                 }
-                if ( getFiltPos((Joint) i, 1) > yMax ){
-                    yMax = getFiltPos((Joint) i, coord::Y);
+                if (getPositionFiltered(j).y > yMax) {
+                    yMax = getPositionFiltered(j).y;
                 }
-                if ( getFiltPos((Joint) i, 2) > zMax ){
-                    zMax = getFiltPos((Joint) i, coord::Z);
+                if (getPositionFiltered(j).z > zMax) {
+                    zMax = getPositionFiltered(j).z;
                 }
-                if ( getFiltPos((Joint) i, 0) < xMin ){
-                    xMax = getFiltPos((Joint) i, coord::X);
+                if (getPositionFiltered(j).x < xMin) {
+                    xMin = getPositionFiltered(j).x;
                 }
-                if ( getFiltPos((Joint) i, 1) < yMin ){
-                    yMin = getFiltPos((Joint) i, coord::Y);
+                if (getPositionFiltered(j).y < yMin) {
+                    yMin = getPositionFiltered(j).y;
                 }
-                if ( getFiltPos((Joint) i, 2) < zMin ){
-                    zMin = getFiltPos((Joint) i, coord::Z);
+                if (getPositionFiltered(j).z < zMin) {
+                    zMin = getPositionFiltered(j).z;
                 }
             }
             
             // Add position to history
-            if (meanVels.size() <= depth) {
-                meanVels.insert(meanVels.begin(), meanVel/user.getNumJoints());
+            if (meanVels_.size() <= depth_) {
+                meanVels_.insert(meanVels_.begin(), meanVel/user.getNumJoints());
             }
             
             // remove positions from history
-            if (meanVels.size() > depth) {
-                meanVels.pop_back();
+            if (meanVels_.size() > depth_) {
+                meanVels_.pop_back();
             }
             
-            qom = accumulate(meanVels.begin(), meanVels.end(), 0.0) / (meanVels.size());
+            qom_ = accumulate(meanVels_.begin(), meanVels_.end(), 0.0) / (meanVels_.size());
             
-            ci = ( -4.0 + (( abs(xMax-xMin) + abs(yMax-yMin) + abs(zMax-zMin) ) / h) ) / 6.0;
+            ci_ = ( -4.0 + (( abs(xMax-xMin) + abs(yMax-yMin) + abs(zMax-zMin) ) / h) ) / 6.0;
             
-            symmetry = 1.0 - (0.5 * (abs(getDistToTorso(JOINT_RIGHT_HAND)-getDistToTorso(JOINT_LEFT_HAND)) + abs(getDistToTorso(JOINT_RIGHT_ELBOW)-getDistToTorso(JOINT_LEFT_ELBOW))) / h);
+            symmetry_ = 1.0 - (0.5 * (abs(getDistanceToTorso(JOINT_RIGHT_HAND)-getDistanceToTorso(JOINT_LEFT_HAND)) + abs(getDistanceToTorso(JOINT_RIGHT_ELBOW)-getDistanceToTorso(JOINT_LEFT_ELBOW))) / h);
             
-            yMaxHands = max(getRelPosToTorso(JOINT_RIGHT_HAND, 1), getRelPosToTorso(JOINT_LEFT_HAND, 1));
+            yMaxHands_ = max(getRelativePositionToTorso(JOINT_RIGHT_HAND).y, getRelativePositionToTorso(JOINT_LEFT_HAND).y);
             
             
         } else {
-            newValues = false;
+            newValues_
+            = false;
         }
         
-        computeOverallDescriptors();
     }
 }
 
@@ -202,43 +201,39 @@ void ofxKinectFeatures::computeJointDescriptors(ofxOpenNIJoint joint, const floa
     ofxMocapElement* mocapElement = getElement(j);
     
     //Position
-    mocapElement->setPos(position);
+    mocapElement->setPosition(position);
     
     //Filtered position
-    mocapElement->setFiltPos(applyFilter(mocapElement->getPos(), mocapElement->getFiltPos(), aFilter, bFilter));
+    mocapElement->setPositionFiltered(applyFilter(mocapElement->getPosition(), mocapElement->getPositionFiltered(), aFilter, bFilter));
     
     //Velocity
-    mocapElement->setVel(applyFilter(mocapElement->getPos(), mocapElement->getVel(), aLpd1, bLpd1));
+    mocapElement->setVelocity(applyFilter(mocapElement->getPosition(), mocapElement->getVelocity(), aLpd1, bLpd1));
     
     //Acceleration
-    mocapElement->setAcc(applyFilter(mocapElement->getPos(), mocapElement->getAcc(), aLpd2, bLpd2));
+    mocapElement->setAcceleration(applyFilter(mocapElement->getPosition(), mocapElement->getAcceleration(), aLpd2, bLpd2));
     
     //Acceleration along trajectory
-    ofPoint acc = mocapElement->getAcc()[0];
-    ofPoint vel = mocapElement->getVel()[0];
-    mocapElement->setAccTr(acc.dot(vel) / vel.length());    
+    ofPoint acc = mocapElement->getAcceleration()[0];
+    ofPoint vel = mocapElement->getVelocity()[0];
+    mocapElement->setAccelerationTrajectory(acc.dot(vel) / vel.length());
     
     //Distance to torso
-    mocapElement->setDistToTorso(get3DFiltPos(j).distanceSquared(get3DFiltPos(JOINT_TORSO)));
+    mocapElement->setDistanceToTorso(getPositionFiltered(j).distanceSquared(getPositionFiltered(JOINT_TORSO)));
     
     //Relative position to torso
     ofPoint relPosToTorso;
-    relPosToTorso.x = (position.x - getFiltPos(JOINT_TORSO, coord::X)) / (h * 1.8);
-    relPosToTorso.y = (position.y - getFiltPos(JOINT_TORSO, coord::Y)) / (h * 1.8);
-    relPosToTorso.z = -((position.z - getFiltPos(JOINT_TORSO, coord::Z)) / h) / 1.4;
-    mocapElement->setRelPosToTorso(relPosToTorso);
+    relPosToTorso.x = (position.x - getPositionFiltered(JOINT_TORSO).x) / (h * 1.8);
+    relPosToTorso.y = (position.y - getPositionFiltered(JOINT_TORSO).y) / (h * 1.8);
+    relPosToTorso.z = -((position.z - getPositionFiltered(JOINT_TORSO).z) / h) / 1.4;
+    mocapElement->setRelativePositionToTorso(relPosToTorso);
     
     //TODO: auto hand
     //beatTracker.update(getAccTrVector(JOINT_RIGHT_HAND), get3DFiltPosVector(JOINT_RIGHT_HAND)[coord::Y]);
 }
 
-void ofxKinectFeatures::computeOverallDescriptors(){
-    
-}
-
 ofxMocapElement* ofxKinectFeatures::getElement(Joint _id){
-    vector<ofxMocapElement>::iterator it = find_if(elements.begin(), elements.end(), MatchId(_id));
-    if (it != elements.end()){
+    vector<ofxMocapElement>::iterator it = find_if(elements_.begin(), elements_.end(), MatchId(_id));
+    if (it != elements_.end()){
         return &(*it);
     } else {
         return false;
@@ -249,189 +244,144 @@ ofPoint ofxKinectFeatures::applyFilter(vector<ofPoint> x, vector<ofPoint> y, flo
     return b[0]*x[0] + b[1]*x[1] + b[2]*x[2] + b[3]*x[3] + b[4]*x[4] - (a[1]*y[0] + a[2]*y[1] + a[3]*y[2] + a[4]*y[3]);
 }
 
-//Feature getters
-float ofxKinectFeatures::getPos(Joint j, unsigned int axis){
-    if (elements.empty()){
-        return 0.0;
-    } else {
-        ofxMocapElement* mocapElement = getElement(j);
-        if (axis == 0) {
-            return mocapElement->getPos()[0].x;
-        } else if (axis == 1){
-            return mocapElement->getPos()[0].y;
-        } else {
-            return mocapElement->getPos()[0].z;
-        }
-    }
+
+template <typename T>
+vector<T> ofxKinectFeatures::createVector(T element){
+    vector<T> v (depth_);
+    fill(v.begin(), v.begin()+depth_, element);
+    return v;
 }
 
-ofPoint ofxKinectFeatures::get3DPos(Joint j){
-    if (elements.empty()) {
+//Descriptors getters
+
+ofPoint ofxKinectFeatures::getPosition(Joint j){
+    if (elements_.empty()) {
         return ofPoint(0,0,0);
     } else {
-        ofxMocapElement* mocapElement = getElement(j);
-        return mocapElement->getPos()[0];
+        return getElement(j)->getPosition()[0];
     }
 }
 
-float ofxKinectFeatures::getFiltPos(Joint j, unsigned int axis){
-    if (elements.empty()){
-        return 0.0;
-    } else {
-        ofxMocapElement* mocapElement = getElement(j);
-        if (axis == 0) {
-            return mocapElement->getFiltPos()[0].x;
-        } else if (axis == 1){
-            return mocapElement->getFiltPos()[0].y;
-        } else {
-            return mocapElement->getFiltPos()[0].z;
-        }
-    }
+vector<ofPoint> ofxKinectFeatures::getPositionHistory(Joint j){
+     if (elements_.empty()) {
+         return createVector(ofPoint(0.0,0.0,0.0));
+     } else {
+         return getElement(j)->getPosition();
+     }
 }
 
-ofPoint ofxKinectFeatures::get3DFiltPos(Joint j){
-    if (elements.empty()) {
+ofPoint ofxKinectFeatures::getPositionFiltered(Joint j){
+    if (elements_.empty()) {
         return ofPoint(0,0,0);
     } else {
-        ofxMocapElement* mocapElement = getElement(j);
-        return mocapElement->getFiltPos()[0];
+        return getElement(j)->getPositionFiltered()[0];
     }
 }
 
-vector<ofPoint> ofxKinectFeatures::get3DFiltPosVector(Joint j){
-    //TODO automatic?
-    vector<ofPoint> filtPos (5);
-    if (elements.empty()) {
-        fill(filtPos.begin(), filtPos.begin()+5, ofPoint(0,0,0));
+vector<ofPoint> ofxKinectFeatures::getPositionFilteredHistory(Joint j){
+    if (elements_.empty()) {
+        return createVector(ofPoint(0.0,0.0,0.0));
     } else {
-        ofxMocapElement* mocapElement = getElement(j);
-        for (int i = 0; i < 5; i++) {
-            filtPos[i] = mocapElement->getFiltPos()[i];
-        }
+        return getElement(j)->getPositionFiltered();
     }
-    
-    return filtPos;
 }
 
-float ofxKinectFeatures::getVel(Joint j, unsigned int axis){
-    if (elements.empty()){
+ofPoint ofxKinectFeatures::getVelocity(Joint j){
+    return getElement(j)->getVelocity()[0];
+}
+
+vector<ofPoint> ofxKinectFeatures::getVelocityHistory(Joint j){
+    if (elements_.empty()) {
+        return createVector(ofPoint(0.0,0.0,0.0));
+    } else {
+        return getElement(j)->getVelocity();
+    }
+}
+
+float ofxKinectFeatures::getVelocityMagnitude(Joint j){
+    return getElement(j)->getVelocity()[0].length();
+}
+
+ofPoint ofxKinectFeatures::getAcceleration(Joint j){
+    return getElement(j)->getAcceleration()[0];
+}
+
+vector<ofPoint> ofxKinectFeatures::getAccelerationHistory(Joint j){
+    if (elements_.empty()) {
+        return createVector(ofPoint(0.0,0.0,0.0));
+    } else {
+        return getElement(j)->getAcceleration();
+    }
+}
+
+float ofxKinectFeatures::getAccelerationMagnitude(Joint j){
+    return getElement(j)->getAcceleration()[0].length();
+}
+
+float ofxKinectFeatures::getAccelerationTrajectory(Joint j){
+    if (elements_.empty()){
         return 0.0;
     } else {
-        ofxMocapElement* mocapElement = getElement(j);
-        if (axis == 0) {
-            return mocapElement->getVel()[0].x;
-        } else if (axis == 1){
-            return mocapElement->getVel()[0].y;
-        } else {
-            return mocapElement->getVel()[0].z;
-        }
+        return getElement(j)->getAccelerationTrajectory()[0];
     }
 }
 
-ofPoint ofxKinectFeatures::get3DVel(Joint j){
-    ofxMocapElement* mocapElement = getElement(j);
-    return mocapElement->getVel()[0];
+vector<float> ofxKinectFeatures::getAccelerationTrajectoryHistory(Joint j){
+    if (elements_.empty()) {
+        return createVector(0.0f);
+    } else {
+        return getElement(j)->getAccelerationTrajectory();
+    }
 }
 
-float ofxKinectFeatures::getAcc(Joint j, unsigned int axis){
-    if (elements.empty()){
+float ofxKinectFeatures::getDistanceToTorso(Joint j){
+    if (elements_.empty()){
         return 0.0;
     } else {
-        ofxMocapElement* mocapElement = getElement(j);
-        if (axis == 0) {
-            return mocapElement->getAcc()[0].x;
-        } else if (axis == 1){
-            return mocapElement->getAcc()[0].y;
-        } else {
-            return mocapElement->getAcc()[0].z;
-        }
+        return getElement(j)->getDistanceToTorso()[0];
     }
 }
 
-vector<float> ofxKinectFeatures::getAccVector(Joint j, unsigned int axis){
-    //TODO automatic?
-    vector<float> acc (5);
-    if (elements.empty()) {
-        fill(acc.begin(), acc.begin()+5, 0.0);
+vector<float> ofxKinectFeatures::getDistanceToTorsoHistory(Joint j){
+    if (elements_.empty()) {
+        return createVector(0.0f);
     } else {
-        ofxMocapElement* mocapElement = getElement(j);
-        if (axis == 0) {
-            for (int i = 0; i < 5; i++) {
-                acc[i] = mocapElement->getAcc()[i].x;
-            }
-        } else if (axis == 1){
-            for (int i = 0; i < 5; i++) {
-                acc[i] = mocapElement->getAcc()[i].y;
-            }
-        } else {
-            for (int i = 0; i < 5; i++) {
-                acc[i] = mocapElement->getAcc()[i].z;
-            }
-        }
-    }
-    
-    return acc;
-}
-
-float ofxKinectFeatures::getAccTr(Joint j){
-    if (elements.empty()){
-        return 0.0;
-    } else {
-        ofxMocapElement* mocapElement = getElement(j);
-        return mocapElement->getAccTr()[0];
+        return getElement(j)->getDistanceToTorso();
     }
 }
 
-vector<float> ofxKinectFeatures::getAccTrVector(Joint j){
-    //TODO automatic?
-    vector<float> accTr (5);
-    if (elements.empty()) {
-        fill(accTr.begin(), accTr.begin()+5, 0.0);
+ofPoint ofxKinectFeatures::getRelativePositionToTorso(Joint j){
+    if (elements_.empty()){
+        return ofPoint(0.0,0.0,0.0);
     } else {
-        ofxMocapElement* mocapElement = getElement(j);
-        for (int i = 0; i < 5; i++) {
-            accTr[i] = mocapElement->getAccTr()[i];
-        }
+        return getElement(j)->getRelativePositionToTorso()[0];
     }
-    return accTr;
 }
 
-float ofxKinectFeatures::getDistToTorso(Joint j){
-    ofxMocapElement* mocapElement = getElement(j);
-    return mocapElement->getDistToTorso();
-}
-
-float ofxKinectFeatures::getRelPosToTorso(Joint j, unsigned int axis){
-    if (elements.empty()){
-        return 0.0;
+vector<ofPoint> ofxKinectFeatures::getRelativePositionToTorsoHistory(Joint j){
+    if (elements_.empty()) {
+        return createVector(ofPoint(0.0,0.0,0.0));
     } else {
-        ofxMocapElement* mocapElement = getElement(j);
-        if (axis == 0) {
-            return mocapElement->getRelPosToTorso().x;
-        } else if (axis == 1){
-            return mocapElement->getRelPosToTorso().y;
-        } else {
-            return mocapElement->getRelPosToTorso().z;
-        }
+        return getElement(j)->getRelativePositionToTorso();
     }
 }
 
 float ofxKinectFeatures::getQom(){
-    return qom;
+    return qom_;
 }
 
 float ofxKinectFeatures::getCI(){
-    return ci;
+    return ci_;
 }
 
 float ofxKinectFeatures::getSymmetry(){
-    return symmetry;
+    return symmetry_;
 }
 
 float ofxKinectFeatures::getYMaxHands(){
-    return yMaxHands;
+    return yMaxHands_;
 }
 
 bool ofxKinectFeatures::isNewDataAvailable(){
-    return newValues;
+    return newValues_;
 }
