@@ -66,10 +66,8 @@ public:
     void setRelativePositionToTorso(ofPoint relativePositionToTorso);
 
 private:
-    int historyDepth;
-    
-    //string elementName;
-    Joint elementId;
+    int historyDepth_;
+    Joint elementId_;
     
     vector<ofPoint> position_;
     vector<ofPoint> positionFiltered_;
