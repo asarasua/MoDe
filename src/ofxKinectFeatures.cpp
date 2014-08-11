@@ -181,7 +181,7 @@ void ofxKinectFeatures::update(){
             
             ci_ = ( -4.0 + (( abs(xMax-xMin) + abs(yMax-yMin) + abs(zMax-zMin) ) / h) ) / 6.0;
             
-            symmetry_ = 1.0 - (0.5 * (abs(getDistanceToTorso(JOINT_RIGHT_HAND)-getDistanceToTorso(JOINT_LEFT_HAND)) + abs(getDistanceToTorso(JOINT_RIGHT_ELBOW)-getDistanceToTorso(JOINT_LEFT_ELBOW))) / h);
+            symmetry_ = 1.0 - (0.5 * (abs(sqrt(getDistanceToTorso(JOINT_RIGHT_HAND))-sqrt(getDistanceToTorso(JOINT_LEFT_HAND))) + abs(sqrt(getDistanceToTorso(JOINT_RIGHT_ELBOW))-sqrt(getDistanceToTorso(JOINT_LEFT_ELBOW)))) / h);
             
             yMaxHands_ = max(getRelativePositionToTorso(JOINT_RIGHT_HAND).y, getRelativePositionToTorso(JOINT_LEFT_HAND).y);
             
