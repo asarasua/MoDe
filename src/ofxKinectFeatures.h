@@ -69,13 +69,16 @@ public:
     ofPoint getVelocity(Joint j);
     vector<ofPoint> getVelocityHistory(Joint j);
     float getVelocityMagnitude(Joint j);
+    float getVelocityMean(Joint j, int frames = 30);
     
     ofPoint getAcceleration(Joint j);
     vector<ofPoint> getAccelerationHistory(Joint j);
     float getAccelerationMagnitude(Joint j);
+    float getAccelerationMean(Joint j, int frames = 30);
     
     float getAccelerationTrajectory(Joint j);
     vector<float> getAccelerationTrajectoryHistory(Joint j);
+    float getAccelerationTrajectoryMean(Joint j, int frames = 30);
     
     float getDistanceToTorso(Joint j);
     vector<float> getDistanceToTorsoHistory(Joint j);

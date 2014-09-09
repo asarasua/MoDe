@@ -302,6 +302,22 @@ float ofxKinectFeatures::getVelocityMagnitude(Joint j){
     return getElement(j)->getVelocity()[0].length();
 }
 
+float ofxKinectFeatures::getVelocityMean(Joint j, int frames){
+    if (getElement(j)) {
+        float sum = 0.0;
+        for (int i = 0; i < frames && i < getElement(j)->getVelocity().size(); i++) {
+            sum += getElement(j)->getVelocity()[i].length();
+        }
+        if (frames <= getElement(j)->getVelocity().size()) {
+            return sum / frames;
+        } else {
+            return sum / getElement(j)->getVelocity().size();
+        }
+    } else {
+        return 0.0;
+    }    
+}
+
 ofPoint ofxKinectFeatures::getAcceleration(Joint j){
     return getElement(j)->getAcceleration()[0];
 }
@@ -318,6 +334,22 @@ float ofxKinectFeatures::getAccelerationMagnitude(Joint j){
     return getElement(j)->getAcceleration()[0].length();
 }
 
+float ofxKinectFeatures::getAccelerationMean(Joint j, int frames){
+    if (getElement(j)) {
+        float sum = 0.0;
+        for (int i = 0; i < frames && i < getElement(j)->getAcceleration().size(); i++) {
+            sum += getElement(j)->getAcceleration()[i].length();
+        }
+        if (frames <= getElement(j)->getAcceleration().size()) {
+            return sum / frames;
+        } else {
+            return sum / getElement(j)->getAcceleration().size();
+        }
+    } else {
+        return 0.0;
+    }
+}
+
 float ofxKinectFeatures::getAccelerationTrajectory(Joint j){
     if (elements_.empty()){
         return 0.0;
@@ -331,6 +363,22 @@ vector<float> ofxKinectFeatures::getAccelerationTrajectoryHistory(Joint j){
         return createVector(0.0f);
     } else {
         return getElement(j)->getAccelerationTrajectory();
+    }
+}
+
+float ofxKinectFeatures::getAccelerationTrajectoryMean(Joint j, int frames){
+    if (getElement(j)) {
+        float sum = 0.0;
+        for (int i = 0; i < frames && i < getElement(j)->getAccelerationTrajectory().size(); i++) {
+            sum += getElement(j)->getAccelerationTrajectory()[i];
+        }
+        if (frames <= getElement(j)->getAccelerationTrajectory().size()) {
+            return sum / frames;
+        } else {
+            return sum / getElement(j)->getAccelerationTrajectory().size();
+        }
+    } else {
+        return 0.0;
     }
 }
 

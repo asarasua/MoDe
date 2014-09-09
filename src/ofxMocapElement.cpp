@@ -31,11 +31,12 @@
 
 ofxMocapElement::ofxMocapElement(){
     ofPoint zeros = ofPoint(0.0,0.0,0.0);
-    for (int i = i; i < historyDepth_; i++) {
+    for (int i = 0; i < historyDepth_; i++) {
         setPosition(zeros);
         setPositionFiltered(zeros);
         setVelocity(zeros);
         setAcceleration(zeros);
+        setAccelerationTrajectory(0.0);
         setRelativePositionToTorso(zeros);
     }
 }
@@ -43,11 +44,12 @@ ofxMocapElement::ofxMocapElement(){
 ofxMocapElement::ofxMocapElement(int depth){
     historyDepth_ = depth;
     ofPoint zeros = ofPoint(0.0,0.0,0.0);
-    for (int i = 1; i < historyDepth_; i++) {
+    for (int i = 0; i < historyDepth_; i++) {
         setPosition(zeros);
         setPositionFiltered(zeros);
         setVelocity(zeros);
         setAcceleration(zeros);
+        setAccelerationTrajectory(0.0);
         setRelativePositionToTorso(zeros);
     }
 }
