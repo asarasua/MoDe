@@ -4,6 +4,12 @@
 #include "ofxKinectFeatures.h"
 #include "ofxOpenNI.h"
 
+enum {
+    VELOCITY_MEAN,
+    ACCELERATION_Y,
+    RELPOSTOTORSO_X
+};
+
 class ofApp : public ofBaseApp{
 	public:
 		void setup();
@@ -23,6 +29,6 @@ class ofApp : public ofBaseApp{
     ofxOpenNI kinect;
     bool hadUsers;
     ofxKinectFeatures featExtractor;
-    int j;
+    int j, f;
     ofTrueTypeFont font;
 };

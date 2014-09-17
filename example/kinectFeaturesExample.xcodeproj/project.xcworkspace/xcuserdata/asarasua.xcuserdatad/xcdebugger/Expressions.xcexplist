@@ -3,7 +3,7 @@
    version = "1.0">
    <ContextStates>
       <ContextState
-         contextName = "ofApp::setup():ofApp.cpp">
+         contextName = "ofApp::draw():ofApp.cpp">
          <PersistentStrings>
             <PersistentString
                value = "kinect.getWidth()">
@@ -11,7 +11,15 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "ofApp::draw():ofApp.cpp">
+         contextName = "ofxKinectFeatures::getAcceleration(Joint):ofxKinectFeatures.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "getElement(j)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "ofApp::setup():ofApp.cpp">
          <PersistentStrings>
             <PersistentString
                value = "kinect.getWidth()">
