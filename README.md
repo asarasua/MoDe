@@ -39,14 +39,14 @@ Alternatively you can just click on "Downlaod ZIP" and extract the content in yo
 
 ##Getting it to work
 The easiest way to go is from the example:
-1. Open an openFrameworks project.
-2. Copy the 'example' folder to your 'apps/myApps' (or equivalent) folder
-3. Copy the folder called 'lib' from '**ofxOpenNI**/mac/copy_to_data_openni_path' to the 'bin/data/openni' directory of your example.
+- Open an openFrameworks project.
+- Copy the 'example' folder to your 'apps/myApps' (or equivalent) folder
+- Copy the folder called 'lib' from '**ofxOpenNI**/mac/copy_to_data_openni_path' to the 'bin/data/openni' directory of your example.
 
 If you want to start a project from scratch: 
-1. Follow the instructions in https://github.com/gameoverhack/ofxOpenNI to add ofxOpenNI and then:
-2. Create a group under 'addons' named 'ofxKinectFeatures'
-3. Drag the 'src' folder into this group.
+- Follow the instructions in https://github.com/gameoverhack/ofxOpenNI to add ofxOpenNI and then:
+- Create a group under 'addons' named 'ofxKinectFeatures'
+- Drag the 'src' folder into this group.
 
 ##API
 The features are accessed through an `ofxKinectFeatures` object, and for the moment we need an `ofxOpenNI` object to get kinect skeleton data. So in ofApp.h:
@@ -64,7 +64,7 @@ And in update(), we just call the methods that update the kinect information and
     featExtractor.update();
 
 From there, features can be accessed calling the appropriate methods.
-For joint descriptors, using Joint constants. e.g., to get the x velocity on of the right hand:
+For joint descriptors, using Joint constants. e.g., to get the x velocity of the right hand:
 
     featExtractor.getVelocity(JOINT_RIGHT_HAND).x;
 
