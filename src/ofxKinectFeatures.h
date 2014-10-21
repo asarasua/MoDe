@@ -18,6 +18,7 @@
 
 #include "ofMain.h"
 #include "ofxMocapElement.h"
+#include <algorithm>
 #include <numeric>
 
 namespace filter
@@ -47,29 +48,36 @@ public:
     //JOINT DESCRIPTORS
     ofPoint getPosition(Joint j);
     vector<ofPoint> getPositionHistory(Joint j);
+    vector<ofPoint> getPositionHistory(Joint j, int frames);
     
     ofPoint getPositionFiltered(Joint j);
     vector<ofPoint> getPositionFilteredHistory(Joint j);
+    vector<ofPoint> getPositionFilteredHistory(Joint j, int frames);
     
     ofPoint getVelocity(Joint j);
     vector<ofPoint> getVelocityHistory(Joint j);
+    vector<ofPoint> getVelocityHistory(Joint j, int frames);
     float getVelocityMagnitude(Joint j);
     float getVelocityMean(Joint j, int frames = 30);
     
     ofPoint getAcceleration(Joint j);
     vector<ofPoint> getAccelerationHistory(Joint j);
+    vector<ofPoint> getAccelerationHistory(Joint j, int frames);
     float getAccelerationMagnitude(Joint j);
     float getAccelerationMean(Joint j, int frames = 30);
     
     float getAccelerationTrajectory(Joint j);
     vector<float> getAccelerationTrajectoryHistory(Joint j);
+    vector<float> getAccelerationTrajectoryHistory(Joint j, int frames);
     float getAccelerationTrajectoryMean(Joint j, int frames = 30);
     
     float getDistanceToTorso(Joint j);
     vector<float> getDistanceToTorsoHistory(Joint j);
+    vector<float> getDistanceToTorsoHistory(Joint j, int frames);
     
     ofPoint getRelativePositionToTorso(Joint j);
     vector<ofPoint> getRelativePositionToTorsoHistory(Joint j);
+    vector<ofPoint> getRelativePositionToTorsoHistory(Joint j, int frames);
     
     //OVERALL DESCRIPTORS
     float getQom();

@@ -254,6 +254,16 @@ vector<ofPoint> ofxKinectFeatures::getPositionHistory(Joint j){
      }
 }
 
+vector<ofPoint> ofxKinectFeatures::getPositionHistory(Joint j, int frames){
+    if (getElement(j)) {
+        vector<ofPoint> fullHistory = getElement(j)->getPosition();
+        vector<ofPoint> history(fullHistory.begin(), fullHistory.begin() + frames);
+        return history;
+    } else {
+        return createVector(ofPoint(0.0,0.0,0.0));
+    }
+}
+
 ofPoint ofxKinectFeatures::getPositionFiltered(Joint j){
     if (getElement(j)) {
         return getElement(j)->getPositionFiltered()[0];
@@ -270,6 +280,16 @@ vector<ofPoint> ofxKinectFeatures::getPositionFilteredHistory(Joint j){
     }
 }
 
+vector<ofPoint> ofxKinectFeatures::getPositionFilteredHistory(Joint j, int frames){
+    if (getElement(j)) {
+        vector<ofPoint> fullHistory = getElement(j)->getPositionFiltered();
+        vector<ofPoint> history(fullHistory.begin(), fullHistory.begin() + frames);
+        return history;
+    } else {
+        return createVector(ofPoint(0.0,0.0,0.0));
+    }
+}
+
 ofPoint ofxKinectFeatures::getVelocity(Joint j){
     if (getElement(j)) {
         return getElement(j)->getVelocity()[0];
@@ -281,6 +301,16 @@ ofPoint ofxKinectFeatures::getVelocity(Joint j){
 vector<ofPoint> ofxKinectFeatures::getVelocityHistory(Joint j){
     if (getElement(j)) {
         return getElement(j)->getVelocity();
+    } else {
+        return createVector(ofPoint(0.0,0.0,0.0));
+    }
+}
+
+vector<ofPoint> ofxKinectFeatures::getVelocityHistory(Joint j, int frames){
+    if (getElement(j)) {
+        vector<ofPoint> fullHistory = getElement(j)->getVelocity();
+        vector<ofPoint> history(fullHistory.begin(), fullHistory.begin() + frames);
+        return history;
     } else {
         return createVector(ofPoint(0.0,0.0,0.0));
     }
@@ -326,6 +356,16 @@ vector<ofPoint> ofxKinectFeatures::getAccelerationHistory(Joint j){
     }
 }
 
+vector<ofPoint> ofxKinectFeatures::getAccelerationHistory(Joint j, int frames){
+    if (getElement(j)) {
+        vector<ofPoint> fullHistory = getElement(j)->getAcceleration();
+        vector<ofPoint> history(fullHistory.begin(), fullHistory.begin() + frames);
+        return history;
+    } else {
+        return createVector(ofPoint(0.0,0.0,0.0));
+    }
+}
+
 float ofxKinectFeatures::getAccelerationMagnitude(Joint j){
     if (getElement(j)) {
         return getElement(j)->getAcceleration()[0].length();
@@ -366,6 +406,16 @@ vector<float> ofxKinectFeatures::getAccelerationTrajectoryHistory(Joint j){
     }
 }
 
+vector<float> ofxKinectFeatures::getAccelerationTrajectoryHistory(Joint j, int frames){
+    if (getElement(j)) {
+        vector<float> fullHistory = getElement(j)->getAccelerationTrajectory();
+        vector<float> history(fullHistory.begin(), fullHistory.begin() + frames);
+        return history;
+    } else {
+        return createVector(0.0f);
+    }
+}
+
 float ofxKinectFeatures::getAccelerationTrajectoryMean(Joint j, int frames){
     if (getElement(j)) {
         float sum = 0.0;
@@ -398,6 +448,16 @@ vector<float> ofxKinectFeatures::getDistanceToTorsoHistory(Joint j){
     }
 }
 
+vector<float> ofxKinectFeatures::getDistanceToTorsoHistory(Joint j, int frames){
+    if (getElement(j)) {
+        vector<float> fullHistory = getElement(j)->getDistanceToTorso();
+        vector<float> history(fullHistory.begin(), fullHistory.begin() + frames);
+        return history;
+    } else {
+        return createVector(0.0f);
+    }
+}
+
 ofPoint ofxKinectFeatures::getRelativePositionToTorso(Joint j){
     if (getElement(j)) {
         return getElement(j)->getRelativePositionToTorso()[0];
@@ -409,6 +469,16 @@ ofPoint ofxKinectFeatures::getRelativePositionToTorso(Joint j){
 vector<ofPoint> ofxKinectFeatures::getRelativePositionToTorsoHistory(Joint j){
     if (getElement(j)) {
         return getElement(j)->getRelativePositionToTorso();
+    } else {
+        return createVector(ofPoint(0.0,0.0,0.0));
+    }
+}
+
+vector<ofPoint> ofxKinectFeatures::getRelativePositionToTorsoHistory(Joint j, int frames){
+    if (getElement(j)) {
+        vector<ofPoint> fullHistory = getElement(j)->getRelativePositionToTorso();
+        vector<ofPoint> history(fullHistory.begin(), fullHistory.begin() + frames);
+        return history;
     } else {
         return createVector(ofPoint(0.0,0.0,0.0));
     }
