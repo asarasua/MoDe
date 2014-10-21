@@ -18,7 +18,6 @@
 
 #include "ofMain.h"
 #include "ofxMocapElement.h"
-#include <algorithm>
 #include <numeric>
 
 namespace filter
