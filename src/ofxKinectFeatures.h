@@ -17,110 +17,30 @@
 #define openNiWorm_ofxKinectFeatures_h
 
 #include "ofMain.h"
-#include "ofxMocapElement.h"
-#include <numeric>
-
-namespace filter
-{
-    enum
-    {
-        SOFT = 0,
-        MED = 1,
-        HARD = 2
-    };
-} // namespace filter
+#include "ofxKinectSkeleton.h"
 
 class ofxKinectFeatures {
 public:
     ofxKinectFeatures();
-    
-    void update();
-    ofxMocapElement* getElement(Joint _id);
-    
-    void setKinect(ofxOpenNI* kinect);
-    void setFilterLevel(int filterLevel);
-    
-    void setDepth(int depth);
-    int getDepth();
-    
-    //DESCIPTOR GETTERS
-    //JOINT DESCRIPTORS
-    ofPoint getPosition(Joint j);
-    vector<ofPoint> getPositionHistory(Joint j);
-    vector<ofPoint> getPositionHistory(Joint j, int frames);
-    
-    ofPoint getPositionFiltered(Joint j);
-    vector<ofPoint> getPositionFilteredHistory(Joint j);
-    vector<ofPoint> getPositionFilteredHistory(Joint j, int frames);
-    
-    ofPoint getVelocity(Joint j);
-    vector<ofPoint> getVelocityHistory(Joint j);
-    vector<ofPoint> getVelocityHistory(Joint j, int frames);
-    float getVelocityMagnitude(Joint j);
-    float getVelocityMean(Joint j, int frames = 30);
-    
-    ofPoint getAcceleration(Joint j);
-    vector<ofPoint> getAccelerationHistory(Joint j);
-    vector<ofPoint> getAccelerationHistory(Joint j, int frames);
-    float getAccelerationMagnitude(Joint j);
-    float getAccelerationMean(Joint j, int frames = 30);
-    
-    float getAccelerationTrajectory(Joint j);
-    vector<float> getAccelerationTrajectoryHistory(Joint j);
-    vector<float> getAccelerationTrajectoryHistory(Joint j, int frames);
-    float getAccelerationTrajectoryMean(Joint j, int frames = 30);
-    
-    float getDistanceToTorso(Joint j);
-    vector<float> getDistanceToTorsoHistory(Joint j);
-    vector<float> getDistanceToTorsoHistory(Joint j, int frames);
-    
-    ofPoint getRelativePositionToTorso(Joint j);
-    vector<ofPoint> getRelativePositionToTorsoHistory(Joint j);
-    vector<ofPoint> getRelativePositionToTorsoHistory(Joint j, int frames);
-    
-    //OVERALL DESCRIPTORS
-    float getQom();
-    float getCI();
-    float getSymmetry();
-    float getYMaxHands();
-    
+    ofxKinectSkeleton* getSkeleton(int skeletonId);
     bool isNewDataAvailable();
     
 private:
-    template <typename T>
-    vector<T> createVector (T element);
-    
-    float *aFilter;
-    float *bFilter;
-    float *aLpd1;
-    float *bLpd1;
-    float *aLpd2;
-    float *bLpd2;
-    
-    //overall descriptors
-    float qom_, ci_, symmetry_, yMaxHands_;
-    vector<float> meanVels_;
-    
     bool newValues_;
-    
-    ofxOpenNI* kinect_;
-    vector<ofxMocapElement> elements_;
+    vector<ofxKinectSkeleton> skeletons_;
     
     int depth_;
     
-    void computeJointDescriptors(ofxOpenNIJoint joint, const float &h);
-    ofPoint applyFilter (vector<ofPoint> x, vector<ofPoint> y, float *a, float *b);
-    
-    //Functor to look for mocap elements matching a Joint
+    //Functor to look for skeleton matching an id
     struct MatchId
     {
-        MatchId(const Joint& j) : j_(j) {}
-        bool operator()(ofxMocapElement& obj) const
+        MatchId(const int& i) : i_(i) {}
+        bool operator()(ofxKinectSkeleton& obj) const
         {
-            return obj.getElementId() == j_;
+            return obj.getSkeletonId() == i_;
         }
     private:
-        const Joint& j_;
+        const int& i_;
     };
 };
 

@@ -44,6 +44,7 @@
 		EB08F5B91976AD2B003FB9B3 /* libXnVNite_1_5_2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EB08F5AB1976AD2B003FB9B3 /* libXnVNite_1_5_2.dylib */; };
 		EB08F5C21976AF1C003FB9B3 /* ofxKinectFeatures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB08F5BE1976AF1C003FB9B3 /* ofxKinectFeatures.cpp */; };
 		EB08F5C31976AF1C003FB9B3 /* ofxMocapElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB08F5C01976AF1C003FB9B3 /* ofxMocapElement.cpp */; };
+		EF3D62AB19F81B6800C633E3 /* ofxKinectSkeleton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF3D62AA19F81B6800C633E3 /* ofxKinectSkeleton.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -252,6 +253,8 @@
 		EB08F5BF1976AF1C003FB9B3 /* ofxKinectFeatures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxKinectFeatures.h; sourceTree = "<group>"; };
 		EB08F5C01976AF1C003FB9B3 /* ofxMocapElement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxMocapElement.cpp; sourceTree = "<group>"; };
 		EB08F5C11976AF1C003FB9B3 /* ofxMocapElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxMocapElement.h; sourceTree = "<group>"; };
+		EF3D62A919F8138500C633E3 /* ofxKinectSkeleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxKinectSkeleton.h; sourceTree = "<group>"; };
+		EF3D62AA19F81B6800C633E3 /* ofxKinectSkeleton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxKinectSkeleton.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -647,10 +650,12 @@
 		EB08F5BD1976AF1C003FB9B3 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				EB08F5BE1976AF1C003FB9B3 /* ofxKinectFeatures.cpp */,
 				EB08F5BF1976AF1C003FB9B3 /* ofxKinectFeatures.h */,
-				EB08F5C01976AF1C003FB9B3 /* ofxMocapElement.cpp */,
+				EB08F5BE1976AF1C003FB9B3 /* ofxKinectFeatures.cpp */,
+				EF3D62A919F8138500C633E3 /* ofxKinectSkeleton.h */,
+				EF3D62AA19F81B6800C633E3 /* ofxKinectSkeleton.cpp */,
 				EB08F5C11976AF1C003FB9B3 /* ofxMocapElement.h */,
+				EB08F5C01976AF1C003FB9B3 /* ofxMocapElement.cpp */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -743,6 +748,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EB08F59219769949003FB9B3 /* ofxOpenNI.cpp in Sources */,
+				EF3D62AB19F81B6800C633E3 /* ofxKinectSkeleton.cpp in Sources */,
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
 				EB08F59319769949003FB9B3 /* ofxOpenNITypes.cpp in Sources */,
@@ -913,7 +919,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_52)",
 					/Users/asarasua/Documents/of/of_v0.8.3_osx_release/addons/ofxOpenNI/mac/copy_to_data_openni_path/lib,
 					/Users/asarasua/Documents/of/of_v0.8.3_osx_release/addons/ofxOpenNI/win/copy_to_data_openni_path/lib,
-					"$(BUILT_PRODUCTS_DIR)data/openni/lib",
+					"$(BUILT_PRODUCTS_DIR)/data/openni/lib",
 				);
 				PRODUCT_NAME = kinectFeaturesExampleDebug;
 				WRAPPER_EXTENSION = app;
@@ -1001,7 +1007,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_51)",
 					/Users/asarasua/Documents/of/of_v0.8.3_osx_release/addons/ofxOpenNI/mac/copy_to_data_openni_path/lib,
 					/Users/asarasua/Documents/of/of_v0.8.3_osx_release/addons/ofxOpenNI/win/copy_to_data_openni_path/lib,
-					"$(BUILT_PRODUCTS_DIR)data/openni/lib",
+					"$(BUILT_PRODUCTS_DIR)/data/openni/lib",
 				);
 				PRODUCT_NAME = kinectFeaturesExample;
 				WRAPPER_EXTENSION = app;

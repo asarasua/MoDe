@@ -17,7 +17,6 @@
 #define openNiFeatures_ofxMocapElement_h
 
 #include "ofMain.h"
-#include "ofxOpenNI.h"
 
 class ofxMocapElement{
 public:
@@ -25,7 +24,7 @@ public:
     ofxMocapElement(int depth);
     
     unsigned int getElementId();
-    void setElementId(Joint newId);
+    void setElementId(int newId);
     
     void setHistoryDepth(int depth);    
     
@@ -52,7 +51,7 @@ public:
 
 private:
     int historyDepth_;
-    Joint elementId_;
+    int elementId_;
     
     vector<ofPoint> position_;
     vector<ofPoint> positionFiltered_;

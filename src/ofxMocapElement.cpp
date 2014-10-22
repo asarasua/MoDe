@@ -43,7 +43,7 @@ unsigned int ofxMocapElement::getElementId(){
     return elementId_;
 }
 
-void ofxMocapElement::setElementId(Joint newId){
+void ofxMocapElement::setElementId(int newId){
     elementId_ = newId;
 }
 

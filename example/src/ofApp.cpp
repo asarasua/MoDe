@@ -17,7 +17,6 @@ void ofApp::setup(){
     
     font.loadFont("verdana.ttf", 18);
     
-    featExtractor.setKinect(&kinect);
     j = JOINT_RIGHT_HAND;
     f = VELOCITY_MEAN;
 }
@@ -25,8 +24,15 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
     kinect.update();
-    featExtractor.update();
-    
+    for (int i = 0; i < kinect.getNumTrackedUsers(); i++) {
+        ofxOpenNIUser user = kinect.getTrackedUser(i);
+        map<int, ofPoint> joints;
+        for (int j = 0; j < user.getNumJoints(); j++) {
+            joints[j] = user.getJoint((Joint)j).getWorldPosition();
+        }
+        featExtractor.getSkeleton(i)->update(joints);
+    }
+        
     //This is a trick to reset the user generator if all users are lost
     if (kinect.getNumTrackedUsers()) {
         hadUsers = true;
@@ -49,28 +55,28 @@ void ofApp::draw(){
     kinect.drawImage();
     kinect.drawSkeletons();
     
-    ofPoint jointProjectivePosition = kinect.worldToProjective(featExtractor.getPosition((Joint)j));
+    ofPoint jointProjectivePosition = kinect.worldToProjective(featExtractor.getSkeleton(0)->getPosition((Joint)j));
     
     ostringstream os;
     os << "ofxKinectFeatures example " << endl;
     os << "FPS: " << ofGetFrameRate() << endl;
-    os << "Quantity of Motion: " << featExtractor.getQom() << endl;
-    os << "Symmetry: " << featExtractor.getSymmetry() << endl;
-    os << "Contraction Index: " << featExtractor.getCI() << endl << endl;
+    os << "Quantity of Motion: " << featExtractor.getSkeleton(0)->getQom() << endl;
+    os << "Symmetry: " << featExtractor.getSkeleton(0)->getSymmetry() << endl;
+    os << "Contraction Index: " << featExtractor.getSkeleton(0)->getCI() << endl << endl;
     os << "Current joint (left-right to change): " << getJointAsString((Joint)j) << endl;
     os << "Current feature (up-down to change): ";
     switch (f) {
         case VELOCITY_MEAN:
             os << "Velocity magnitude mean" << endl;
-            font.drawString(ofToString(featExtractor.getVelocityMean((Joint)j)), jointProjectivePosition.x, jointProjectivePosition.y);
+            font.drawString(ofToString(featExtractor.getSkeleton(0)->getVelocityMean((Joint)j)), jointProjectivePosition.x, jointProjectivePosition.y);
             break;
         case ACCELERATION_Y:
             os << "Acceleration along y axis (up-down movement)" << endl;
-            font.drawString(ofToString(featExtractor.getAcceleration((Joint)j).y), jointProjectivePosition.x, jointProjectivePosition.y);
+            font.drawString(ofToString(featExtractor.getSkeleton(0)->getAcceleration((Joint)j).y), jointProjectivePosition.x, jointProjectivePosition.y);
             break;
         case RELPOSTOTORSO_X:
             os << "Relative position to torso in x axis" << endl;
-            font.drawString(ofToString(featExtractor.getRelativePositionToTorso((Joint)j).x), jointProjectivePosition.x, jointProjectivePosition.y);
+            font.drawString(ofToString(featExtractor.getSkeleton(0)->getRelativePositionToTorso((Joint)j).x), jointProjectivePosition.x, jointProjectivePosition.y);
             break;
             
         default:
