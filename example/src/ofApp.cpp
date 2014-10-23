@@ -26,13 +26,19 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
     kinect.update();
+
     for (int i = 0; i < kinect.getNumTrackedUsers(); i++) {
         ofxOpenNIUser user = kinect.getTrackedUser(i);
-        map<int, ofPoint> joints;
-        for (int j = 0; j < user.getNumJoints(); j++) {
-            joints[j] = user.getJoint((Joint)j).getWorldPosition();
+        //The following "if" statement is a hard-coded alternative for if(kinect.getUserGenerator().IsNewDataAvailable()), which doesn't work properly in ofxOpenNI
+        if (user.getJoint((Joint)0).getWorldPosition() != ofPoint(0,0,0) &&
+            (!featExtractor.skeletonExists(0) ||
+             user.getJoint((Joint)0).getWorldPosition() != featExtractor.getSkeleton(0)->getPosition(0) )) {
+            map<int, ofPoint> joints;
+            for (int j = 0; j < user.getNumJoints(); j++) {
+                joints[j] = user.getJoint((Joint)j).getWorldPosition();
+            }
+            featExtractor.updateSkeleton(i, joints);
         }
-        featExtractor.updateSkeleton(i, joints);
     }
         
     //This is a trick to reset the user generator if all users are lost
