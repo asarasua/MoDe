@@ -21,7 +21,7 @@
 class ofxMocapElement{
 public:
     ofxMocapElement();
-    ofxMocapElement(int depth);
+    ofxMocapElement(int elementId, int depth);
     
     unsigned int getElementId();
     void setElementId(int newId);

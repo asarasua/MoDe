@@ -26,7 +26,8 @@ ofxMocapElement::ofxMocapElement(){
     }
 }
 
-ofxMocapElement::ofxMocapElement(int depth){
+ofxMocapElement::ofxMocapElement(int elementId, int depth){
+    elementId_ = elementId;
     historyDepth_ = depth;
     ofPoint zeros = ofPoint(0.0,0.0,0.0);
     for (int i = 0; i < historyDepth_; i++) {

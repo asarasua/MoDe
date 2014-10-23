@@ -13,6 +13,8 @@ void ofApp::setup(){
     kinect.start();
     hadUsers = false;
     
+    ofAddListener(kinect.userEvent, this, &ofApp::userEvent);
+    
     ofSetWindowShape(640, 480);
     
     font.loadFont("verdana.ttf", 18);
@@ -30,7 +32,7 @@ void ofApp::update(){
         for (int j = 0; j < user.getNumJoints(); j++) {
             joints[j] = user.getJoint((Joint)j).getWorldPosition();
         }
-        featExtractor.getSkeleton(i)->update(joints);
+        featExtractor.updateSkeleton(i, joints);
     }
         
     //This is a trick to reset the user generator if all users are lost
@@ -55,32 +57,33 @@ void ofApp::draw(){
     kinect.drawImage();
     kinect.drawSkeletons();
     
-    ofPoint jointProjectivePosition = kinect.worldToProjective(featExtractor.getSkeleton(0)->getPosition((Joint)j));
-    
     ostringstream os;
     os << "ofxKinectFeatures example " << endl;
     os << "FPS: " << ofGetFrameRate() << endl;
-    os << "Quantity of Motion: " << featExtractor.getSkeleton(0)->getQom() << endl;
-    os << "Symmetry: " << featExtractor.getSkeleton(0)->getSymmetry() << endl;
-    os << "Contraction Index: " << featExtractor.getSkeleton(0)->getCI() << endl << endl;
-    os << "Current joint (left-right to change): " << getJointAsString((Joint)j) << endl;
-    os << "Current feature (up-down to change): ";
-    switch (f) {
-        case VELOCITY_MEAN:
-            os << "Velocity magnitude mean" << endl;
-            font.drawString(ofToString(featExtractor.getSkeleton(0)->getVelocityMean((Joint)j)), jointProjectivePosition.x, jointProjectivePosition.y);
-            break;
-        case ACCELERATION_Y:
-            os << "Acceleration along y axis (up-down movement)" << endl;
-            font.drawString(ofToString(featExtractor.getSkeleton(0)->getAcceleration((Joint)j).y), jointProjectivePosition.x, jointProjectivePosition.y);
-            break;
-        case RELPOSTOTORSO_X:
-            os << "Relative position to torso in x axis" << endl;
-            font.drawString(ofToString(featExtractor.getSkeleton(0)->getRelativePositionToTorso((Joint)j).x), jointProjectivePosition.x, jointProjectivePosition.y);
-            break;
-            
-        default:
-            break;
+    if (featExtractor.skeletonExists(0)) {
+        ofPoint jointProjectivePosition = kinect.worldToProjective(featExtractor.getSkeleton(0)->getPosition((Joint)j));
+        os << "Quantity of Motion: " << featExtractor.getSkeleton(0)->getQom() << endl;
+        os << "Symmetry: " << featExtractor.getSkeleton(0)->getSymmetry() << endl;
+        os << "Contraction Index: " << featExtractor.getSkeleton(0)->getCI() << endl << endl;
+        os << "Current joint (left-right to change): " << getJointAsString((Joint)j) << endl;
+        os << "Current feature (up-down to change): ";
+        switch (f) {
+            case VELOCITY_MEAN:
+                os << "Velocity magnitude mean" << endl;
+                font.drawString(ofToString(featExtractor.getSkeleton(0)->getVelocityMean((Joint)j)), jointProjectivePosition.x, jointProjectivePosition.y);
+                break;
+            case ACCELERATION_Y:
+                os << "Acceleration along y axis (up-down movement)" << endl;
+                font.drawString(ofToString(featExtractor.getSkeleton(0)->getAcceleration((Joint)j).y), jointProjectivePosition.x, jointProjectivePosition.y);
+                break;
+            case RELPOSTOTORSO_X:
+                os << "Relative position to torso in x axis" << endl;
+                font.drawString(ofToString(featExtractor.getSkeleton(0)->getRelativePositionToTorso((Joint)j).x), jointProjectivePosition.x, jointProjectivePosition.y);
+                break;
+                
+            default:
+                break;
+        }
     }
     
     
@@ -111,6 +114,13 @@ void ofApp::keyPressed(int key){
             }
         default:
             break;
+    }
+}
+
+//--------------------------------------------------------------
+void ofApp::userEvent(ofxOpenNIUserEvent &event){
+    if (event.userStatus == USER_TRACKING_STOPPED) {
+        featExtractor.removeSkeleton(0);
     }
 }
 

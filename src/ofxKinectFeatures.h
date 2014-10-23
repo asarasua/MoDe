@@ -22,7 +22,10 @@
 class ofxKinectFeatures {
 public:
     ofxKinectFeatures();
+    void updateSkeleton(int skeletonId, map<int, ofPoint> joints);
     ofxKinectSkeleton* getSkeleton(int skeletonId);
+    bool skeletonExists(int skeletonId);
+    void removeSkeleton(int skeletonId);
     bool isNewDataAvailable();
     
 private:

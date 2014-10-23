@@ -33,6 +33,7 @@ namespace filter
 class ofxKinectSkeleton {
 public:
     ofxKinectSkeleton();
+    ofxKinectSkeleton(int skeletonId);
     
     int getSkeletonId();
     

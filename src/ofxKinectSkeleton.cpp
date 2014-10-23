@@ -52,6 +52,18 @@ ofxKinectSkeleton::ofxKinectSkeleton(){
     //TODO
 }
 
+ofxKinectSkeleton::ofxKinectSkeleton(int skeletonId){
+    newValues_ = false;
+    setDepth(30);
+    aFilter = lpf_soft_a;
+    bFilter = lpf_soft_b;
+    aLpd1 = lpd1_soft_a;
+    bLpd1 = lpd1_soft_b;
+    aLpd2 = lpd2_soft_a;
+    bLpd2 = lpd2_soft_b;
+    skeletonId_ = skeletonId;
+}
+
 int ofxKinectSkeleton::getSkeletonId(){
     return skeletonId_;
 }
@@ -98,8 +110,7 @@ void ofxKinectSkeleton::update(map<int, ofPoint> joints){
     //Initialize elements
     if (elements_.empty()) {
         for (map<int, ofPoint>::iterator it = joints.begin(); it != joints.end(); it++) {
-            ofxMocapElement newElement(depth_);
-            newElement.setElementId(it->first);
+            ofxMocapElement newElement(it->first, depth_);
             elements_.push_back(newElement);
         }
     }

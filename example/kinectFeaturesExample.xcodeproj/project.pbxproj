@@ -917,8 +917,6 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_50)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_51)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_52)",
-					/Users/asarasua/Documents/of/of_v0.8.3_osx_release/addons/ofxOpenNI/mac/copy_to_data_openni_path/lib,
-					/Users/asarasua/Documents/of/of_v0.8.3_osx_release/addons/ofxOpenNI/win/copy_to_data_openni_path/lib,
 					"$(BUILT_PRODUCTS_DIR)/data/openni/lib",
 				);
 				PRODUCT_NAME = kinectFeaturesExampleDebug;
@@ -1005,8 +1003,6 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_49)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_50)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_51)",
-					/Users/asarasua/Documents/of/of_v0.8.3_osx_release/addons/ofxOpenNI/mac/copy_to_data_openni_path/lib,
-					/Users/asarasua/Documents/of/of_v0.8.3_osx_release/addons/ofxOpenNI/win/copy_to_data_openni_path/lib,
 					"$(BUILT_PRODUCTS_DIR)/data/openni/lib",
 				);
 				PRODUCT_NAME = kinectFeaturesExample;
