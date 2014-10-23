@@ -2,12 +2,8 @@
 
 ofxKinectFeatures: openFrameworks add-on for motion capture feature extraction from Kinect. Currently, it has been only tested for openFrameworks 0.8.3 in **Mac OSX**. 
 
-##Dependencies
-
-The current version needs **ofxOpenNI** (https://github.com/gameoverhack/ofxOpenNI) to work. Future versions will allow to input motion capture in some specific format (e.g. via OSC) from any driver.
-
 ##Features
-Features can correspond to a specific joint (e.g. velocity of right hand) or general body movement (e.g. quantity of motion).
+Features can correspond to a specific joint (e.g. velocity of right hand) or general body movement (e.g. quantity of motion). They can be extracted from more than one skeleton.
 The current list of features is:
 ####Joint features
 * Position / filtered position
@@ -38,38 +34,62 @@ git clone https://github.com/asarasua/ofxKinectFeatures
 Alternatively you can just click on "Downlaod ZIP" and extract the content in your addons directory.
 
 ##Getting it to work
-The easiest way to go is from the example:
-- Open an openFrameworks project.
-- Copy the 'example' folder to your 'apps/myApps' (or equivalent) folder
-- Copy the folder called 'lib' from '**ofxOpenNI**/mac/copy_to_data_openni_path' to the 'bin/data/openni' directory of your example.
 
-If you want to start a project from scratch: 
-- Follow the instructions in https://github.com/gameoverhack/ofxOpenNI to add ofxOpenNI and then:
-- Create a group under 'addons' named 'ofxKinectFeatures'
-- Drag the 'src' folder into this group.
+###New project
+
+- Copy an empty example to your 'apps/myApps' (or equivalent) directory.
+- Create a new group called 'ofxKinectFeatures' under the 'addons' group.
+- Drag the 'src' folder from the 'addons/ofxKinectFeatures/' directory to the group you just created.
+
+###From the example
+The current version needs **ofxOpenNI** (https://github.com/gameoverhack/ofxOpenNI) to work. 
+
+To make this example work, do the following:
+- Download ofxOpenNI to your addons directory.
+- Open an openFrameworks project.
+- Copy the 'example' folder to your 'apps/myApps' (or equivalent) directory.
+- Copy the 'bin' folder from 'addons/ofxOpenNI/examples/opeNI-SimpleExamples/' to your project directory (this is to have the correct folder structure and config files for openNI to work).
+- Copy the 'lib' folder from '**ofxOpenNI**/mac/copy_to_data_openni_path' to the 'bin/data/openni' directory of your project.
 
 ##API
-The features are accessed through an `ofxKinectFeatures` object, and for the moment we need an `ofxOpenNI` object to get kinect skeleton data. So in ofApp.h:
+The API has been designed not to depend on a particular library for the skeleton tracking with Kinect. Currently, an example using **ofxOpenNI** is included.
 
-    ofxOpenNI kinect;
+The features are accessed through an `ofxKinectFeatures` object, so declare it in ofApp.h:
+
     ofxKinectFeatures featExtractor;
 
-Then, in setup(), we need to tell the extractor where to get the data from:
+In update(), we just update skeletons data sending a `map<int, ofPoint>` where keys are integers identifying joints and values are the x, y, z positions of these joints. For example, when using ofxOpenNI, this can be done as follows:
 
-    featExtractor.setKinect(&kinect);
+    //kinect is an ofxOpenNI object
+    for (int i = 0; i < kinect.getNumTrackedUsers(); i++) {
+        ofxOpenNIUser user = kinect.getTrackedUser(i);
+        map<int, ofPoint> joints;
+        for (int j = 0; j < user.getNumJoints(); j++) {
+            joints[j] = user.getJoint((Joint)j).getWorldPosition();
+        }
+        featExtractor.updateSkeleton(i, joints);
+    }
 
-And in update(), we just call the methods that update the kinect information and calculate descriptors:
+From there, features of a particular skeleton can be accessed calling the appropriate methods. It is **necesarry** to check if the desired skeleton exists.
+For joint descriptors, using skeleton and joint id's. e.g., to get the x velocity of the right hand (in ofxOpenNI, identified by the `JOINT_RIGHT_HAND`constant):
 
-    kinect.update();
-    featExtractor.update();
-
-From there, features can be accessed calling the appropriate methods.
-For joint descriptors, using Joint constants. e.g., to get the x velocity of the right hand:
-
-    featExtractor.getVelocity(JOINT_RIGHT_HAND).x;
+    if (featExtractor.skeletonExists(0)) {
+        featExtractor.getSkeleton(0)->getVelocity(JOINT_RIGHT_HAND).x;
+    }
 
 For ovearall descriptors, just by calling the method. E.g.:
 
-    featExtractor.getQom();
+    featExtractor.getSkeleton(0)->getQom();
 
+If a skeleton is lost, it has to be removed from the ofxKinectFeatures object:
+
+    featExtractor.removeSkeleton(0);
+
+In the ofxOpenNI example, this is done in a method that is called everytime an ofxOpenNIUserEvent occurs:
+
+    void ofApp::userEvent(ofxOpenNIUserEvent &event){
+        if (event.userStatus == USER_TRACKING_STOPPED) {
+            featExtractor.removeSkeleton(0);
+        }
+    }
 
