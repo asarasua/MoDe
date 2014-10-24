@@ -130,8 +130,12 @@ void ofxKinectSkeleton::update(map<int, ofPoint> joints){
     float h = headPos.distance(torsoPos);
     float meanVel = 0.0; //for qom
     //for CI
-    float xMax, yMax, zMax = numeric_limits<float>::min();
-    float xMin, yMin, zMin = numeric_limits<float>::max();
+    float xMax = numeric_limits<float>::min();
+	float yMax = numeric_limits<float>::min();
+	float zMax = numeric_limits<float>::min();
+    float xMin = numeric_limits<float>::max();
+	float yMin = numeric_limits<float>::max();
+	float zMin = numeric_limits<float>::max();
     
     for (map<int, ofPoint>::iterator it = joints.begin(); it != joints.end(); it++) {
         int j = it->first;
