@@ -92,8 +92,10 @@ void ofApp::draw(){
         }
     }
     
-    
-    ofDrawBitmapString(os.str(), 20, 20);
+    ofSetColor(0,0,0,100);
+    ofRect(10, 10, 500, 150);
+    ofSetColor(255,255,255);
+    ofDrawBitmapString(os.str(), 20, 30);
 }
 
 //--------------------------------------------------------------
