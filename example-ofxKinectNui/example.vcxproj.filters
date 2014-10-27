@@ -49,9 +49,6 @@
     <ClCompile Include="..\src\ofxKinectFeatures.cpp">
       <Filter>addons\ofxKinectFeatures\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\ofxKinectSkeleton.cpp">
-      <Filter>addons\ofxKinectFeatures\src</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\ofxMocapElement.cpp">
       <Filter>addons\ofxKinectFeatures\src</Filter>
     </ClCompile>
@@ -150,9 +147,6 @@
       <Filter>addons\ofxKinectNui\src\win32</Filter>
     </ClInclude>
     <ClInclude Include="..\src\ofxKinectFeatures.h">
-      <Filter>addons\ofxKinectFeatures\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\ofxKinectSkeleton.h">
       <Filter>addons\ofxKinectFeatures\src</Filter>
     </ClInclude>
     <ClInclude Include="..\src\ofxMocapElement.h">

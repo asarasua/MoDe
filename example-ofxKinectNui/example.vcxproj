@@ -91,7 +91,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\ofxKinectFeatures.cpp" />
-    <ClCompile Include="..\src\ofxKinectSkeleton.cpp" />
     <ClCompile Include="..\src\ofxMocapElement.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
@@ -111,7 +110,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\ofxKinectFeatures.h" />
-    <ClInclude Include="..\src\ofxKinectSkeleton.h" />
     <ClInclude Include="..\src\ofxMocapElement.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="..\..\..\addons\ofxKinectNui\src\kinect\nui\AudioStream.h" />
