@@ -13,6 +13,8 @@ void ofApp::setup(){
     kinect.start();
     hadUsers = false;
     
+    featExtractor.setup(JOINT_HEAD, JOINT_TORSO);
+    
     ofAddListener(kinect.userEvent, this, &ofApp::userEvent);
     
     ofSetWindowShape(640, 480);
@@ -31,13 +33,12 @@ void ofApp::update(){
         ofxOpenNIUser user = kinect.getTrackedUser(i);
         //The following "if" statement is a hard-coded alternative for if(kinect.getUserGenerator().IsNewDataAvailable()), which doesn't work properly in ofxOpenNI
         if (user.getJoint((Joint)0).getWorldPosition() != ofPoint(0,0,0) &&
-            (!featExtractor.skeletonExists(0) ||
-             user.getJoint((Joint)0).getWorldPosition() != featExtractor.getSkeleton(0)->getPosition(0) )) {
+             user.getJoint((Joint)0).getWorldPosition() != featExtractor.getPosition(0) ) {
             map<int, ofPoint> joints;
             for (int j = 0; j < user.getNumJoints(); j++) {
                 joints[j] = user.getJoint((Joint)j).getWorldPosition();
             }
-            featExtractor.updateSkeleton(i, joints);
+            featExtractor.update(joints);
         }
     }
         
@@ -66,34 +67,34 @@ void ofApp::draw(){
     ostringstream os;
     os << "ofxKinectFeatures example " << endl;
     os << "FPS: " << ofGetFrameRate() << endl;
-    if (featExtractor.skeletonExists(0)) {
-        ofPoint jointProjectivePosition = kinect.worldToProjective(featExtractor.getSkeleton(0)->getPosition((Joint)j));
-        os << "Quantity of Motion: " << featExtractor.getSkeleton(0)->getQom() << endl;
-        os << "Symmetry: " << featExtractor.getSkeleton(0)->getSymmetry() << endl;
-        os << "Contraction Index: " << featExtractor.getSkeleton(0)->getCI() << endl << endl;
-        os << "Current joint (left-right to change): " << getJointAsString((Joint)j) << endl;
-        os << "Current feature (up-down to change): ";
-        switch (f) {
-            case VELOCITY_MEAN:
-                os << "Velocity magnitude mean" << endl;
-                font.drawString(ofToString(featExtractor.getSkeleton(0)->getVelocityMean((Joint)j)), jointProjectivePosition.x, jointProjectivePosition.y);
-                break;
-            case ACCELERATION_Y:
-                os << "Acceleration along y axis (up-down movement)" << endl;
-                font.drawString(ofToString(featExtractor.getSkeleton(0)->getAcceleration((Joint)j).y), jointProjectivePosition.x, jointProjectivePosition.y);
-                break;
-            case RELPOSTOTORSO_X:
-                os << "Relative position to torso in x axis" << endl;
-                font.drawString(ofToString(featExtractor.getSkeleton(0)->getRelativePositionToTorso((Joint)j).x), jointProjectivePosition.x, jointProjectivePosition.y);
-                break;
-                
-            default:
-                break;
-        }
+    ofPoint jointProjectivePosition = kinect.worldToProjective(featExtractor.getPosition(j));
+    os << "Quantity of Motion: " << featExtractor.getQom() << endl;
+    //os << "Symmetry: " << featExtractor.getSymmetry() << endl;
+    os << "Contraction Index: " << featExtractor.getCI() << endl << endl;
+    os << "Current joint (left-right to change): " << getJointAsString((Joint)j) << endl;
+    os << "Current feature (up-down to change): ";
+    switch (f) {
+        case VELOCITY_MEAN:
+            os << "Velocity magnitude mean" << endl;
+            font.drawString(ofToString(featExtractor.getVelocityMean(j)), jointProjectivePosition.x, jointProjectivePosition.y);
+            break;
+        case ACCELERATION_Y:
+            os << "Acceleration along y axis (up-down movement)" << endl;
+            font.drawString(ofToString(featExtractor.getAcceleration(j).y), jointProjectivePosition.x, jointProjectivePosition.y);
+            break;
+        case RELPOSTOTORSO_X:
+            os << "Relative position to torso in x axis" << endl;
+            font.drawString(ofToString(featExtractor.getRelativePositionToTorso(j).x), jointProjectivePosition.x, jointProjectivePosition.y);
+            break;
+            
+        default:
+            break;
     }
     
-    
-    ofDrawBitmapString(os.str(), 20, 20);
+    ofSetColor(0,0,0,100);
+    ofRect(10, 10, 500, 150);
+    ofSetColor(255,255,255);
+    ofDrawBitmapString(os.str(), 20, 30);
 }
 
 //--------------------------------------------------------------
@@ -125,9 +126,9 @@ void ofApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void ofApp::userEvent(ofxOpenNIUserEvent &event){
-    if (event.userStatus == USER_TRACKING_STOPPED) {
-        featExtractor.removeSkeleton(0);
-    }
+//    if (event.userStatus == USER_TRACKING_STOPPED) {
+//        featExtractor.removeSkeleton(0);
+//    }
 }
 
 //--------------------------------------------------------------
