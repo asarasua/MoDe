@@ -76,7 +76,7 @@ void ofApp::draw(){
     switch (f) {
         case VELOCITY_MEAN:
             os << "Velocity magnitude mean" << endl;
-            font.drawString(ofToString(featExtractor.getVelocityMean(j)), jointProjectivePosition.x, jointProjectivePosition.y);
+            font.drawString(ofToString(featExtractor.getVelocity(j).y), jointProjectivePosition.x, jointProjectivePosition.y);
             break;
         case ACCELERATION_Y:
             os << "Acceleration along y axis (up-down movement)" << endl;
@@ -91,10 +91,14 @@ void ofApp::draw(){
             break;
     }
     
+    
     ofSetColor(0,0,0,100);
     ofRect(10, 10, 500, 150);
     ofSetColor(255,255,255);
     ofDrawBitmapString(os.str(), 20, 30);
+    
+    font.drawString(ofToString(featExtractor.getAngle(JOINT_RIGHT_HAND, JOINT_RIGHT_ELBOW, JOINT_RIGHT_SHOULDER)), 250, 20);
+    font.drawString(ofToString(featExtractor.getVelocityMean(JOINT_RIGHT_HAND)[1]), 250, 50);
 }
 
 //--------------------------------------------------------------

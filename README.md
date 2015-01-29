@@ -87,9 +87,11 @@ From there, features can be accessed calling the appropriate methods.
 
 For joint descriptors, joint id's. E.g., to get the x velocity of the right hand (in ofxOpenNI, identified by the `JOINT_RIGHT_HAND`constant):
 
-    if (featExtractor.skeletonExists(0)) {
-        featExtractor.getVelocity(JOINT_RIGHT_HAND).x;
-    }
+```cpp
+if (featExtractor.skeletonExists(0)) {
+    featExtractor.getVelocity(JOINT_RIGHT_HAND).x;
+}
+```
 
 For ovearall descriptors, just by calling the method. E.g.:
 

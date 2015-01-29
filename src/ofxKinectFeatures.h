@@ -58,13 +58,16 @@ public:
     vector<ofPoint> getVelocityHistory(int j);
     vector<ofPoint> getVelocityHistory(int j, int frames);
     float getVelocityMagnitude(int j);
-    float getVelocityMean(int j, int frames = 30);
+    ofPoint getVelocityMean(int j, int frames = 30);
+    float getVelocityMagnitudeMean(int j, int frames = 30);
     
     ofPoint getAcceleration(int j);
     vector<ofPoint> getAccelerationHistory(int j);
     vector<ofPoint> getAccelerationHistory(int j, int frames);
     float getAccelerationMagnitude(int j);
-    float getAccelerationMean(int j, int frames = 30);
+    ofPoint getAccelerationMean(int j, int frames = 30);
+    float getAccelerationMagnitudeMean(int j, int frames = 30);
+    
     
     float getAccelerationTrajectory(int j);
     vector<float> getAccelerationTrajectoryHistory(int j);
@@ -78,6 +81,9 @@ public:
     ofPoint getRelativePositionToTorso(int j);
     vector<ofPoint> getRelativePositionToTorsoHistory(int j);
     vector<ofPoint> getRelativePositionToTorsoHistory(int j, int frames);
+    
+    //SPECIAL DESCRIPTORS
+    float getAngle(int j1, int j2, int j3);
     
     //OVERALL DESCRIPTORS
     float getQom();

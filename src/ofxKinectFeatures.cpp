@@ -338,7 +338,25 @@ float ofxKinectFeatures::getVelocityMagnitude(int j){
     }
 }
 
-float ofxKinectFeatures::getVelocityMean(int j, int frames){
+ofPoint ofxKinectFeatures::getVelocityMean(int j, int frames){
+    if (getElement(j)) {
+        float sumx = 0, sumy = 0, sumz = 0.0;
+        for (int i = 0; i < frames && i < getElement(j)->getVelocity().size(); i++) {
+            sumx += getElement(j)->getVelocity()[i][0];
+            sumy += getElement(j)->getVelocity()[i][1];
+            sumz += getElement(j)->getVelocity()[i][2];
+        }
+        if (frames <= getElement(j)->getVelocity().size()) {
+            return ofPoint(sumx / frames, sumy / frames, sumz / frames);
+        } else {
+            return ofPoint(sumx / getElement(j)->getVelocity().size(), sumy / getElement(j)->getVelocity().size(), sumz / getElement(j)->getVelocity().size());
+        }
+    } else {
+        return ofPoint(0.0,0.0,0.0);
+    }
+}
+
+float ofxKinectFeatures::getVelocityMagnitudeMean(int j, int frames){
     if (getElement(j)) {
         float sum = 0.0;
         for (int i = 0; i < frames && i < getElement(j)->getVelocity().size(); i++) {
@@ -388,7 +406,25 @@ float ofxKinectFeatures::getAccelerationMagnitude(int j){
     }
 }
 
-float ofxKinectFeatures::getAccelerationMean(int j, int frames){
+ofPoint ofxKinectFeatures::getAccelerationMean(int j, int frames){
+    if (getElement(j)) {
+        float sumx = 0, sumy = 0, sumz = 0.0;
+        for (int i = 0; i < frames && i < getElement(j)->getVelocity().size(); i++) {
+            sumx += getElement(j)->getAcceleration()[i][0];
+            sumy += getElement(j)->getAcceleration()[i][1];
+            sumz += getElement(j)->getAcceleration()[i][2];
+        }
+        if (frames <= getElement(j)->getVelocity().size()) {
+            return ofPoint(sumx / frames, sumy / frames, sumz / frames);
+        } else {
+            return ofPoint(sumx / getElement(j)->getAcceleration().size(), sumy / getElement(j)->getAcceleration().size(), sumz / getElement(j)->getAcceleration().size());
+        }
+    } else {
+        return ofPoint(0.0,0.0,0.0);
+    }
+}
+
+float ofxKinectFeatures::getAccelerationMagnitudeMean(int j, int frames){
     if (getElement(j)) {
         float sum = 0.0;
         for (int i = 0; i < frames && i < getElement(j)->getAcceleration().size(); i++) {
@@ -496,6 +532,13 @@ vector<ofPoint> ofxKinectFeatures::getRelativePositionToTorsoHistory(int j, int 
     } else {
         return createVector(ofPoint(0.0,0.0,0.0));
     }
+}
+
+float ofxKinectFeatures::getAngle(int j1, int j2, int j3){
+    float d12 = getPositionFiltered(j1).distance(getPositionFiltered(j2));
+    float d13 = getPositionFiltered(j1).distance(getPositionFiltered(j3));
+    float d23 = getPositionFiltered(j2).distance(getPositionFiltered(j3));
+    return RAD_TO_DEG * acos(( -(d13*d13) + d23*d23 + d12*d12 ) / (2*d23*d12 ) ); //cos rule
 }
 
 float ofxKinectFeatures::getQom(){
