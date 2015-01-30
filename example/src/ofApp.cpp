@@ -16,6 +16,7 @@ void ofApp::setup(){
     featExtractor.setup(JOINT_HEAD, JOINT_TORSO);
     
     ofAddListener(kinect.userEvent, this, &ofApp::userEvent);
+    ofAddListener(MocapMaxEvent::events, this, &ofApp::mocapMax);
     
     ofSetWindowShape(640, 480);
     
@@ -76,6 +77,7 @@ void ofApp::draw(){
     switch (f) {
         case VELOCITY_MEAN:
             os << "Velocity magnitude mean" << endl;
+            //font.drawString(ofToString(featExtractor.getVelocity(j).y), jointProjectivePosition.x, jointProjectivePosition.y);
             font.drawString(ofToString(featExtractor.getVelocity(j).y), jointProjectivePosition.x, jointProjectivePosition.y);
             break;
         case ACCELERATION_Y:
@@ -97,7 +99,7 @@ void ofApp::draw(){
     ofSetColor(255,255,255);
     ofDrawBitmapString(os.str(), 20, 30);
     
-    font.drawString(ofToString(featExtractor.getAngle(JOINT_RIGHT_HAND, JOINT_RIGHT_ELBOW, JOINT_RIGHT_SHOULDER)), 250, 20);
+    font.drawString(ofToString(featExtractor.getQom()), 250, 20);
     font.drawString(ofToString(featExtractor.getVelocityMean(JOINT_RIGHT_HAND)[1]), 250, 50);
 }
 
@@ -133,6 +135,16 @@ void ofApp::userEvent(ofxOpenNIUserEvent &event){
 //    if (event.userStatus == USER_TRACKING_STOPPED) {
 //        featExtractor.removeSkeleton(0);
 //    }
+}
+
+void ofApp::mocapMax(MocapMaxEvent &e){
+//    if (e.joint == JOINT_RIGHT_HAND && e.value > 5.0) {
+//        cout << "Max in right hand axis " << ofGetTimestampString() << endl;
+//    }
+    
+    if (e.feature == FEAT_QOM && e.value > 20.0){
+        cout << "max in QOM!" << endl;
+    }
 }
 
 //--------------------------------------------------------------

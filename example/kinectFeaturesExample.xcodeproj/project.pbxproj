@@ -44,6 +44,7 @@
 		EB08F5B91976AD2B003FB9B3 /* libXnVNite_1_5_2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EB08F5AB1976AD2B003FB9B3 /* libXnVNite_1_5_2.dylib */; };
 		EB08F5C31976AF1C003FB9B3 /* ofxMocapElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB08F5C01976AF1C003FB9B3 /* ofxMocapElement.cpp */; };
 		EF3D62AB19F81B6800C633E3 /* ofxKinectFeatures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF3D62AA19F81B6800C633E3 /* ofxKinectFeatures.cpp */; };
+		EF40E9D01A7A623200B327F8 /* ofxMocapEvents.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF40E9CE1A7A623200B327F8 /* ofxMocapEvents.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -252,6 +253,8 @@
 		EB08F5C11976AF1C003FB9B3 /* ofxMocapElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxMocapElement.h; sourceTree = "<group>"; };
 		EF3D62A919F8138500C633E3 /* ofxKinectFeatures.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxKinectFeatures.h; sourceTree = "<group>"; };
 		EF3D62AA19F81B6800C633E3 /* ofxKinectFeatures.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxKinectFeatures.cpp; sourceTree = "<group>"; };
+		EF40E9CE1A7A623200B327F8 /* ofxMocapEvents.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxMocapEvents.cpp; sourceTree = "<group>"; };
+		EF40E9CF1A7A623200B327F8 /* ofxMocapEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxMocapEvents.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -651,6 +654,8 @@
 				EF3D62AA19F81B6800C633E3 /* ofxKinectFeatures.cpp */,
 				EB08F5C11976AF1C003FB9B3 /* ofxMocapElement.h */,
 				EB08F5C01976AF1C003FB9B3 /* ofxMocapElement.cpp */,
+				EF40E9CE1A7A623200B327F8 /* ofxMocapEvents.cpp */,
+				EF40E9CF1A7A623200B327F8 /* ofxMocapEvents.h */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -744,6 +749,7 @@
 			files = (
 				EB08F59219769949003FB9B3 /* ofxOpenNI.cpp in Sources */,
 				EF3D62AB19F81B6800C633E3 /* ofxKinectFeatures.cpp in Sources */,
+				EF40E9D01A7A623200B327F8 /* ofxMocapEvents.cpp in Sources */,
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
 				EB08F59319769949003FB9B3 /* ofxOpenNITypes.cpp in Sources */,

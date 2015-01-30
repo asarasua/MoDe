@@ -18,6 +18,7 @@
 
 #include "ofMain.h"
 #include "ofxMocapElement.h"
+#include "ofxMocapEvents.h"
 #include <numeric>
 
 namespace filter
@@ -87,9 +88,13 @@ public:
     
     //OVERALL DESCRIPTORS
     float getQom();
+    vector<float> getQomHistory();
+    vector<float> getQomHistory(int frames);
     float getCI();
-    float getSymmetry();
-    float getYMaxHands();
+    vector<float> getCIHistory();
+    vector<float> getCIHistory(int frames);
+//    float getSymmetry();
+//    float getYMaxHands();
     
     bool isNewDataAvailable();
     
@@ -107,7 +112,7 @@ private:
     float *bLpd2;
     
     //overall descriptors
-    float qom_, ci_, symmetry_, yMaxHands_;
+    vector<float> qom_, ci_;//, symmetry_, yMaxHands_;
     vector<float> meanVels_;
     
     bool newValues_;
@@ -118,6 +123,8 @@ private:
     
     void computeJointDescriptors(int jointId, ofPoint jointPos, const float &h);
     ofPoint applyFilter (vector<ofPoint> x, vector<ofPoint> y, float *a, float *b);
+    void checkMaxAndMin(vector<ofPoint> descriptorHistory, unsigned int jointId, unsigned int feature);
+    void checkMaxAndMin(vector<float> descriptorHistory, unsigned int jointId, unsigned int feature);
     
     //Functor to look for mocap elements matching a Joint
     struct MatchId

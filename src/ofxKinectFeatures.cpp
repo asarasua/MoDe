@@ -50,6 +50,12 @@ ofxKinectFeatures::ofxKinectFeatures(){
     aLpd2 = lpd2_soft_a;
     bLpd2 = lpd2_soft_b;
     //TODO
+    
+    for (int i = 0; i < depth_; i++) {
+        qom_.push_back(0.0);
+        ci_.push_back(0.0);
+    }
+    
 }
 
 ofxKinectFeatures::ofxKinectFeatures(int head, int torso){
@@ -63,6 +69,11 @@ ofxKinectFeatures::ofxKinectFeatures(int head, int torso){
     bLpd2 = lpd2_soft_b;
     head_ = head;
     torso_ = torso;
+    
+    for (int i = 0; i < depth_; i++) {
+        qom_.push_back(0.0);
+        ci_.push_back(0.0);
+    }
 }
 
 void ofxKinectFeatures::setup(int head, int torso){
@@ -175,17 +186,36 @@ void ofxKinectFeatures::update(map<int, ofPoint> joints){
         meanVels_.pop_back();
     }
     
-    qom_ = accumulate(meanVels_.begin(), meanVels_.end(), 0.0) / (meanVels_.size());
+    //qom_ = accumulate(meanVels_.begin(), meanVels_.end(), 0.0) / (meanVels_.size());
+    // QOM insert
+    if (qom_.size() <= depth_) {
+        qom_.insert(qom_.begin(), accumulate(meanVels_.begin(), meanVels_.end(), 0.0) / (meanVels_.size()));
+    }
+    // QOM delete
+    if (qom_.size() > depth_) {
+        qom_.pop_back();
+    }
     
-    ci_ = ( -4.0 + (( abs(xMax-xMin) + abs(yMax-yMin) + abs(zMax-zMin) ) / h) ) / 6.0;
+    checkMaxAndMin(qom_, NO_JOINT, FEAT_QOM);
+    
+    //ci_ = ( -4.0 + (( abs(xMax-xMin) + abs(yMax-yMin) + abs(zMax-zMin) ) / h) ) / 6.0;
+    if (ci_.size() <= depth_) {
+        ci_.insert(ci_.begin(), ( -4.0 + (( abs(xMax-xMin) + abs(yMax-yMin) + abs(zMax-zMin) ) / h) ) / 6.0);
+    }
+    // QOM delete
+    if (ci_.size() > depth_) {
+        ci_.pop_back();
+    }
+    
+    checkMaxAndMin(ci_, NO_JOINT, FEAT_CI);
     
     //TODO solve this!!
 //    symmetry_ = 1.0 - (0.5 * (abs(sqrt(getDistanceToTorso(JOINT_RIGHT_HAND))-sqrt(getDistanceToTorso(JOINT_LEFT_HAND))) + abs(sqrt(getDistanceToTorso(JOINT_RIGHT_ELBOW))-sqrt(getDistanceToTorso(JOINT_LEFT_ELBOW)))) / h);
-    symmetry_ = 0.0;
+    //symmetry_ = 0.0;
  
     //TODO solve this!!
     //yMaxHands_ = max(getRelativePositionToTorso(JOINT_RIGHT_HAND).y, getRelativePositionToTorso(JOINT_LEFT_HAND).y);
-    yMaxHands_ = 0.0;
+    //yMaxHands_ = 0.0;
         
         
 //    } else {
@@ -205,17 +235,21 @@ void ofxKinectFeatures::computeJointDescriptors(int jointId, ofPoint jointPos, c
     
     //Velocity
     mocapElement->setVelocity(applyFilter(mocapElement->getPosition(), mocapElement->getVelocity(), aLpd1, bLpd1));
+    checkMaxAndMin(getVelocityHistory(jointId, 3), jointId, FEAT_VELOCITY);
     
     //Acceleration
     mocapElement->setAcceleration(applyFilter(mocapElement->getPosition(), mocapElement->getAcceleration(), aLpd2, bLpd2));
+    checkMaxAndMin(getAccelerationHistory(jointId, 3), jointId, FEAT_ACCELERATION);
     
     //Acceleration along trajectory
     ofPoint acc = mocapElement->getAcceleration()[0];
     ofPoint vel = mocapElement->getVelocity()[0];
     mocapElement->setAccelerationTrajectory(acc.dot(vel) / vel.length());
+    checkMaxAndMin(getAccelerationTrajectoryHistory(jointId, 3), jointId, FEAT_ACCELERATION_TRAJECTORY);
     
     //Distance to torso
     mocapElement->setDistanceToTorso(getPositionFiltered(jointId).distanceSquared(getPositionFiltered(torso_)));
+    checkMaxAndMin(getDistanceToTorsoHistory(jointId, 3), jointId, FEAT_DISTANCETOTORSO);
     
     //Relative position to torso
     //TODO solve this!!
@@ -224,6 +258,7 @@ void ofxKinectFeatures::computeJointDescriptors(int jointId, ofPoint jointPos, c
     relPosToTorso.y = (jointPos.y - getPositionFiltered(torso_).y) / (h * 1.8);
     relPosToTorso.z = -((jointPos.z - getPositionFiltered(torso_).z) / h) / 1.4;
     mocapElement->setRelativePositionToTorso(relPosToTorso);
+    checkMaxAndMin(getRelativePositionToTorsoHistory(jointId, 3), jointId, FEAT_RELATIVEPOSTOTORSO);
     
     //TODO: auto hand
     //beatTracker.update(getAccTrVector(JOINT_RIGHT_HAND), get3DFiltPosVector(JOINT_RIGHT_HAND)[coord::Y]);
@@ -240,6 +275,74 @@ ofxMocapElement* ofxKinectFeatures::getElement(int _id){
 
 ofPoint ofxKinectFeatures::applyFilter(vector<ofPoint> x, vector<ofPoint> y, float *a, float *b){
     return b[0]*x[0] + b[1]*x[1] + b[2]*x[2] + b[3]*x[3] + b[4]*x[4] - (a[1]*y[0] + a[2]*y[1] + a[3]*y[2] + a[4]*y[3]);
+}
+
+
+void ofxKinectFeatures::checkMaxAndMin(vector<ofPoint> descriptorHistory, unsigned int jointId, unsigned int feature){
+    //x
+    if (descriptorHistory[1][0] > descriptorHistory[0][0] && descriptorHistory[1][0] > descriptorHistory[2][0]) {
+        static MocapMaxEvent newMaxEvent;
+        newMaxEvent.joint = jointId;
+        newMaxEvent.axis = MOCAP_X;
+        newMaxEvent.feature = feature;
+        newMaxEvent.value = descriptorHistory[1][0];
+        ofNotifyEvent(MocapMaxEvent::events, newMaxEvent);
+    } else if (descriptorHistory[1][0] < descriptorHistory[0][0] && descriptorHistory[1][0] < descriptorHistory[2][0]){
+        static MocapMinEvent newMinEvent;
+        newMinEvent.joint = jointId;
+        newMinEvent.axis = MOCAP_X;
+        newMinEvent.feature = feature;
+        newMinEvent.value = descriptorHistory[1][0];
+        ofNotifyEvent(MocapMinEvent::events, newMinEvent);
+    }
+    //y
+    if (descriptorHistory[1][1] > descriptorHistory[0][1] && descriptorHistory[1][1] > descriptorHistory[2][1]) {
+        static MocapMaxEvent newMaxEvent;
+        newMaxEvent.joint = jointId;
+        newMaxEvent.axis = MOCAP_Y;
+        newMaxEvent.feature = feature;
+        newMaxEvent.value = descriptorHistory[1][1];
+        ofNotifyEvent(MocapMaxEvent::events, newMaxEvent);
+    } else if (descriptorHistory[1][1] < descriptorHistory[0][1] && descriptorHistory[1][1] < descriptorHistory[2][1]){
+        static MocapMinEvent newMinEvent;
+        newMinEvent.joint = jointId;
+        newMinEvent.axis = MOCAP_Y;
+        newMinEvent.feature = feature;
+        newMinEvent.value = descriptorHistory[1][1];
+        ofNotifyEvent(MocapMinEvent::events, newMinEvent);
+    }
+    //z
+    if (descriptorHistory[1][2] > descriptorHistory[0][2] && descriptorHistory[1][2] > descriptorHistory[2][2]) {
+        static MocapMaxEvent newMaxEvent;
+        newMaxEvent.joint = jointId;
+        newMaxEvent.axis = MOCAP_Y;
+        newMaxEvent.feature = feature;
+        newMaxEvent.value = descriptorHistory[1][2];
+        ofNotifyEvent(MocapMaxEvent::events, newMaxEvent);
+    } else if (descriptorHistory[1][2] < descriptorHistory[0][2] && descriptorHistory[1][2] < descriptorHistory[2][2]){
+        static MocapMinEvent newMinEvent;
+        newMinEvent.joint = jointId;
+        newMinEvent.axis = MOCAP_Z;
+        newMinEvent.feature = feature;
+        newMinEvent.value = descriptorHistory[1][2];
+        ofNotifyEvent(MocapMinEvent::events, newMinEvent);
+    }
+}
+
+void ofxKinectFeatures::checkMaxAndMin(vector<float> descriptorHistory, unsigned int jointId, unsigned int feature){
+    if (descriptorHistory[1] > descriptorHistory[0] && descriptorHistory[1] > descriptorHistory[2]) {
+        static MocapMaxEvent newMaxEvent;
+        newMaxEvent.joint = jointId;
+        newMaxEvent.feature = feature;
+        newMaxEvent.value = descriptorHistory[1];
+        ofNotifyEvent(MocapMaxEvent::events, newMaxEvent);
+    } else if (descriptorHistory[1] < descriptorHistory[0] && descriptorHistory[1] < descriptorHistory[2]){
+        static MocapMinEvent newMinEvent;
+        newMinEvent.joint = jointId;
+        newMinEvent.feature = feature;
+        newMinEvent.value = descriptorHistory[1];
+        ofNotifyEvent(MocapMinEvent::events, newMinEvent);
+    }
 }
 
 
@@ -542,20 +645,38 @@ float ofxKinectFeatures::getAngle(int j1, int j2, int j3){
 }
 
 float ofxKinectFeatures::getQom(){
+    return qom_[0];
+}
+
+vector<float> ofxKinectFeatures::getQomHistory(){
     return qom_;
 }
 
+vector<float> ofxKinectFeatures::getQomHistory(int frames){
+    vector<float> history(qom_.begin(), qom_.begin() + frames);
+    return history;
+}
+
 float ofxKinectFeatures::getCI(){
+    return ci_[0];
+}
+
+vector<float> ofxKinectFeatures::getCIHistory(){
     return ci_;
 }
 
-float ofxKinectFeatures::getSymmetry(){
+vector<float> ofxKinectFeatures::getCIHistory(int frames){
+    vector<float> history(ci_.begin(), ci_.begin() + frames);
+    return history;
+}
+
+/*float ofxKinectFeatures::getSymmetry(){
     return symmetry_;
 }
 
 float ofxKinectFeatures::getYMaxHands(){
     return yMaxHands_;
-}
+}*/
 
 bool ofxKinectFeatures::isNewDataAvailable(){
     return newValues_;
