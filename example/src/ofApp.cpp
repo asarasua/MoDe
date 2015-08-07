@@ -98,9 +98,7 @@ void ofApp::draw(){
     ofRect(10, 10, 500, 150);
     ofSetColor(255,255,255);
     ofDrawBitmapString(os.str(), 20, 30);
-    
-    font.drawString(ofToString(featExtractor.getQom()), 250, 20);
-    font.drawString(ofToString(featExtractor.getVelocityMean(JOINT_RIGHT_HAND)[1]), 250, 50);
+
 }
 
 //--------------------------------------------------------------

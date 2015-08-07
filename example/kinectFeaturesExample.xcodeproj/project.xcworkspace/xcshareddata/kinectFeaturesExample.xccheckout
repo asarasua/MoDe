@@ -7,18 +7,22 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>AE720971-BC77-472B-B791-F4A7E23A5349</string>
 	<key>IDESourceControlProjectName</key>
-	<string>kinectFeaturesExample</string>
+	<string>project</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>D7770A14563D2CF85508E1CB3D7DDC50864B9F47</key>
 		<string>https://github.com/asarasua/ofxKinectFeatures.git</string>
+		<key>D8811CE32924E36E8903BAF4011407E4BAF64556</key>
+		<string>https://github.com/gameoverhack/ofxOpenNI.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>example/kinectFeaturesExample.xcodeproj</string>
+	<string>example/kinectFeaturesExample.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>D7770A14563D2CF85508E1CB3D7DDC50864B9F47</key>
 		<string>../../..</string>
+		<key>D8811CE32924E36E8903BAF4011407E4BAF64556</key>
+		<string>../../../../ofxOpenNI</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/asarasua/ofxKinectFeatures.git</string>
@@ -35,6 +39,14 @@
 			<string>D7770A14563D2CF85508E1CB3D7DDC50864B9F47</string>
 			<key>IDESourceControlWCCName</key>
 			<string>ofxKinectFeatures</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>D8811CE32924E36E8903BAF4011407E4BAF64556</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ofxOpenNI</string>
 		</dict>
 	</array>
 </dict>
