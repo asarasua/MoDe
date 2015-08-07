@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "ofApp::update():ofApp.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "beatParticles[i].vel.length()">
+            </PersistentString>
+            <PersistentString
+               value = "ofGetMouseY()">
+            </PersistentString>
+            <PersistentString
+               value = "featExtractor.getQom()">
+            </PersistentString>
+            <PersistentString
+               value = "ofMap(featExtractor.getQom(), 0, 3, 0, h)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "ofApp::draw():ofApp.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "kinect.getImageGenerator().GetFrameID()">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "ofApp::mocapMin(MocapMinEvent&amp;):ofApp.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "ofNormalize(abs(abs(-15)-15), 0, 15)">
+            </PersistentString>
+            <PersistentString
+               value = "gaussian()">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "ofxKinectFeatures::computeJointDescriptors(int, ofVec3f, float const&amp;):ofxKinectFeatures.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "getVelocityHistory(jointId)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "ofApp::setup():ofApp.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "kinect.getHeight()">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "ofApp::mocapMax(MocapMaxEvent&amp;):ofApp.cpp">
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>
