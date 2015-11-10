@@ -11,6 +11,7 @@
 *.mode1v3
 *.mode2v3
 *.html
+*.xcuserstate
 
 # User-specific files
 *.suo

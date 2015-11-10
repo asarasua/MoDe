@@ -22,6 +22,7 @@ ofxMocapElement::ofxMocapElement(){
         setVelocity(zeros);
         setAcceleration(zeros);
         setAccelerationTrajectory(0.0);
+		setDistanceToTorso(0.0);
         setRelativePositionToTorso(zeros);
     }
 }
@@ -36,6 +37,7 @@ ofxMocapElement::ofxMocapElement(int elementId, int depth){
         setVelocity(zeros);
         setAcceleration(zeros);
         setAccelerationTrajectory(0.0);
+		setDistanceToTorso(0.0);
         setRelativePositionToTorso(zeros);
     }
 }

@@ -13,7 +13,10 @@ void ofApp::setup(){
     kinect.start();
     hadUsers = false;
     
+    featExtractor.setup(JOINT_HEAD, JOINT_TORSO);
+    
     ofAddListener(kinect.userEvent, this, &ofApp::userEvent);
+    ofAddListener(MocapMaxEvent::events, this, &ofApp::mocapMax);
     
     ofSetWindowShape(640, 480);
     
@@ -31,13 +34,12 @@ void ofApp::update(){
         ofxOpenNIUser user = kinect.getTrackedUser(i);
         //The following "if" statement is a hard-coded alternative for if(kinect.getUserGenerator().IsNewDataAvailable()), which doesn't work properly in ofxOpenNI
         if (user.getJoint((Joint)0).getWorldPosition() != ofPoint(0,0,0) &&
-            (!featExtractor.skeletonExists(0) ||
-             user.getJoint((Joint)0).getWorldPosition() != featExtractor.getSkeleton(0)->getPosition(0) )) {
+             user.getJoint((Joint)0).getWorldPosition() != featExtractor.getPosition(0) ) {
             map<int, ofPoint> joints;
             for (int j = 0; j < user.getNumJoints(); j++) {
                 joints[j] = user.getJoint((Joint)j).getWorldPosition();
             }
-            featExtractor.updateSkeleton(i, joints);
+            featExtractor.update(joints);
         }
     }
         
@@ -66,30 +68,29 @@ void ofApp::draw(){
     ostringstream os;
     os << "ofxKinectFeatures example " << endl;
     os << "FPS: " << ofGetFrameRate() << endl;
-    if (featExtractor.skeletonExists(0)) {
-        ofPoint jointProjectivePosition = kinect.worldToProjective(featExtractor.getSkeleton(0)->getPosition((Joint)j));
-        os << "Quantity of Motion: " << featExtractor.getSkeleton(0)->getQom() << endl;
-        os << "Symmetry: " << featExtractor.getSkeleton(0)->getSymmetry() << endl;
-        os << "Contraction Index: " << featExtractor.getSkeleton(0)->getCI() << endl << endl;
-        os << "Current joint (left-right to change): " << getJointAsString((Joint)j) << endl;
-        os << "Current feature (up-down to change): ";
-        switch (f) {
-            case VELOCITY_MEAN:
-                os << "Velocity magnitude mean" << endl;
-                font.drawString(ofToString(featExtractor.getSkeleton(0)->getVelocityMean((Joint)j)), jointProjectivePosition.x, jointProjectivePosition.y);
-                break;
-            case ACCELERATION_Y:
-                os << "Acceleration along y axis (up-down movement)" << endl;
-                font.drawString(ofToString(featExtractor.getSkeleton(0)->getAcceleration((Joint)j).y), jointProjectivePosition.x, jointProjectivePosition.y);
-                break;
-            case RELPOSTOTORSO_X:
-                os << "Relative position to torso in x axis" << endl;
-                font.drawString(ofToString(featExtractor.getSkeleton(0)->getRelativePositionToTorso((Joint)j).x), jointProjectivePosition.x, jointProjectivePosition.y);
-                break;
-                
-            default:
-                break;
-        }
+    ofPoint jointProjectivePosition = kinect.worldToProjective(featExtractor.getPosition(j));
+    os << "Quantity of Motion: " << featExtractor.getQom() << endl;
+    //os << "Symmetry: " << featExtractor.getSymmetry() << endl;
+    os << "Contraction Index: " << featExtractor.getCI() << endl << endl;
+    os << "Current joint (left-right to change): " << getJointAsString((Joint)j) << endl;
+    os << "Current feature (up-down to change): ";
+    switch (f) {
+        case VELOCITY_MEAN:
+            os << "Velocity magnitude mean" << endl;
+            //font.drawString(ofToString(featExtractor.getVelocity(j).y), jointProjectivePosition.x, jointProjectivePosition.y);
+            font.drawString(ofToString(featExtractor.getVelocity(j).y), jointProjectivePosition.x, jointProjectivePosition.y);
+            break;
+        case ACCELERATION_Y:
+            os << "Acceleration along y axis (up-down movement)" << endl;
+            font.drawString(ofToString(featExtractor.getAcceleration(j).y), jointProjectivePosition.x, jointProjectivePosition.y);
+            break;
+        case RELPOSTOTORSO_X:
+            os << "Relative position to torso in x axis" << endl;
+            font.drawString(ofToString(featExtractor.getRelativePositionToTorso(j).x), jointProjectivePosition.x, jointProjectivePosition.y);
+            break;
+            
+        default:
+            break;
     }
     
     ofSetColor(0,0,0,100);
@@ -127,8 +128,18 @@ void ofApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void ofApp::userEvent(ofxOpenNIUserEvent &event){
-    if (event.userStatus == USER_TRACKING_STOPPED) {
-        featExtractor.removeSkeleton(0);
+//    if (event.userStatus == USER_TRACKING_STOPPED) {
+//        featExtractor.removeSkeleton(0);
+//    }
+}
+
+void ofApp::mocapMax(MocapMaxEvent &e){
+//    if (e.joint == JOINT_RIGHT_HAND && e.value > 5.0) {
+//        cout << "Max in right hand axis " << ofGetTimestampString() << endl;
+//    }
+    
+    if (e.feature == FEAT_QOM && e.value > 20.0){
+        cout << "max in QOM!" << endl;
     }
 }
 
