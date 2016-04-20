@@ -1,0 +1,2 @@
+ofxKinectFeatures
+ofxOsc

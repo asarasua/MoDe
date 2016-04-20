@@ -269,7 +269,7 @@ ofxMocapElement* ofxKinectFeatures::getElement(int _id){
     if (it != elements_.end()){
         return &(*it);
     } else {
-        return false;
+        return NULL;
     }
 }
 
