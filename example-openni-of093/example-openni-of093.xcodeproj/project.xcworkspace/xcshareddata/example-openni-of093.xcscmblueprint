@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "D7770A14563D2CF85508E1CB3D7DDC50864B9F47",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "D7770A14563D2CF85508E1CB3D7DDC50864B9F47" : 0,
+    "D8811CE32924E36E8903BAF4011407E4BAF64556" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "61B41389-5A68-4EA7-AE96-2104B1F96DA4",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "D7770A14563D2CF85508E1CB3D7DDC50864B9F47" : "ofxKinectFeatures\/",
+    "D8811CE32924E36E8903BAF4011407E4BAF64556" : "ofxOpenNI\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "example-openni-of093",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "example-openni-of093\/example-openni-of093.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/asarasua\/ofxKinectFeatures",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "D7770A14563D2CF85508E1CB3D7DDC50864B9F47"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/fred-dev\/ofxOpenNI",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "D8811CE32924E36E8903BAF4011407E4BAF64556"
+    }
+  ]
+}

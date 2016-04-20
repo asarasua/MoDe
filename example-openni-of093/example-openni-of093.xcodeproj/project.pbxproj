@@ -1,0 +1,899 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0D9D5E552DB769B7063CEF23 /* ofxMocapEvents.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D735462E55A78E7C37F02B1F /* ofxMocapEvents.cpp */; };
+		50220E6AE01592FB45869DFB /* ofxKinectFeatures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 20ACD2A0AAD3C907E94EC714 /* ofxKinectFeatures.cpp */; };
+		53B8DC1D45EBD5267B24B601 /* ofxOpenNITypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1510E35407533B95F05C297D /* ofxOpenNITypes.cpp */; };
+		89D91BBAE9596D6E30AA6E35 /* ofxOpenNI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 12B3CD0D48AD549F971EB586 /* ofxOpenNI.cpp */; };
+		A184FF6D8A5C01C9A1CC940F /* ofxMocapElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B3EA74E8D35B92349C430237 /* ofxMocapElement.cpp */; };
+		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
+		E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B69E1D0A3A1BDC003C02F2 /* main.cpp */; };
+		E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B69E1E0A3A1BDC003C02F2 /* ofApp.cpp */; };
+		EB1D56F61CC7C0C300658E48 /* libnimCodecs.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EB1D56E81CC7C0C300658E48 /* libnimCodecs.dylib */; };
+		EB1D56F71CC7C0C300658E48 /* libnimMockNodes.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EB1D56E91CC7C0C300658E48 /* libnimMockNodes.dylib */; };
+		EB1D56F81CC7C0C300658E48 /* libnimRecorder.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EB1D56EA1CC7C0C300658E48 /* libnimRecorder.dylib */; };
+		EB1D56F91CC7C0C300658E48 /* libOpenNI.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EB1D56EB1CC7C0C300658E48 /* libOpenNI.dylib */; };
+		EB1D56FA1CC7C0C300658E48 /* libusb-1.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EB1D56EC1CC7C0C300658E48 /* libusb-1.0.0.dylib */; };
+		EB1D56FB1CC7C0C300658E48 /* libXnCore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EB1D56ED1CC7C0C300658E48 /* libXnCore.dylib */; };
+		EB1D56FC1CC7C0C300658E48 /* libXnDDK.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EB1D56EE1CC7C0C300658E48 /* libXnDDK.dylib */; };
+		EB1D56FD1CC7C0C300658E48 /* libXnDeviceFile.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EB1D56EF1CC7C0C300658E48 /* libXnDeviceFile.dylib */; };
+		EB1D56FE1CC7C0C300658E48 /* libXnDeviceSensorV2KM.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EB1D56F01CC7C0C300658E48 /* libXnDeviceSensorV2KM.dylib */; };
+		EB1D56FF1CC7C0C300658E48 /* libXnFormats.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EB1D56F11CC7C0C300658E48 /* libXnFormats.dylib */; };
+		EB1D57001CC7C0C300658E48 /* libXnVCNITE_1_5_2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EB1D56F21CC7C0C300658E48 /* libXnVCNITE_1_5_2.dylib */; };
+		EB1D57011CC7C0C300658E48 /* libXnVFeatures_1_5_2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EB1D56F31CC7C0C300658E48 /* libXnVFeatures_1_5_2.dylib */; };
+		EB1D57021CC7C0C300658E48 /* libXnVHandGenerator_1_5_2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EB1D56F41CC7C0C300658E48 /* libXnVHandGenerator_1_5_2.dylib */; };
+		EB1D57031CC7C0C300658E48 /* libXnVNite_1_5_2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EB1D56F51CC7C0C300658E48 /* libXnVNite_1_5_2.dylib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E4328147138ABC890047C5CB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E4B27C1510CBEB8E00536013;
+			remoteInfo = openFrameworks;
+		};
+		E4EEB9AB138B136A00A80321 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = E4B27C1410CBEB8E00536013;
+			remoteInfo = openFrameworks;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E4C2427710CC5ABF004149E2 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		0679A5CD382A1C309A6DC84F /* XnLicensing.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnLicensing.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnLicensing.h; sourceTree = SOURCE_ROOT; };
+		0699C9B6CE6FAE5EA08914A2 /* XnV3DVector.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnV3DVector.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnV3DVector.h; sourceTree = SOURCE_ROOT; };
+		096230D8375A851BE62BE0B1 /* XnOS.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnOS.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnOS.h; sourceTree = SOURCE_ROOT; };
+		0A9A2981ED099233C25B3D58 /* XnDataTypes.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnDataTypes.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnDataTypes.h; sourceTree = SOURCE_ROOT; };
+		0E7D94E8BB842CC296E392F1 /* XnVNiteFramework.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVNiteFramework.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVNiteFramework.h; sourceTree = SOURCE_ROOT; };
+		0EEC5BE937F2F28B51367F98 /* XnVPointMessage.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVPointMessage.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVPointMessage.h; sourceTree = SOURCE_ROOT; };
+		12B3CD0D48AD549F971EB586 /* ofxOpenNI.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxOpenNI.cpp; path = ../../../addons/ofxOpenNI/src/ofxOpenNI.cpp; sourceTree = SOURCE_ROOT; };
+		133E07E029EB4EB8D143BADE /* XnLog.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnLog.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnLog.h; sourceTree = SOURCE_ROOT; };
+		139C789DCA4EAA62894ED372 /* XnPlatformMacOSX.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnPlatformMacOSX.h; path = ../../../addons/ofxOpenNI/libs/include/openni/MacOSX/XnPlatformMacOSX.h; sourceTree = SOURCE_ROOT; };
+		1510E35407533B95F05C297D /* ofxOpenNITypes.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxOpenNITypes.cpp; path = ../../../addons/ofxOpenNI/src/ofxOpenNITypes.cpp; sourceTree = SOURCE_ROOT; };
+		1514EEF7D3A8ABD76508114E /* XnPlatformLinux-x86.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = "XnPlatformLinux-x86.h"; path = "../../../addons/ofxOpenNI/libs/include/openni/Linux-x86/XnPlatformLinux-x86.h"; sourceTree = SOURCE_ROOT; };
+		193DCB62C04282D1E6BFFC4B /* XnEnumerationErrors.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnEnumerationErrors.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnEnumerationErrors.h; sourceTree = SOURCE_ROOT; };
+		1A1FFE6094B44E495E397D75 /* XnDumpWriters.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnDumpWriters.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnDumpWriters.h; sourceTree = SOURCE_ROOT; };
+		1D8336E00CA0F3A154EFA23F /* XnModuleCFunctions.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnModuleCFunctions.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnModuleCFunctions.h; sourceTree = SOURCE_ROOT; };
+		1E6A960C89A4BC9BA8A7C798 /* XnVFlowRouter.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVFlowRouter.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVFlowRouter.h; sourceTree = SOURCE_ROOT; };
+		20ACD2A0AAD3C907E94EC714 /* ofxKinectFeatures.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxKinectFeatures.cpp; path = ../../../addons/ofxKinectFeatures/src/ofxKinectFeatures.cpp; sourceTree = SOURCE_ROOT; };
+		21594CC8F1B71745576235E3 /* XnVClickableVirtualPlane.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVClickableVirtualPlane.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVClickableVirtualPlane.h; sourceTree = SOURCE_ROOT; };
+		22F48D13402674EA29F6ECAB /* XnOSStrings.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnOSStrings.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnOSStrings.h; sourceTree = SOURCE_ROOT; };
+		250146AE0A4A7C64E1614A1D /* XnPlatformWin32.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnPlatformWin32.h; path = ../../../addons/ofxOpenNI/libs/include/openni/Win32/XnPlatformWin32.h; sourceTree = SOURCE_ROOT; };
+		263553AB4475B857CB0F06D4 /* XnLogTypes.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnLogTypes.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnLogTypes.h; sourceTree = SOURCE_ROOT; };
+		27774A8D2AE57776B831C13A /* XnOSWin32.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnOSWin32.h; path = ../../../addons/ofxOpenNI/libs/include/openni/Win32/XnOSWin32.h; sourceTree = SOURCE_ROOT; };
+		28F0A5B8946BB7A075E8B24D /* XnCommon.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnCommon.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnCommon.h; sourceTree = SOURCE_ROOT; };
+		2A66B8C069263CA1E228F129 /* XnPlatformLinux-Arm.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = "XnPlatformLinux-Arm.h"; path = "../../../addons/ofxOpenNI/libs/include/openni/Linux-Arm/XnPlatformLinux-Arm.h"; sourceTree = SOURCE_ROOT; };
+		3226CCCC9814C74441B8E460 /* libusb.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = libusb.h; path = ../../../addons/ofxOpenNI/libs/include/libusb/libusb.h; sourceTree = SOURCE_ROOT; };
+		33923B1AEC9AB0B4F861AB3D /* XnUSB.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnUSB.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnUSB.h; sourceTree = SOURCE_ROOT; };
+		34ECBFB4F9C0BDD5414143C6 /* XnVDeviceFilter.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVDeviceFilter.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVDeviceFilter.h; sourceTree = SOURCE_ROOT; };
+		35EF808F7C621C08C5A6D993 /* XnVSwipeDetector.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVSwipeDetector.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVSwipeDetector.h; sourceTree = SOURCE_ROOT; };
+		35FC439602DDA06C7740C956 /* XnVHandPointContext.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVHandPointContext.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVHandPointContext.h; sourceTree = SOURCE_ROOT; };
+		38ED10FDCA287565231CF750 /* XnCppWrapper.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnCppWrapper.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnCppWrapper.h; sourceTree = SOURCE_ROOT; };
+		3A62415F3C9D31D67A552AFC /* XnVDepthGenerator.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVDepthGenerator.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVDepthGenerator.h; sourceTree = SOURCE_ROOT; };
+		3BF49DB56C10A6AC2891CE68 /* XnVDepthControl.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVDepthControl.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVDepthControl.h; sourceTree = SOURCE_ROOT; };
+		3DB7108A59299429207F806D /* XnVWaveDetector.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVWaveDetector.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVWaveDetector.h; sourceTree = SOURCE_ROOT; };
+		3FDEC005ED1355D04526D986 /* XnVNite.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVNite.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVNite.h; sourceTree = SOURCE_ROOT; };
+		4026EB176E904C4E5B61FD0A /* XnVCCMessage.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVCCMessage.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVCCMessage.h; sourceTree = SOURCE_ROOT; };
+		405D75197A989FD40753742F /* XnStringsHash.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnStringsHash.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnStringsHash.h; sourceTree = SOURCE_ROOT; };
+		410C955BB22B5AD3C87FAE8B /* IXnNodeAllocator.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = IXnNodeAllocator.h; path = ../../../addons/ofxOpenNI/libs/include/openni/IXnNodeAllocator.h; sourceTree = SOURCE_ROOT; };
+		44D3621286FACCF699242791 /* XnVPointTracker.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVPointTracker.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVPointTracker.h; sourceTree = SOURCE_ROOT; };
+		463530B8EC0C844E2169ADCC /* XnLogWriterBase.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnLogWriterBase.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnLogWriterBase.h; sourceTree = SOURCE_ROOT; };
+		4650DF84A7A5FFF5A4ACF9DE /* XnVMessageGenerator.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVMessageGenerator.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVMessageGenerator.h; sourceTree = SOURCE_ROOT; };
+		47889FDC1B961A9F5084D7FF /* XnVSteadyDetector.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVSteadyDetector.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVSteadyDetector.h; sourceTree = SOURCE_ROOT; };
+		48719BDED70AD62A3F7FD772 /* XnVBroadcaster.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVBroadcaster.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVBroadcaster.h; sourceTree = SOURCE_ROOT; };
+		4A7C90CA601CA1932E4B71D4 /* XnVCircleDetector.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVCircleDetector.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVCircleDetector.h; sourceTree = SOURCE_ROOT; };
+		4AEA153C8830640D0B424EFA /* XnVComplexMessage.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVComplexMessage.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVComplexMessage.h; sourceTree = SOURCE_ROOT; };
+		4E996BFD63B8557F0511968D /* XnVImageGenerator.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVImageGenerator.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVImageGenerator.h; sourceTree = SOURCE_ROOT; };
+		508BDAD7439107A619B851D2 /* ofxOpenNI.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxOpenNI.h; path = ../../../addons/ofxOpenNI/src/ofxOpenNI.h; sourceTree = SOURCE_ROOT; };
+		50D5AC1B877CE4EA3EF570FC /* XnVMessageMux.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVMessageMux.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVMessageMux.h; sourceTree = SOURCE_ROOT; };
+		5106E0BDDE091EF4EF574461 /* XnVSlider3D.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVSlider3D.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVSlider3D.h; sourceTree = SOURCE_ROOT; };
+		54FAC710509D982A084054E4 /* XnVPushDetector.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVPushDetector.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVPushDetector.h; sourceTree = SOURCE_ROOT; };
+		56B37BD9E8C887505FCAEA30 /* XnArray.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnArray.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnArray.h; sourceTree = SOURCE_ROOT; };
+		5746FF7FDB0392A0FF7E5122 /* XnNodeAllocator.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnNodeAllocator.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnNodeAllocator.h; sourceTree = SOURCE_ROOT; };
+		57F53F2036847EA974A671A0 /* XnBitSet.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnBitSet.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnBitSet.h; sourceTree = SOURCE_ROOT; };
+		59447C61852E9F5A39DA9708 /* XnVMessage.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVMessage.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVMessage.h; sourceTree = SOURCE_ROOT; };
+		59C40266705B5AAED09369A4 /* XnVImageMessage.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVImageMessage.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVImageMessage.h; sourceTree = SOURCE_ROOT; };
+		5BBF97F10044C942872C5C59 /* XnPlatformARC.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnPlatformARC.h; path = ../../../addons/ofxOpenNI/libs/include/openni/ARC/XnPlatformARC.h; sourceTree = SOURCE_ROOT; };
+		5CC36722DCF0B979684E96E9 /* XnVNiteLog.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVNiteLog.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVNiteLog.h; sourceTree = SOURCE_ROOT; };
+		5DF75CD1B3D2812F5D4F009B /* XnVActivationMessage.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVActivationMessage.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVActivationMessage.h; sourceTree = SOURCE_ROOT; };
+		60DDC8A4FA7D5A2B481E7AE5 /* XnOpenNI.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnOpenNI.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnOpenNI.h; sourceTree = SOURCE_ROOT; };
+		62886AB0304296331A32F082 /* XnVDeviceMessage.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVDeviceMessage.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVDeviceMessage.h; sourceTree = SOURCE_ROOT; };
+		62B5F39898F0E2A3BBED12FF /* XnVGesture.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVGesture.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVGesture.h; sourceTree = SOURCE_ROOT; };
+		656CEB765F61FD9771EEB066 /* XnAlgorithms.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnAlgorithms.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnAlgorithms.h; sourceTree = SOURCE_ROOT; };
+		674AD99917A093F018116D22 /* XnContext.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnContext.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnContext.h; sourceTree = SOURCE_ROOT; };
+		674F0F37D92864ECA55CD594 /* XnEvent.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnEvent.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnEvent.h; sourceTree = SOURCE_ROOT; };
+		6DBEBC257DB06CE827284265 /* ofxKinectFeatures.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxKinectFeatures.h; path = ../../../addons/ofxKinectFeatures/src/ofxKinectFeatures.h; sourceTree = SOURCE_ROOT; };
+		6F035DEADA76F7BF25BDB5BC /* XnGeneralBuffer.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnGeneralBuffer.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnGeneralBuffer.h; sourceTree = SOURCE_ROOT; };
+		727952858539F2F46067C88A /* XnModuleInterface.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnModuleInterface.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnModuleInterface.h; sourceTree = SOURCE_ROOT; };
+		7C82D35B868AC1301BD7A06B /* XnPrdNodeInfo.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnPrdNodeInfo.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnPrdNodeInfo.h; sourceTree = SOURCE_ROOT; };
+		7D9FA4309C0CEF8876943560 /* XnVDirection.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVDirection.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVDirection.h; sourceTree = SOURCE_ROOT; };
+		7EF1E5A842C552F1279F0FE6 /* XnPrdNodeInfoList.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnPrdNodeInfoList.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnPrdNodeInfoList.h; sourceTree = SOURCE_ROOT; };
+		7EF297C47F1C105F7E25113B /* ofxMocapElement.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxMocapElement.h; path = ../../../addons/ofxKinectFeatures/src/ofxMocapElement.h; sourceTree = SOURCE_ROOT; };
+		8056178686B456A8A3E254E8 /* XnVersion.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVersion.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnVersion.h; sourceTree = SOURCE_ROOT; };
+		815F1BF1BCBFAA78BE02A073 /* XnOSMemory.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnOSMemory.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnOSMemory.h; sourceTree = SOURCE_ROOT; };
+		86B7A36F0A17EB5796D0B57A /* XnPrdNode.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnPrdNode.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnPrdNode.h; sourceTree = SOURCE_ROOT; };
+		8A7AE85ACD4EBB7FD1014F20 /* XnStatus.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnStatus.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnStatus.h; sourceTree = SOURCE_ROOT; };
+		8E7A0A9EE515418FD9F5FFA9 /* XnHash.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnHash.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnHash.h; sourceTree = SOURCE_ROOT; };
+		8F20CD8EDE8A4F9C69B4E8D8 /* ofxOpenNIUtils.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxOpenNIUtils.h; path = ../../../addons/ofxOpenNI/src/ofxOpenNIUtils.h; sourceTree = SOURCE_ROOT; };
+		92AEAB898510CC9ED018BF93 /* XnCodecIDs.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnCodecIDs.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnCodecIDs.h; sourceTree = SOURCE_ROOT; };
+		92E53D58815AD8B9D2DD8866 /* XnVMultiProcessFlowServer.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVMultiProcessFlowServer.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVMultiProcessFlowServer.h; sourceTree = SOURCE_ROOT; };
+		948D52B877B9516F5A481D66 /* XnScheduler.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnScheduler.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnScheduler.h; sourceTree = SOURCE_ROOT; };
+		952226BB61CA7022ABEADC16 /* XnVMultiProcessFlowClient.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVMultiProcessFlowClient.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVMultiProcessFlowClient.h; sourceTree = SOURCE_ROOT; };
+		96A0CCB9F2A9E481586FA7B6 /* XnVNiteControls.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVNiteControls.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVNiteControls.h; sourceTree = SOURCE_ROOT; };
+		99D818050C1679E0B898B18B /* XnQueue.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnQueue.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnQueue.h; sourceTree = SOURCE_ROOT; };
+		9BFCC1FC245337F553636D1E /* ofxMocapEvents.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxMocapEvents.h; path = ../../../addons/ofxKinectFeatures/src/ofxMocapEvents.h; sourceTree = SOURCE_ROOT; };
+		9F4EAEE39CE3F6E80CEBF54A /* XnDump.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnDump.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnDump.h; sourceTree = SOURCE_ROOT; };
+		9F6834A79698AA8D9050E858 /* XnNode.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnNode.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnNode.h; sourceTree = SOURCE_ROOT; };
+		A021D09128102B2B3C0917DE /* XnVSessionMessage.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVSessionMessage.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVSessionMessage.h; sourceTree = SOURCE_ROOT; };
+		A146E03A088B31BAAF852AD5 /* XnVSelectableSlider2D.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVSelectableSlider2D.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVSelectableSlider2D.h; sourceTree = SOURCE_ROOT; };
+		A2293B1C9F6FE00A2E1F6B4E /* XnPlatformAndroid-Arm.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = "XnPlatformAndroid-Arm.h"; path = "../../../addons/ofxOpenNI/libs/include/openni/Android-Arm/XnPlatformAndroid-Arm.h"; sourceTree = SOURCE_ROOT; };
+		A2ABA9E53080DE8AE698B260 /* XnModuleCppInterface.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnModuleCppInterface.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnModuleCppInterface.h; sourceTree = SOURCE_ROOT; };
+		A36F7F4ED647CAA8A06A2F59 /* XnVDeviceControl.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVDeviceControl.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVDeviceControl.h; sourceTree = SOURCE_ROOT; };
+		A4084FC1325AD5211818880F /* XnMacros.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnMacros.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnMacros.h; sourceTree = SOURCE_ROOT; };
+		A7269F304608153C5AC6DC0F /* XnOSARC.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnOSARC.h; path = ../../../addons/ofxOpenNI/libs/include/openni/ARC/XnOSARC.h; sourceTree = SOURCE_ROOT; };
+		A82D6C5E1FD11F0292016D05 /* XnInternalDefs.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnInternalDefs.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnInternalDefs.h; sourceTree = SOURCE_ROOT; };
+		A9596BA9E70C9ECA9B142A00 /* XnVPointDenoiser.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVPointDenoiser.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVPointDenoiser.h; sourceTree = SOURCE_ROOT; };
+		A96669E96A975F5DB72BC02C /* XnFPSCalculator.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnFPSCalculator.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnFPSCalculator.h; sourceTree = SOURCE_ROOT; };
+		A9C33AFFFE1BB579146038C8 /* XnVPointFilter.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVPointFilter.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVPointFilter.h; sourceTree = SOURCE_ROOT; };
+		AA5121D40985AFA075FFBC4C /* XnVSelectableSlider1D.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVSelectableSlider1D.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVSelectableSlider1D.h; sourceTree = SOURCE_ROOT; };
+		AAC5D4D71AF6E7A264555EDD /* XnVSlider2D.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVSlider2D.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVSlider2D.h; sourceTree = SOURCE_ROOT; };
+		B08F181A57A61D6D6040C136 /* XnVMathCommon.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVMathCommon.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVMathCommon.h; sourceTree = SOURCE_ROOT; };
+		B23634E02C4506FB29CFD5E7 /* XnVNiteStatus.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVNiteStatus.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVNiteStatus.h; sourceTree = SOURCE_ROOT; };
+		B3EA74E8D35B92349C430237 /* ofxMocapElement.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxMocapElement.cpp; path = ../../../addons/ofxKinectFeatures/src/ofxMocapElement.cpp; sourceTree = SOURCE_ROOT; };
+		B517123A138ADABBC0AF7A13 /* XnVDeviceGenerator.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVDeviceGenerator.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVDeviceGenerator.h; sourceTree = SOURCE_ROOT; };
+		B54475C02FE19592F950BB56 /* XnPlatform.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnPlatform.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnPlatform.h; sourceTree = SOURCE_ROOT; };
+		BA6BB4759C4AFC91AD3C6A0D /* XnVMultiItemHysteresis1D.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVMultiItemHysteresis1D.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVMultiItemHysteresis1D.h; sourceTree = SOURCE_ROOT; };
+		BADC12296D405787293107B6 /* XnCallback.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnCallback.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnCallback.h; sourceTree = SOURCE_ROOT; };
+		BCC2D6CEC8482C753C08447D /* ofxOpenNITypes.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxOpenNITypes.h; path = ../../../addons/ofxOpenNI/src/ofxOpenNITypes.h; sourceTree = SOURCE_ROOT; };
+		BD08E1D0F880C05E2E34A637 /* XnQueries.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnQueries.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnQueries.h; sourceTree = SOURCE_ROOT; };
+		BD1F3CE7B7FA7F3A17189AA4 /* XnVPointControl.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVPointControl.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVPointControl.h; sourceTree = SOURCE_ROOT; };
+		BDF3A5FCA9C713C56AB3468E /* XnVSessionManager.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVSessionManager.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVSessionManager.h; sourceTree = SOURCE_ROOT; };
+		C25CA03C94C95DD67E6A6A06 /* XnPropNames.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnPropNames.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnPropNames.h; sourceTree = SOURCE_ROOT; };
+		C4EC03DADEFCDBB2485EE332 /* XnVHandle.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVHandle.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVHandle.h; sourceTree = SOURCE_ROOT; };
+		C5D299127E7FA07111392CAB /* XnList.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnList.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnList.h; sourceTree = SOURCE_ROOT; };
+		C7122F882A1448B0315FF2B7 /* XnVDepthMessage.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVDepthMessage.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVDepthMessage.h; sourceTree = SOURCE_ROOT; };
+		C73281A2416BF489700B7E4B /* XnThreadSafeQueue.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnThreadSafeQueue.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnThreadSafeQueue.h; sourceTree = SOURCE_ROOT; };
+		C757DF24D757BA8AA42E0A3D /* XnProfiling.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnProfiling.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnProfiling.h; sourceTree = SOURCE_ROOT; };
+		C9ABA0EF81C6AAD23CFE171F /* XnVSessionListener.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVSessionListener.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVSessionListener.h; sourceTree = SOURCE_ROOT; };
+		C9BA9D4046E62246B459062E /* XnVMessageListener.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVMessageListener.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVMessageListener.h; sourceTree = SOURCE_ROOT; };
+		C9E77A79DDF0DB79D2EFBDF8 /* XnVVirtualCoordinates.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVVirtualCoordinates.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVVirtualCoordinates.h; sourceTree = SOURCE_ROOT; };
+		CBBBC928DF182C6645FD25CB /* XnUSBDevice.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnUSBDevice.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnUSBDevice.h; sourceTree = SOURCE_ROOT; };
+		CE5854AEDF5D172DBDEAC6E6 /* XnVNiteVersion.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVNiteVersion.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVNiteVersion.h; sourceTree = SOURCE_ROOT; };
+		CE9AAC510698A1CBFB2B1AB8 /* XnTypes.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnTypes.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnTypes.h; sourceTree = SOURCE_ROOT; };
+		CF4DF652803DB00F888C307D /* XnBaseNode.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnBaseNode.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnBaseNode.h; sourceTree = SOURCE_ROOT; };
+		D16D7071B6A162089450C9F3 /* XnStatusCodes.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnStatusCodes.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnStatusCodes.h; sourceTree = SOURCE_ROOT; };
+		D24F2B486FBAE4D1E89BED6C /* XnVPointArea.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVPointArea.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVPointArea.h; sourceTree = SOURCE_ROOT; };
+		D3693D0719AA5E56B086DB8A /* XnUtils.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnUtils.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnUtils.h; sourceTree = SOURCE_ROOT; };
+		D39194C268A60E69A4E25AD3 /* XnStack.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnStack.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnStack.h; sourceTree = SOURCE_ROOT; };
+		D735462E55A78E7C37F02B1F /* ofxMocapEvents.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxMocapEvents.cpp; path = ../../../addons/ofxKinectFeatures/src/ofxMocapEvents.cpp; sourceTree = SOURCE_ROOT; };
+		D8BF9DCAAC50D3F5A162A7D1 /* XnModuleCppRegistratration.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnModuleCppRegistratration.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnModuleCppRegistratration.h; sourceTree = SOURCE_ROOT; };
+		DA47F72F387BDAE50B6D2F24 /* XnVNiteDefs.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVNiteDefs.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVNiteDefs.h; sourceTree = SOURCE_ROOT; };
+		DAD8D6B072437C00271C3945 /* XnVFilter.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVFilter.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVFilter.h; sourceTree = SOURCE_ROOT; };
+		DD09ADC320EC37BF91BA6FDE /* XnVCircle.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVCircle.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVCircle.h; sourceTree = SOURCE_ROOT; };
+		DD6158A6EBA9AA95457E6525 /* XnVMultiItemHysteresis2D.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVMultiItemHysteresis2D.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVMultiItemHysteresis2D.h; sourceTree = SOURCE_ROOT; };
+		DFBEF0367FD16E4DD156D60A /* XnVMultipleHands.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVMultipleHands.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVMultipleHands.h; sourceTree = SOURCE_ROOT; };
+		E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../../libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
+		E445DAC9BBB9BBDAC40B22CD /* XnStatusRegister.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnStatusRegister.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnStatusRegister.h; sourceTree = SOURCE_ROOT; };
+		E4B69B5B0A3A1756003C02F2 /* example-openni-of093Debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "example-openni-of093Debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4B69E1D0A3A1BDC003C02F2 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = src/main.cpp; sourceTree = SOURCE_ROOT; };
+		E4B69E1E0A3A1BDC003C02F2 /* ofApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofApp.cpp; path = src/ofApp.cpp; sourceTree = SOURCE_ROOT; };
+		E4B69E1F0A3A1BDC003C02F2 /* ofApp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ofApp.h; path = src/ofApp.h; sourceTree = SOURCE_ROOT; };
+		E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = "openFrameworks-Info.plist"; sourceTree = "<group>"; };
+		E4EB691F138AFCF100A09F29 /* CoreOF.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = CoreOF.xcconfig; path = ../../../libs/openFrameworksCompiled/project/osx/CoreOF.xcconfig; sourceTree = SOURCE_ROOT; };
+		E4EB6923138AFD0F00A09F29 /* Project.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Project.xcconfig; sourceTree = "<group>"; };
+		EB1D56E71CC7C0C300658E48 /* change_exec_paths.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = change_exec_paths.sh; sourceTree = "<group>"; };
+		EB1D56E81CC7C0C300658E48 /* libnimCodecs.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libnimCodecs.dylib; sourceTree = "<group>"; };
+		EB1D56E91CC7C0C300658E48 /* libnimMockNodes.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libnimMockNodes.dylib; sourceTree = "<group>"; };
+		EB1D56EA1CC7C0C300658E48 /* libnimRecorder.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libnimRecorder.dylib; sourceTree = "<group>"; };
+		EB1D56EB1CC7C0C300658E48 /* libOpenNI.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libOpenNI.dylib; sourceTree = "<group>"; };
+		EB1D56EC1CC7C0C300658E48 /* libusb-1.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = "libusb-1.0.0.dylib"; sourceTree = "<group>"; };
+		EB1D56ED1CC7C0C300658E48 /* libXnCore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnCore.dylib; sourceTree = "<group>"; };
+		EB1D56EE1CC7C0C300658E48 /* libXnDDK.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnDDK.dylib; sourceTree = "<group>"; };
+		EB1D56EF1CC7C0C300658E48 /* libXnDeviceFile.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnDeviceFile.dylib; sourceTree = "<group>"; };
+		EB1D56F01CC7C0C300658E48 /* libXnDeviceSensorV2KM.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnDeviceSensorV2KM.dylib; sourceTree = "<group>"; };
+		EB1D56F11CC7C0C300658E48 /* libXnFormats.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnFormats.dylib; sourceTree = "<group>"; };
+		EB1D56F21CC7C0C300658E48 /* libXnVCNITE_1_5_2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnVCNITE_1_5_2.dylib; sourceTree = "<group>"; };
+		EB1D56F31CC7C0C300658E48 /* libXnVFeatures_1_5_2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnVFeatures_1_5_2.dylib; sourceTree = "<group>"; };
+		EB1D56F41CC7C0C300658E48 /* libXnVHandGenerator_1_5_2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnVHandGenerator_1_5_2.dylib; sourceTree = "<group>"; };
+		EB1D56F51CC7C0C300658E48 /* libXnVNite_1_5_2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnVNite_1_5_2.dylib; sourceTree = "<group>"; };
+		F06484C0F76E7F5648C9B1CD /* XnVSlider1D.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVSlider1D.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVSlider1D.h; sourceTree = SOURCE_ROOT; };
+		F0F72943A4BDA515D61AB3D7 /* XnDerivedCast.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnDerivedCast.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnDerivedCast.h; sourceTree = SOURCE_ROOT; };
+		F5845951CC5E609A3DB759A0 /* usb100.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = usb100.h; path = ../../../addons/ofxOpenNI/libs/include/openni/Win32/usb100.h; sourceTree = SOURCE_ROOT; };
+		FA0A575AC72F28918C662646 /* XnVSessionGenerator.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVSessionGenerator.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVSessionGenerator.h; sourceTree = SOURCE_ROOT; };
+		FA84F2E560273935AF942790 /* XnOSCpp.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnOSCpp.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnOSCpp.h; sourceTree = SOURCE_ROOT; };
+		FBD94B3B2447CC22675A3BF7 /* XnOSLinux-x86.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = "XnOSLinux-x86.h"; path = "../../../addons/ofxOpenNI/libs/include/openni/Linux-x86/XnOSLinux-x86.h"; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E4B69B590A3A1756003C02F2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EB1D56FC1CC7C0C300658E48 /* libXnDDK.dylib in Frameworks */,
+				EB1D56F61CC7C0C300658E48 /* libnimCodecs.dylib in Frameworks */,
+				EB1D56FD1CC7C0C300658E48 /* libXnDeviceFile.dylib in Frameworks */,
+				EB1D56F71CC7C0C300658E48 /* libnimMockNodes.dylib in Frameworks */,
+				EB1D57001CC7C0C300658E48 /* libXnVCNITE_1_5_2.dylib in Frameworks */,
+				EB1D57021CC7C0C300658E48 /* libXnVHandGenerator_1_5_2.dylib in Frameworks */,
+				EB1D56FE1CC7C0C300658E48 /* libXnDeviceSensorV2KM.dylib in Frameworks */,
+				EB1D56FF1CC7C0C300658E48 /* libXnFormats.dylib in Frameworks */,
+				EB1D57031CC7C0C300658E48 /* libXnVNite_1_5_2.dylib in Frameworks */,
+				E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */,
+				EB1D56FA1CC7C0C300658E48 /* libusb-1.0.0.dylib in Frameworks */,
+				EB1D56FB1CC7C0C300658E48 /* libXnCore.dylib in Frameworks */,
+				EB1D56F91CC7C0C300658E48 /* libOpenNI.dylib in Frameworks */,
+				EB1D57011CC7C0C300658E48 /* libXnVFeatures_1_5_2.dylib in Frameworks */,
+				EB1D56F81CC7C0C300658E48 /* libnimRecorder.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2EBBB4E02142A7FA4AB069CE /* Linux-Arm */ = {
+			isa = PBXGroup;
+			children = (
+				2A66B8C069263CA1E228F129 /* XnPlatformLinux-Arm.h */,
+			);
+			name = "Linux-Arm";
+			sourceTree = "<group>";
+		};
+		31B34AC1750901675A3C8806 /* nite */ = {
+			isa = PBXGroup;
+			children = (
+				28F0A5B8946BB7A075E8B24D /* XnCommon.h */,
+				0699C9B6CE6FAE5EA08914A2 /* XnV3DVector.h */,
+				5DF75CD1B3D2812F5D4F009B /* XnVActivationMessage.h */,
+				48719BDED70AD62A3F7FD772 /* XnVBroadcaster.h */,
+				4026EB176E904C4E5B61FD0A /* XnVCCMessage.h */,
+				DD09ADC320EC37BF91BA6FDE /* XnVCircle.h */,
+				4A7C90CA601CA1932E4B71D4 /* XnVCircleDetector.h */,
+				21594CC8F1B71745576235E3 /* XnVClickableVirtualPlane.h */,
+				4AEA153C8830640D0B424EFA /* XnVComplexMessage.h */,
+				3BF49DB56C10A6AC2891CE68 /* XnVDepthControl.h */,
+				3A62415F3C9D31D67A552AFC /* XnVDepthGenerator.h */,
+				C7122F882A1448B0315FF2B7 /* XnVDepthMessage.h */,
+				A36F7F4ED647CAA8A06A2F59 /* XnVDeviceControl.h */,
+				34ECBFB4F9C0BDD5414143C6 /* XnVDeviceFilter.h */,
+				B517123A138ADABBC0AF7A13 /* XnVDeviceGenerator.h */,
+				62886AB0304296331A32F082 /* XnVDeviceMessage.h */,
+				7D9FA4309C0CEF8876943560 /* XnVDirection.h */,
+				DAD8D6B072437C00271C3945 /* XnVFilter.h */,
+				1E6A960C89A4BC9BA8A7C798 /* XnVFlowRouter.h */,
+				62B5F39898F0E2A3BBED12FF /* XnVGesture.h */,
+				C4EC03DADEFCDBB2485EE332 /* XnVHandle.h */,
+				35FC439602DDA06C7740C956 /* XnVHandPointContext.h */,
+				4E996BFD63B8557F0511968D /* XnVImageGenerator.h */,
+				59C40266705B5AAED09369A4 /* XnVImageMessage.h */,
+				B08F181A57A61D6D6040C136 /* XnVMathCommon.h */,
+				59447C61852E9F5A39DA9708 /* XnVMessage.h */,
+				4650DF84A7A5FFF5A4ACF9DE /* XnVMessageGenerator.h */,
+				C9BA9D4046E62246B459062E /* XnVMessageListener.h */,
+				50D5AC1B877CE4EA3EF570FC /* XnVMessageMux.h */,
+				BA6BB4759C4AFC91AD3C6A0D /* XnVMultiItemHysteresis1D.h */,
+				DD6158A6EBA9AA95457E6525 /* XnVMultiItemHysteresis2D.h */,
+				DFBEF0367FD16E4DD156D60A /* XnVMultipleHands.h */,
+				952226BB61CA7022ABEADC16 /* XnVMultiProcessFlowClient.h */,
+				92E53D58815AD8B9D2DD8866 /* XnVMultiProcessFlowServer.h */,
+				3FDEC005ED1355D04526D986 /* XnVNite.h */,
+				96A0CCB9F2A9E481586FA7B6 /* XnVNiteControls.h */,
+				DA47F72F387BDAE50B6D2F24 /* XnVNiteDefs.h */,
+				0E7D94E8BB842CC296E392F1 /* XnVNiteFramework.h */,
+				5CC36722DCF0B979684E96E9 /* XnVNiteLog.h */,
+				B23634E02C4506FB29CFD5E7 /* XnVNiteStatus.h */,
+				CE5854AEDF5D172DBDEAC6E6 /* XnVNiteVersion.h */,
+				D24F2B486FBAE4D1E89BED6C /* XnVPointArea.h */,
+				BD1F3CE7B7FA7F3A17189AA4 /* XnVPointControl.h */,
+				A9596BA9E70C9ECA9B142A00 /* XnVPointDenoiser.h */,
+				A9C33AFFFE1BB579146038C8 /* XnVPointFilter.h */,
+				0EEC5BE937F2F28B51367F98 /* XnVPointMessage.h */,
+				44D3621286FACCF699242791 /* XnVPointTracker.h */,
+				54FAC710509D982A084054E4 /* XnVPushDetector.h */,
+				AA5121D40985AFA075FFBC4C /* XnVSelectableSlider1D.h */,
+				A146E03A088B31BAAF852AD5 /* XnVSelectableSlider2D.h */,
+				FA0A575AC72F28918C662646 /* XnVSessionGenerator.h */,
+				C9ABA0EF81C6AAD23CFE171F /* XnVSessionListener.h */,
+				BDF3A5FCA9C713C56AB3468E /* XnVSessionManager.h */,
+				A021D09128102B2B3C0917DE /* XnVSessionMessage.h */,
+				F06484C0F76E7F5648C9B1CD /* XnVSlider1D.h */,
+				AAC5D4D71AF6E7A264555EDD /* XnVSlider2D.h */,
+				5106E0BDDE091EF4EF574461 /* XnVSlider3D.h */,
+				47889FDC1B961A9F5084D7FF /* XnVSteadyDetector.h */,
+				35EF808F7C621C08C5A6D993 /* XnVSwipeDetector.h */,
+				C9E77A79DDF0DB79D2EFBDF8 /* XnVVirtualCoordinates.h */,
+				3DB7108A59299429207F806D /* XnVWaveDetector.h */,
+			);
+			name = nite;
+			sourceTree = "<group>";
+		};
+		4D153BDEF846FA13A4C07F5F /* ofxOpenNI */ = {
+			isa = PBXGroup;
+			children = (
+				EB1D56E61CC7C0C300658E48 /* lib */,
+				5767954245BB19799B9A2984 /* src */,
+				4EFCBFDD39E96F373EDF54D2 /* libs */,
+			);
+			name = ofxOpenNI;
+			sourceTree = "<group>";
+		};
+		4EFCBFDD39E96F373EDF54D2 /* libs */ = {
+			isa = PBXGroup;
+			children = (
+				6901963A3AC67EA349B3CD67 /* include */,
+			);
+			name = libs;
+			sourceTree = "<group>";
+		};
+		5767954245BB19799B9A2984 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				12B3CD0D48AD549F971EB586 /* ofxOpenNI.cpp */,
+				508BDAD7439107A619B851D2 /* ofxOpenNI.h */,
+				1510E35407533B95F05C297D /* ofxOpenNITypes.cpp */,
+				BCC2D6CEC8482C753C08447D /* ofxOpenNITypes.h */,
+				8F20CD8EDE8A4F9C69B4E8D8 /* ofxOpenNIUtils.h */,
+			);
+			name = src;
+			sourceTree = "<group>";
+		};
+		6901963A3AC67EA349B3CD67 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				A3733548195A04A72D45ED17 /* libusb */,
+				31B34AC1750901675A3C8806 /* nite */,
+				DE7547521FC7299F08844309 /* openni */,
+			);
+			name = include;
+			sourceTree = "<group>";
+		};
+		6948EE371B920CB800B5AC1A /* local_addons */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = local_addons;
+			sourceTree = "<group>";
+		};
+		7EFC0CC51417B501FC2881D7 /* Android-Arm */ = {
+			isa = PBXGroup;
+			children = (
+				A2293B1C9F6FE00A2E1F6B4E /* XnPlatformAndroid-Arm.h */,
+			);
+			name = "Android-Arm";
+			sourceTree = "<group>";
+		};
+		7F1EBBE75D13FEDD1DB89FFA /* Linux-x86 */ = {
+			isa = PBXGroup;
+			children = (
+				FBD94B3B2447CC22675A3BF7 /* XnOSLinux-x86.h */,
+				1514EEF7D3A8ABD76508114E /* XnPlatformLinux-x86.h */,
+			);
+			name = "Linux-x86";
+			sourceTree = "<group>";
+		};
+		9F2F82883106BC23B779BDBA /* Win32 */ = {
+			isa = PBXGroup;
+			children = (
+				F5845951CC5E609A3DB759A0 /* usb100.h */,
+				27774A8D2AE57776B831C13A /* XnOSWin32.h */,
+				250146AE0A4A7C64E1614A1D /* XnPlatformWin32.h */,
+			);
+			name = Win32;
+			sourceTree = "<group>";
+		};
+		A3733548195A04A72D45ED17 /* libusb */ = {
+			isa = PBXGroup;
+			children = (
+				3226CCCC9814C74441B8E460 /* libusb.h */,
+			);
+			name = libusb;
+			sourceTree = "<group>";
+		};
+		A531CDE17C27F953225AB0EB /* ARC */ = {
+			isa = PBXGroup;
+			children = (
+				A7269F304608153C5AC6DC0F /* XnOSARC.h */,
+				5BBF97F10044C942872C5C59 /* XnPlatformARC.h */,
+			);
+			name = ARC;
+			sourceTree = "<group>";
+		};
+		AD2DF1D30BB4967CAAEA0B8D /* ofxKinectFeatures */ = {
+			isa = PBXGroup;
+			children = (
+				EA1B6BEA7DD727EDE5C6D23A /* src */,
+			);
+			name = ofxKinectFeatures;
+			sourceTree = "<group>";
+		};
+		B27381E69ADB6E3A5F749D08 /* MacOSX */ = {
+			isa = PBXGroup;
+			children = (
+				139C789DCA4EAA62894ED372 /* XnPlatformMacOSX.h */,
+			);
+			name = MacOSX;
+			sourceTree = "<group>";
+		};
+		BB4B014C10F69532006C3DED /* addons */ = {
+			isa = PBXGroup;
+			children = (
+				AD2DF1D30BB4967CAAEA0B8D /* ofxKinectFeatures */,
+				4D153BDEF846FA13A4C07F5F /* ofxOpenNI */,
+			);
+			name = addons;
+			sourceTree = "<group>";
+		};
+		DE7547521FC7299F08844309 /* openni */ = {
+			isa = PBXGroup;
+			children = (
+				7EFC0CC51417B501FC2881D7 /* Android-Arm */,
+				A531CDE17C27F953225AB0EB /* ARC */,
+				410C955BB22B5AD3C87FAE8B /* IXnNodeAllocator.h */,
+				2EBBB4E02142A7FA4AB069CE /* Linux-Arm */,
+				7F1EBBE75D13FEDD1DB89FFA /* Linux-x86 */,
+				B27381E69ADB6E3A5F749D08 /* MacOSX */,
+				9F2F82883106BC23B779BDBA /* Win32 */,
+				656CEB765F61FD9771EEB066 /* XnAlgorithms.h */,
+				56B37BD9E8C887505FCAEA30 /* XnArray.h */,
+				CF4DF652803DB00F888C307D /* XnBaseNode.h */,
+				57F53F2036847EA974A671A0 /* XnBitSet.h */,
+				BADC12296D405787293107B6 /* XnCallback.h */,
+				92AEAB898510CC9ED018BF93 /* XnCodecIDs.h */,
+				674AD99917A093F018116D22 /* XnContext.h */,
+				38ED10FDCA287565231CF750 /* XnCppWrapper.h */,
+				0A9A2981ED099233C25B3D58 /* XnDataTypes.h */,
+				F0F72943A4BDA515D61AB3D7 /* XnDerivedCast.h */,
+				9F4EAEE39CE3F6E80CEBF54A /* XnDump.h */,
+				1A1FFE6094B44E495E397D75 /* XnDumpWriters.h */,
+				193DCB62C04282D1E6BFFC4B /* XnEnumerationErrors.h */,
+				674F0F37D92864ECA55CD594 /* XnEvent.h */,
+				A96669E96A975F5DB72BC02C /* XnFPSCalculator.h */,
+				6F035DEADA76F7BF25BDB5BC /* XnGeneralBuffer.h */,
+				8E7A0A9EE515418FD9F5FFA9 /* XnHash.h */,
+				A82D6C5E1FD11F0292016D05 /* XnInternalDefs.h */,
+				0679A5CD382A1C309A6DC84F /* XnLicensing.h */,
+				C5D299127E7FA07111392CAB /* XnList.h */,
+				133E07E029EB4EB8D143BADE /* XnLog.h */,
+				263553AB4475B857CB0F06D4 /* XnLogTypes.h */,
+				463530B8EC0C844E2169ADCC /* XnLogWriterBase.h */,
+				A4084FC1325AD5211818880F /* XnMacros.h */,
+				1D8336E00CA0F3A154EFA23F /* XnModuleCFunctions.h */,
+				A2ABA9E53080DE8AE698B260 /* XnModuleCppInterface.h */,
+				D8BF9DCAAC50D3F5A162A7D1 /* XnModuleCppRegistratration.h */,
+				727952858539F2F46067C88A /* XnModuleInterface.h */,
+				9F6834A79698AA8D9050E858 /* XnNode.h */,
+				5746FF7FDB0392A0FF7E5122 /* XnNodeAllocator.h */,
+				60DDC8A4FA7D5A2B481E7AE5 /* XnOpenNI.h */,
+				096230D8375A851BE62BE0B1 /* XnOS.h */,
+				FA84F2E560273935AF942790 /* XnOSCpp.h */,
+				815F1BF1BCBFAA78BE02A073 /* XnOSMemory.h */,
+				22F48D13402674EA29F6ECAB /* XnOSStrings.h */,
+				B54475C02FE19592F950BB56 /* XnPlatform.h */,
+				86B7A36F0A17EB5796D0B57A /* XnPrdNode.h */,
+				7C82D35B868AC1301BD7A06B /* XnPrdNodeInfo.h */,
+				7EF1E5A842C552F1279F0FE6 /* XnPrdNodeInfoList.h */,
+				C757DF24D757BA8AA42E0A3D /* XnProfiling.h */,
+				C25CA03C94C95DD67E6A6A06 /* XnPropNames.h */,
+				BD08E1D0F880C05E2E34A637 /* XnQueries.h */,
+				99D818050C1679E0B898B18B /* XnQueue.h */,
+				948D52B877B9516F5A481D66 /* XnScheduler.h */,
+				D39194C268A60E69A4E25AD3 /* XnStack.h */,
+				8A7AE85ACD4EBB7FD1014F20 /* XnStatus.h */,
+				D16D7071B6A162089450C9F3 /* XnStatusCodes.h */,
+				E445DAC9BBB9BBDAC40B22CD /* XnStatusRegister.h */,
+				405D75197A989FD40753742F /* XnStringsHash.h */,
+				C73281A2416BF489700B7E4B /* XnThreadSafeQueue.h */,
+				CE9AAC510698A1CBFB2B1AB8 /* XnTypes.h */,
+				33923B1AEC9AB0B4F861AB3D /* XnUSB.h */,
+				CBBBC928DF182C6645FD25CB /* XnUSBDevice.h */,
+				D3693D0719AA5E56B086DB8A /* XnUtils.h */,
+				8056178686B456A8A3E254E8 /* XnVersion.h */,
+			);
+			name = openni;
+			sourceTree = "<group>";
+		};
+		E4328144138ABC890047C5CB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E4328148138ABC890047C5CB /* openFrameworksDebug.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E4B69B4A0A3A1720003C02F2 = {
+			isa = PBXGroup;
+			children = (
+				E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */,
+				E4EB6923138AFD0F00A09F29 /* Project.xcconfig */,
+				E4B69E1C0A3A1BDC003C02F2 /* src */,
+				E4EEC9E9138DF44700A80321 /* openFrameworks */,
+				BB4B014C10F69532006C3DED /* addons */,
+				6948EE371B920CB800B5AC1A /* local_addons */,
+				E4B69B5B0A3A1756003C02F2 /* example-openni-of093Debug.app */,
+			);
+			sourceTree = "<group>";
+		};
+		E4B69E1C0A3A1BDC003C02F2 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				E4B69E1D0A3A1BDC003C02F2 /* main.cpp */,
+				E4B69E1E0A3A1BDC003C02F2 /* ofApp.cpp */,
+				E4B69E1F0A3A1BDC003C02F2 /* ofApp.h */,
+			);
+			path = src;
+			sourceTree = SOURCE_ROOT;
+		};
+		E4EEC9E9138DF44700A80321 /* openFrameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E4EB691F138AFCF100A09F29 /* CoreOF.xcconfig */,
+				E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */,
+			);
+			name = openFrameworks;
+			sourceTree = "<group>";
+		};
+		EA1B6BEA7DD727EDE5C6D23A /* src */ = {
+			isa = PBXGroup;
+			children = (
+				20ACD2A0AAD3C907E94EC714 /* ofxKinectFeatures.cpp */,
+				6DBEBC257DB06CE827284265 /* ofxKinectFeatures.h */,
+				B3EA74E8D35B92349C430237 /* ofxMocapElement.cpp */,
+				7EF297C47F1C105F7E25113B /* ofxMocapElement.h */,
+				D735462E55A78E7C37F02B1F /* ofxMocapEvents.cpp */,
+				9BFCC1FC245337F553636D1E /* ofxMocapEvents.h */,
+			);
+			name = src;
+			sourceTree = "<group>";
+		};
+		EB1D56E61CC7C0C300658E48 /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				EB1D56E71CC7C0C300658E48 /* change_exec_paths.sh */,
+				EB1D56E81CC7C0C300658E48 /* libnimCodecs.dylib */,
+				EB1D56E91CC7C0C300658E48 /* libnimMockNodes.dylib */,
+				EB1D56EA1CC7C0C300658E48 /* libnimRecorder.dylib */,
+				EB1D56EB1CC7C0C300658E48 /* libOpenNI.dylib */,
+				EB1D56EC1CC7C0C300658E48 /* libusb-1.0.0.dylib */,
+				EB1D56ED1CC7C0C300658E48 /* libXnCore.dylib */,
+				EB1D56EE1CC7C0C300658E48 /* libXnDDK.dylib */,
+				EB1D56EF1CC7C0C300658E48 /* libXnDeviceFile.dylib */,
+				EB1D56F01CC7C0C300658E48 /* libXnDeviceSensorV2KM.dylib */,
+				EB1D56F11CC7C0C300658E48 /* libXnFormats.dylib */,
+				EB1D56F21CC7C0C300658E48 /* libXnVCNITE_1_5_2.dylib */,
+				EB1D56F31CC7C0C300658E48 /* libXnVFeatures_1_5_2.dylib */,
+				EB1D56F41CC7C0C300658E48 /* libXnVHandGenerator_1_5_2.dylib */,
+				EB1D56F51CC7C0C300658E48 /* libXnVNite_1_5_2.dylib */,
+			);
+			name = lib;
+			path = bin/data/openni/lib;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E4B69B5A0A3A1756003C02F2 /* example-openni-of093 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E4B69B5F0A3A1757003C02F2 /* Build configuration list for PBXNativeTarget "example-openni-of093" */;
+			buildPhases = (
+				E4B69B580A3A1756003C02F2 /* Sources */,
+				E4B69B590A3A1756003C02F2 /* Frameworks */,
+				E4B6FFFD0C3F9AB9008CF71C /* ShellScript */,
+				E4C2427710CC5ABF004149E2 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E4EEB9AC138B136A00A80321 /* PBXTargetDependency */,
+			);
+			name = "example-openni-of093";
+			productName = myOFApp;
+			productReference = E4B69B5B0A3A1756003C02F2 /* example-openni-of093Debug.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E4B69B4C0A3A1720003C02F2 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0600;
+			};
+			buildConfigurationList = E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "example-openni-of093" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = E4B69B4A0A3A1720003C02F2;
+			productRefGroup = E4B69B4A0A3A1720003C02F2;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = E4328144138ABC890047C5CB /* Products */;
+					ProjectRef = E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				E4B69B5A0A3A1756003C02F2 /* example-openni-of093 */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		E4328148138ABC890047C5CB /* openFrameworksDebug.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = openFrameworksDebug.a;
+			remoteRef = E4328147138ABC890047C5CB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		E4B6FFFD0C3F9AB9008CF71C /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "mkdir -p \"$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Resources/\"\n# Copy default icon file into App/Resources\nrsync -aved \"$ICON_FILE\" \"$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Resources/\"\n# Copy libfmod and change install directory for fmod to run\nrsync -aved ../../../libs/fmodex/lib/osx/libfmodex.dylib \"$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Frameworks/\";\ninstall_name_tool -change @executable_path/libfmodex.dylib @executable_path/../Frameworks/libfmodex.dylib \"$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/MacOS/$PRODUCT_NAME\";\n# Copy GLUT framework (must remove for AppStore submissions)\nrsync -aved ../../../libs/glut/lib/osx/GLUT.framework \"$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Frameworks/\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E4B69B580A3A1756003C02F2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
+				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
+				50220E6AE01592FB45869DFB /* ofxKinectFeatures.cpp in Sources */,
+				A184FF6D8A5C01C9A1CC940F /* ofxMocapElement.cpp in Sources */,
+				0D9D5E552DB769B7063CEF23 /* ofxMocapEvents.cpp in Sources */,
+				89D91BBAE9596D6E30AA6E35 /* ofxOpenNI.cpp in Sources */,
+				53B8DC1D45EBD5267B24B601 /* ofxOpenNITypes.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E4EEB9AC138B136A00A80321 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = openFrameworks;
+			targetProxy = E4EEB9AB138B136A00A80321 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		E4B69B4E0A3A1720003C02F2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E4EB6923138AFD0F00A09F29 /* Project.xcconfig */;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/bin/";
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				GCC_AUTO_VECTORIZATION = YES;
+				GCC_ENABLE_SSE3_EXTENSIONS = YES;
+				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = YES;
+				GCC_WARN_ABOUT_INVALID_OFFSETOF_MACRO = NO;
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = NO;
+				GCC_WARN_UNINITIALIZED_AUTOS = NO;
+				GCC_WARN_UNUSED_VALUE = NO;
+				GCC_WARN_UNUSED_VARIABLE = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(OF_CORE_HEADERS)",
+					../../../addons/ofxKinectFeatures/src,
+					../../../addons/ofxOpenNI/libs,
+					../../../addons/ofxOpenNI/libs/include,
+					../../../addons/ofxOpenNI/libs/include/libusb,
+					../../../addons/ofxOpenNI/libs/include/nite,
+					../../../addons/ofxOpenNI/libs/include/openni,
+					../../../addons/ofxOpenNI/libs/include/openni/ARC,
+					"../../../addons/ofxOpenNI/libs/include/openni/Android-Arm",
+					"../../../addons/ofxOpenNI/libs/include/openni/Linux-Arm",
+					"../../../addons/ofxOpenNI/libs/include/openni/Linux-x86",
+					../../../addons/ofxOpenNI/libs/include/openni/MacOSX,
+					../../../addons/ofxOpenNI/libs/include/openni/Win32,
+					../../../addons/ofxOpenNI/src,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CPLUSPLUSFLAGS = (
+					"-D__MACOSX_CORE__",
+					"-mtune=native",
+				);
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		E4B69B4F0A3A1720003C02F2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E4EB6923138AFD0F00A09F29 /* Project.xcconfig */;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/bin/";
+				COPY_PHASE_STRIP = YES;
+				DEAD_CODE_STRIPPING = YES;
+				GCC_AUTO_VECTORIZATION = YES;
+				GCC_ENABLE_SSE3_EXTENSIONS = YES;
+				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_UNROLL_LOOPS = YES;
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = YES;
+				GCC_WARN_ABOUT_INVALID_OFFSETOF_MACRO = NO;
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = NO;
+				GCC_WARN_UNINITIALIZED_AUTOS = NO;
+				GCC_WARN_UNUSED_VALUE = NO;
+				GCC_WARN_UNUSED_VARIABLE = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(OF_CORE_HEADERS)",
+					../../../addons/ofxKinectFeatures/src,
+					../../../addons/ofxOpenNI/libs,
+					../../../addons/ofxOpenNI/libs/include,
+					../../../addons/ofxOpenNI/libs/include/libusb,
+					../../../addons/ofxOpenNI/libs/include/nite,
+					../../../addons/ofxOpenNI/libs/include/openni,
+					../../../addons/ofxOpenNI/libs/include/openni/ARC,
+					"../../../addons/ofxOpenNI/libs/include/openni/Android-Arm",
+					"../../../addons/ofxOpenNI/libs/include/openni/Linux-Arm",
+					"../../../addons/ofxOpenNI/libs/include/openni/Linux-x86",
+					../../../addons/ofxOpenNI/libs/include/openni/MacOSX,
+					../../../addons/ofxOpenNI/libs/include/openni/Win32,
+					../../../addons/ofxOpenNI/src,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				OTHER_CPLUSPLUSFLAGS = (
+					"-D__MACOSX_CORE__",
+					"-mtune=native",
+				);
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		E4B69B600A3A1757003C02F2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E4EB6923138AFD0F00A09F29 /* Project.xcconfig */;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../libs/glut/lib/osx\"";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = NONE;
+				HEADER_SEARCH_PATHS = (
+					"$(OF_CORE_HEADERS)",
+					../../../addons/ofxKinectFeatures/src,
+					../../../addons/ofxOpenNI/libs,
+					../../../addons/ofxOpenNI/libs/include,
+					../../../addons/ofxOpenNI/libs/include/libusb,
+					../../../addons/ofxOpenNI/libs/include/nite,
+					../../../addons/ofxOpenNI/libs/include/openni,
+					../../../addons/ofxOpenNI/libs/include/openni/ARC,
+					"../../../addons/ofxOpenNI/libs/include/openni/Android-Arm",
+					"../../../addons/ofxOpenNI/libs/include/openni/Linux-Arm",
+					"../../../addons/ofxOpenNI/libs/include/openni/Linux-x86",
+					../../../addons/ofxOpenNI/libs/include/openni/MacOSX,
+					../../../addons/ofxOpenNI/libs/include/openni/Win32,
+					../../../addons/ofxOpenNI/src,
+				);
+				ICON = "$(ICON_NAME_DEBUG)";
+				ICON_FILE = "$(ICON_FILE_PATH)$(ICON)";
+				INFOPLIST_FILE = "openFrameworks-Info.plist";
+				INSTALL_PATH = /Applications;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					bin/data/openni/lib,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)Debug";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		E4B69B610A3A1757003C02F2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E4EB6923138AFD0F00A09F29 /* Project.xcconfig */;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../libs/glut/lib/osx\"";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = NONE;
+				HEADER_SEARCH_PATHS = (
+					"$(OF_CORE_HEADERS)",
+					../../../addons/ofxKinectFeatures/src,
+					../../../addons/ofxOpenNI/libs,
+					../../../addons/ofxOpenNI/libs/include,
+					../../../addons/ofxOpenNI/libs/include/libusb,
+					../../../addons/ofxOpenNI/libs/include/nite,
+					../../../addons/ofxOpenNI/libs/include/openni,
+					../../../addons/ofxOpenNI/libs/include/openni/ARC,
+					"../../../addons/ofxOpenNI/libs/include/openni/Android-Arm",
+					"../../../addons/ofxOpenNI/libs/include/openni/Linux-Arm",
+					"../../../addons/ofxOpenNI/libs/include/openni/Linux-x86",
+					../../../addons/ofxOpenNI/libs/include/openni/MacOSX,
+					../../../addons/ofxOpenNI/libs/include/openni/Win32,
+					../../../addons/ofxOpenNI/src,
+				);
+				ICON = "$(ICON_NAME_RELEASE)";
+				ICON_FILE = "$(ICON_FILE_PATH)$(ICON)";
+				INFOPLIST_FILE = "openFrameworks-Info.plist";
+				INSTALL_PATH = /Applications;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					bin/data/openni/lib,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+				baseConfigurationReference = E4EB6923138AFD0F00A09F29;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "example-openni-of093" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E4B69B4E0A3A1720003C02F2 /* Debug */,
+				E4B69B4F0A3A1720003C02F2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E4B69B5F0A3A1757003C02F2 /* Build configuration list for PBXNativeTarget "example-openni-of093" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E4B69B600A3A1757003C02F2 /* Debug */,
+				E4B69B610A3A1757003C02F2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E4B69B4C0A3A1720003C02F2 /* Project object */;
+}
