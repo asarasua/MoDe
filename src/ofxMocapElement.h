@@ -2,11 +2,11 @@
  ofxKinectFeatures
  Copyright © 2014 Music Technology Group - Universitat Pompeu Fabra / Escola Superior de Música de Catalunya
  
- This file is part of ofxKinectFeatures, created and maintained by Álvaro Sarasúa <http://alvarosarasua.wordpress.com>
+ This file is part of ofxKinectFeatures, created and maintained by Álvaro Sarasúa <http://www.alvarosarasua.com>
  
  ofxKinectFeatures is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License (LGPL v3) as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  
- ofxKinectFeatures is distributed in the hope that it will be useful, but WITHOUT  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License (LGPL v3).
+ ofxKinectFeatures is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License (LGPL v3).
  
  You should have received a copy of the GNU Lesser General Public License long within the ofxKinectFeatures SW package.  If not, see <http://www.gnu.org/licenses/>.
  
@@ -16,7 +16,7 @@
 #ifndef openNiFeatures_ofxMocapElement_h
 #define openNiFeatures_ofxMocapElement_h
 
-#include "ofMain.h"
+#include "mocapPoint.h"
 
 class ofxMocapElement{
 public:
@@ -28,17 +28,17 @@ public:
     
     void setHistoryDepth(int depth);    
     
-    vector<ofPoint> getPosition();
-    void setPosition(ofPoint position);
+    vector<MocapPoint> getPosition();
+    void setPosition(MocapPoint position);
     
-    vector<ofPoint> getPositionFiltered();
-    void setPositionFiltered(ofPoint positionFiltered);
+    vector<MocapPoint> getPositionFiltered();
+    void setPositionFiltered(MocapPoint positionFiltered);
     
-    vector<ofPoint> getVelocity();
-    void setVelocity(ofPoint velocity);
+    vector<MocapPoint> getVelocity();
+    void setVelocity(MocapPoint velocity);
     
-    vector<ofPoint> getAcceleration();
-    void setAcceleration(ofPoint acceleration);
+    vector<MocapPoint> getAcceleration();
+    void setAcceleration(MocapPoint acceleration);
     
     vector<float> getAccelerationTrajectory();
     void setAccelerationTrajectory(float accelerationTrajectory);
@@ -46,20 +46,20 @@ public:
     vector<float> getDistanceToTorso();
     void setDistanceToTorso(float distanceToTorso);
     
-    vector<ofPoint> getRelativePositionToTorso();
-    void setRelativePositionToTorso(ofPoint relativePositionToTorso);
+    vector<MocapPoint> getRelativePositionToTorso();
+    void setRelativePositionToTorso(MocapPoint relativePositionToTorso);
 
 private:
     int historyDepth_;
     int elementId_;
     
-    vector<ofPoint> position_;
-    vector<ofPoint> positionFiltered_;
-    vector<ofPoint> velocity_;
-    vector<ofPoint> acceleration_;
+    vector<MocapPoint> position_;
+    vector<MocapPoint> positionFiltered_;
+    vector<MocapPoint> velocity_;
+    vector<MocapPoint> acceleration_;
     vector<float> accelerationTrajectory_;
     vector<float> distanceToTorso_;
-    vector<ofPoint> relativePositionToTorso_;
+    vector<MocapPoint> relativePositionToTorso_;
 };
 
 #endif

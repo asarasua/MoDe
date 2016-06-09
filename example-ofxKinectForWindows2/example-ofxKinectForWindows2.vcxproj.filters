@@ -16,6 +16,9 @@
     <ClCompile Include="..\src\ofxMocapEvents.cpp">
       <Filter>addons\ofxKinectFeatures\src</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\mocapPoint.h">
+      <Filter>addons\ofxKinectFeatures\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">

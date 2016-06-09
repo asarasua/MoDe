@@ -175,6 +175,7 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\mocapPoint.h" />
     <ClCompile Include="..\src\ofxKinectFeatures.cpp" />
     <ClCompile Include="..\src\ofxMocapElement.cpp" />
     <ClCompile Include="..\src\ofxMocapEvents.cpp" />

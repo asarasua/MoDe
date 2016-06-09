@@ -2,7 +2,7 @@
  ofxKinectFeatures
  Copyright © 2014  Music Technology Group - Universitat Pompeu Fabra / Escola Superior de Música de Catalunya
  
- This file is part of ofxKinectFeatures, created and maintained by Álvaro Sarasúa <http://alvarosarasua.wordpress.com>
+ This file is part of ofxKinectFeatures, created and maintained by Álvaro Sarasúa <http://www.alvarosarasua.com>
  
  ofxKinectFeatures is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License (LGPL v3) as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  
@@ -16,7 +16,6 @@
 #ifndef openNiWorm_ofxKinectFeatures_h
 #define openNiWorm_ofxKinectFeatures_h
 
-#include "ofMain.h"
 #include "ofxMocapElement.h"
 #include "ofxMocapEvents.h"
 #include <numeric>
@@ -37,7 +36,7 @@ public:
     ofxKinectFeatures(int head, int torso);
     
     void setup(int head, int torso);
-    void update(map<int, ofPoint> joints);
+    void update(map<int, MocapPoint> joints);
     ofxMocapElement* getElement(int _id);
     
     void setFilterLevel(int filterLevel);
@@ -47,26 +46,26 @@ public:
     
     //DESCIPTOR GETTERS
     //JOINT DESCRIPTORS
-    ofPoint getPosition(int j);
-    vector<ofPoint> getPositionHistory(int j);
-    vector<ofPoint> getPositionHistory(int j, int frames);
+    MocapPoint getPosition(int j);
+    vector<MocapPoint> getPositionHistory(int j);
+    vector<MocapPoint> getPositionHistory(int j, int frames);
     
-    ofPoint getPositionFiltered(int j);
-    vector<ofPoint> getPositionFilteredHistory(int j);
-    vector<ofPoint> getPositionFilteredHistory(int j, int frames);
+	MocapPoint getPositionFiltered(int j);
+    vector<MocapPoint> getPositionFilteredHistory(int j);
+    vector<MocapPoint> getPositionFilteredHistory(int j, int frames);
     
-    ofPoint getVelocity(int j);
-    vector<ofPoint> getVelocityHistory(int j);
-    vector<ofPoint> getVelocityHistory(int j, int frames);
+	MocapPoint getVelocity(int j);
+    vector<MocapPoint> getVelocityHistory(int j);
+    vector<MocapPoint> getVelocityHistory(int j, int frames);
     float getVelocityMagnitude(int j);
-    ofPoint getVelocityMean(int j, int frames = 30);
+    MocapPoint getVelocityMean(int j, int frames = 30);
     float getVelocityMagnitudeMean(int j, int frames = 30);
     
-    ofPoint getAcceleration(int j);
-    vector<ofPoint> getAccelerationHistory(int j);
-    vector<ofPoint> getAccelerationHistory(int j, int frames);
+	MocapPoint getAcceleration(int j);
+    vector<MocapPoint> getAccelerationHistory(int j);
+    vector<MocapPoint> getAccelerationHistory(int j, int frames);
     float getAccelerationMagnitude(int j);
-    ofPoint getAccelerationMean(int j, int frames = 30);
+    MocapPoint getAccelerationMean(int j, int frames = 30);
     float getAccelerationMagnitudeMean(int j, int frames = 30);
     
     
@@ -79,9 +78,9 @@ public:
     vector<float> getDistanceToTorsoHistory(int j);
     vector<float> getDistanceToTorsoHistory(int j, int frames);
     
-    ofPoint getRelativePositionToTorso(int j);
-    vector<ofPoint> getRelativePositionToTorsoHistory(int j);
-    vector<ofPoint> getRelativePositionToTorsoHistory(int j, int frames);
+	MocapPoint getRelativePositionToTorso(int j);
+    vector<MocapPoint> getRelativePositionToTorsoHistory(int j);
+    vector<MocapPoint> getRelativePositionToTorsoHistory(int j, int frames);
     
     //SPECIAL DESCRIPTORS
     float getAngle(int j1, int j2, int j3);
@@ -121,11 +120,10 @@ private:
     
     int depth_;
     
-    void computeJointDescriptors(int jointId, ofPoint jointPos, const float &h);
-    ofPoint applyFilter (vector<ofPoint> x, vector<ofPoint> y, float *a, float *b);
-    void checkMaxAndMin(vector<ofPoint> descriptorHistory, unsigned int jointId, unsigned int feature);
+    void computeJointDescriptors(int jointId, MocapPoint jointPos, const float &h);
+    MocapPoint applyFilter (vector<MocapPoint> x, vector<MocapPoint> y, float *a, float *b);
+    void checkMaxAndMin(vector<MocapPoint> descriptorHistory, unsigned int jointId, unsigned int feature);
     void checkMaxAndMin(vector<float> descriptorHistory, unsigned int jointId, unsigned int feature);
-    
     //Functor to look for mocap elements matching a Joint
     struct MatchId
     {

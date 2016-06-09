@@ -26,10 +26,13 @@ void ofApp::update() {
 	{
 		if (body.tracked)
 		{
-			map<int, ofPoint> joints;
+			map<int, MocapPoint> joints;
 			for (auto joint : body.joints)
-			{
-				joints[joint.first] = joint.second.getPosition();
+			{	
+				ofPoint jp = joint.second.getPosition();
+				joints[joint.first].x = jp.x;
+				joints[joint.first].y = jp.y;
+				joints[joint.first].z = jp.z;
 			}
 			featExtractor.update(joints);
 		}
@@ -134,17 +137,17 @@ void ofApp::draw() {
 				os << "Velocity magnitude mean" << endl;
 				os << jointProjectivePosition << endl;
 				//font.drawString(ofToString(featExtractor.getSkeleton(0)->getVelocityMean(joint)), jointProjectivePosition.x, jointProjectivePosition.y);
-				font.drawString(ofToString(featExtractor.getVelocityMean(joint)), jointProjectivePosition.x, jointProjectivePosition.y);
+				//font.drawString(ofToString(featExtractor.getVelocityMean(joint)), jointProjectivePosition.x, jointProjectivePosition.y);
 				break;
 			case ACCELERATION_Y:
 				os << "Acceleration along y axis (up-down movement)" << endl;
 				//font.drawString(ofToString(featExtractor.getSkeleton(0)->getAcceleration((Joint)j).y), jointProjectivePosition.x, jointProjectivePosition.y);
-				font.drawString(ofToString(featExtractor.getAcceleration(joint).y), jointProjectivePosition.x, jointProjectivePosition.y);
+				//font.drawString(ofToString(featExtractor.getAcceleration(joint).y), jointProjectivePosition.x, jointProjectivePosition.y);
 				break;
 			case RELPOSTOTORSO_X:
 				os << "Relative position to torso in x axis" << endl;
 				//font.drawString(ofToString(featExtractor.getSkeleton(0)->getRelativePositionToTorso((Joint)j).x), jointProjectivePosition.x, jointProjectivePosition.y);
-				font.drawString(ofToString(featExtractor.getRelativePositionToTorso(joint).x), jointProjectivePosition.x, jointProjectivePosition.y);
+				//font.drawString(ofToString(featExtractor.getRelativePositionToTorso(joint).x), jointProjectivePosition.x, jointProjectivePosition.y);
 				break;
 			default:
 				break;
