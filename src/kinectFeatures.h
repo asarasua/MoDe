@@ -17,7 +17,7 @@
 #define openNiWorm_KinectFeatures_h
 
 #include "MocapElement.h"
-#include "ofxMocapEvents.h"
+#include <map>
 #include <numeric>
 
 namespace filter
@@ -67,15 +67,10 @@ public:
     MocapPoint getAccelerationMean(int j, int frames = 30);
     float getAccelerationMagnitudeMean(int j, int frames = 30);
     
-    
     float getAccelerationTrajectory(int j);
     vector<float> getAccelerationTrajectoryHistory(int j);
     vector<float> getAccelerationTrajectoryHistory(int j, int frames);
     float getAccelerationTrajectoryMean(int j, int frames = 30);
-    
-    float getDistanceToTorso(int j);
-    vector<float> getDistanceToTorsoHistory(int j);
-    vector<float> getDistanceToTorsoHistory(int j, int frames);
     
 	MocapPoint getRelativePositionToTorso(int j);
     vector<MocapPoint> getRelativePositionToTorsoHistory(int j);
@@ -123,9 +118,8 @@ private:
     
     void computeJointDescriptors(int jointId, MocapPoint jointPos, const float &h);
     MocapPoint applyFilter (vector<MocapPoint> x, vector<MocapPoint> y, float *a, float *b);
-    void checkMaxAndMin(vector<MocapPoint> descriptorHistory, unsigned int jointId, unsigned int feature);
-    void checkMaxAndMin(vector<float> descriptorHistory, unsigned int jointId, unsigned int feature);
-    //Functor to look for mocap elements matching a Joint
+   
+	//Functor to look for mocap elements matching a Joint
     struct MatchId
     {
         MatchId(const int& j) : j_(j) {}

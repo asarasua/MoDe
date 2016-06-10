@@ -131,18 +131,15 @@ void ofApp::draw() {
 			case VELOCITY_MEAN:
 				os << "Velocity magnitude mean" << endl;
 				os << jointProjectivePosition << endl;
-				//font.drawString(ofToString(featExtractor.getSkeleton(0)->getVelocityMean(joint)), jointProjectivePosition.x, jointProjectivePosition.y);
-				//font.drawString(ofToString(featExtractor.getVelocityMean(joint)), jointProjectivePosition.x, jointProjectivePosition.y);
+				font.drawString(ofToString(featExtractor.getVelocityMean(joint)), jointProjectivePosition.x, jointProjectivePosition.y);
 				break;
 			case ACCELERATION_Y:
 				os << "Acceleration along y axis (up-down movement)" << endl;
-				//font.drawString(ofToString(featExtractor.getSkeleton(0)->getAcceleration((Joint)j).y), jointProjectivePosition.x, jointProjectivePosition.y);
-				//font.drawString(ofToString(featExtractor.getAcceleration(joint).y), jointProjectivePosition.x, jointProjectivePosition.y);
+				font.drawString(ofToString(featExtractor.getAcceleration(joint).y), jointProjectivePosition.x, jointProjectivePosition.y);
 				break;
 			case RELPOSTOTORSO_X:
 				os << "Relative position to torso in x axis" << endl;
-				//font.drawString(ofToString(featExtractor.getSkeleton(0)->getRelativePositionToTorso((Joint)j).x), jointProjectivePosition.x, jointProjectivePosition.y);
-				//font.drawString(ofToString(featExtractor.getRelativePositionToTorso(joint).x), jointProjectivePosition.x, jointProjectivePosition.y);
+				font.drawString(ofToString(featExtractor.getRelativePositionToTorso(joint).x), jointProjectivePosition.x, jointProjectivePosition.y);
 				break;
 			default:
 				break;
@@ -151,7 +148,7 @@ void ofApp::draw() {
 	}
 
 	ofSetColor(0, 0, 0, 100);
-	ofRect(10, 10, 500, 150);
+	ofRect(10, 10, 700, 150);
 	ofSetColor(255, 255, 255);
 	ofDrawBitmapString(os.str(), 20, 30);
 }

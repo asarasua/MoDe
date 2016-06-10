@@ -14,6 +14,7 @@
  */
 
 #include "KinectFeatures.h"
+#include <algorithm>    // std::find_if
 
 //Real-time filters for MoCap by Skogstad et al ( http://www.uio.no/english/research/groups/fourms/projects/sma/subprojects/mocapfilters/ )
 
@@ -195,7 +196,6 @@ void KinectFeatures::update(map<int, MocapPoint> joints){
         qom_.pop_back();
     }
     
-    checkMaxAndMin(getQomHistory(5), NO_JOINT, FEAT_QOM);
     
     //ci_ = ( -4.0 + (( abs(xMax-xMin) + abs(yMax-yMin) + abs(zMax-zMin) ) / h) ) / 6.0;
     if (ci_.size() <= depth_) {
@@ -205,8 +205,6 @@ void KinectFeatures::update(map<int, MocapPoint> joints){
     if (ci_.size() > depth_) {
         ci_.pop_back();
     }
-    
-    checkMaxAndMin(getCIHistory(5), NO_JOINT, FEAT_CI);
     
     //TODO solve this!!
 //    symmetry_ = 1.0 - (0.5 * (abs(sqrt(getDistanceToTorso(JOINT_RIGHT_HAND))-sqrt(getDistanceToTorso(JOINT_LEFT_HAND))) + abs(sqrt(getDistanceToTorso(JOINT_RIGHT_ELBOW))-sqrt(getDistanceToTorso(JOINT_LEFT_ELBOW)))) / h);
@@ -234,24 +232,14 @@ void KinectFeatures::computeJointDescriptors(int jointId, MocapPoint jointPos, c
     
     //Velocity
     mocapElement->setVelocity(applyFilter(mocapElement->getPosition(), mocapElement->getVelocity(), aLpd1, bLpd1));
-    checkMaxAndMin(getVelocityHistory(jointId, 5), jointId, FEAT_VELOCITY);
     
     //Acceleration
     mocapElement->setAcceleration(applyFilter(mocapElement->getPosition(), mocapElement->getAcceleration(), aLpd2, bLpd2));
-    checkMaxAndMin(getAccelerationHistory(jointId, 5), jointId, FEAT_ACCELERATION);
     
     //Acceleration along trajectory
     MocapPoint acc = mocapElement->getAcceleration()[0];
 	MocapPoint vel = mocapElement->getVelocity()[0];
     mocapElement->setAccelerationTrajectory(acc.dot(vel) / vel.length());
-
-    checkMaxAndMin(getAccelerationTrajectoryHistory(jointId, 5), jointId, FEAT_ACCELERATION_TRAJECTORY);
-    
-    //Distance to torso
-	MocapPoint torsoPos(getPositionFiltered(torso_));
-	MocapPoint filtPos(getPositionFiltered(jointId));
-    mocapElement->setDistanceToTorso(torsoPos.squareDistance(filtPos));
-    checkMaxAndMin(getDistanceToTorsoHistory(jointId, 5), jointId, FEAT_DISTANCETOTORSO);
     
     //Relative position to torso
     //TODO solve this!!
@@ -260,7 +248,6 @@ void KinectFeatures::computeJointDescriptors(int jointId, MocapPoint jointPos, c
     relPosToTorso[1] = (jointPos.y - getPositionFiltered(torso_).y) / (h * 1.8);
     relPosToTorso[2] = -((jointPos.z - getPositionFiltered(torso_).z) / h) / 1.4;
     mocapElement->setRelativePositionToTorso(relPosToTorso);
-    checkMaxAndMin(getRelativePositionToTorsoHistory(jointId, 5), jointId, FEAT_RELATIVEPOSTOTORSO);
     
     //TODO: auto hand
     //beatTracker.update(getAccTrVector(JOINT_RIGHT_HAND), get3DFiltPosVector(JOINT_RIGHT_HAND)[coord::Y]);
@@ -277,82 +264,6 @@ MocapElement* KinectFeatures::getElement(int _id){
 
 MocapPoint KinectFeatures::applyFilter(vector<MocapPoint> x, vector<MocapPoint> y, float *a, float *b){
 	return b[0] * x[0] + b[1] * x[1] + b[2] * x[2] + b[3] * x[3] + b[4] * x[4] - (a[1] * y[0] + a[2] * y[1] + a[3] * y[2] + a[4] * y[3]);
-}
-
-
-void KinectFeatures::checkMaxAndMin(vector<MocapPoint> descriptorHistory, unsigned int jointId, unsigned int feature){
-    vector<float> x_vec, y_vec, z_vec;
-    //for (vector<MocapPoint>::iterator it = descriptorHistory.begin(); it != descriptorHistory.end(); it++) {
-	for (auto it : descriptorHistory){
-        x_vec.push_back(it.x);
-        y_vec.push_back(it.y);
-        z_vec.push_back(it.z);
-    }
-    
-    //x
-    if (distance(x_vec.begin(), max_element(x_vec.begin(), x_vec.end())) == 2) {
-        static MocapMaxEvent newMaxEvent;
-        newMaxEvent.joint = jointId;
-        newMaxEvent.axis = MOCAP_X;
-        newMaxEvent.feature = feature;
-        newMaxEvent.value = descriptorHistory[1].x;
-        ofNotifyEvent(MocapMaxEvent::events, newMaxEvent);
-    } else if (distance(x_vec.begin(), min_element(x_vec.begin(), x_vec.end())) == 2) {
-        static MocapMinEvent newMinEvent;
-        newMinEvent.joint = jointId;
-        newMinEvent.axis = MOCAP_X;
-        newMinEvent.feature = feature;
-        newMinEvent.value = descriptorHistory[1].x;
-        ofNotifyEvent(MocapMinEvent::events, newMinEvent);
-    }
-    //y
-    if (distance(y_vec.begin(), max_element(y_vec.begin(), y_vec.end())) == 2) {
-        static MocapMaxEvent newMaxEvent;
-        newMaxEvent.joint = jointId;
-        newMaxEvent.axis = MOCAP_Y;
-        newMaxEvent.feature = feature;
-        newMaxEvent.value = descriptorHistory[1].y;
-        ofNotifyEvent(MocapMaxEvent::events, newMaxEvent);
-    } else if (distance(y_vec.begin(), min_element(y_vec.begin(), y_vec.end())) == 2) {
-        static MocapMinEvent newMinEvent;
-        newMinEvent.joint = jointId;
-        newMinEvent.axis = MOCAP_Y;
-        newMinEvent.feature = feature;
-        newMinEvent.value = descriptorHistory[1].y;
-        ofNotifyEvent(MocapMinEvent::events, newMinEvent);
-    }
-    //z
-    if (distance(z_vec.begin(), max_element(z_vec.begin(), z_vec.end())) == 2) {
-        static MocapMaxEvent newMaxEvent;
-        newMaxEvent.joint = jointId;
-        newMaxEvent.axis = MOCAP_Y;
-        newMaxEvent.feature = feature;
-        newMaxEvent.value = descriptorHistory[1].z;
-        ofNotifyEvent(MocapMaxEvent::events, newMaxEvent);
-    } else if (distance(z_vec.begin(), min_element(z_vec.begin(), z_vec.end())) == 2) {
-        static MocapMinEvent newMinEvent;
-        newMinEvent.joint = jointId;
-        newMinEvent.axis = MOCAP_Z;
-        newMinEvent.feature = feature;
-        newMinEvent.value = descriptorHistory[1].z;
-        ofNotifyEvent(MocapMinEvent::events, newMinEvent);
-    }
-}
-
-void KinectFeatures::checkMaxAndMin(vector<float> descriptorHistory, unsigned int jointId, unsigned int feature){
-    if (distance(descriptorHistory.begin(), max_element(descriptorHistory.begin(), descriptorHistory.end())) == 2) {
-        static MocapMaxEvent newMaxEvent;
-        newMaxEvent.joint = jointId;
-        newMaxEvent.feature = feature;
-        newMaxEvent.value = descriptorHistory[1];
-        ofNotifyEvent(MocapMaxEvent::events, newMaxEvent);
-    } else if (distance(descriptorHistory.begin(), min_element(descriptorHistory.begin(), descriptorHistory.end())) == 2) {
-        static MocapMinEvent newMinEvent;
-        newMinEvent.joint = jointId;
-        newMinEvent.feature = feature;
-        newMinEvent.value = descriptorHistory[1];
-        ofNotifyEvent(MocapMinEvent::events, newMinEvent);
-    }
 }
 
 template <typename T>
@@ -594,32 +505,6 @@ float KinectFeatures::getAccelerationTrajectoryMean(int j, int frames){
     }
 }
 
-float KinectFeatures::getDistanceToTorso(int j){
-    if (getElement(j)){
-        return getElement(j)->getDistanceToTorso()[0];
-    } else {
-        return 0.0;
-    }
-}
-
-vector<float> KinectFeatures::getDistanceToTorsoHistory(int j){
-    if (getElement(j)) {
-        return getElement(j)->getDistanceToTorso();
-    } else {
-        return createVector(0.0f);
-    }
-}
-
-vector<float> KinectFeatures::getDistanceToTorsoHistory(int j, int frames){
-    if (getElement(j)) {
-        vector<float> fullHistory = getElement(j)->getDistanceToTorso();
-        vector<float> history(fullHistory.begin(), fullHistory.begin() + frames);
-        return history;
-    } else {
-        return createVector(0.0f);
-    }
-}
-
 MocapPoint KinectFeatures::getRelativePositionToTorso(int j){
     if (getElement(j)) {
         return getElement(j)->getRelativePositionToTorso()[0];
@@ -650,7 +535,7 @@ float KinectFeatures::getAngle(int j1, int j2, int j3){
     float d12 = getPositionFiltered(j1).distance(getPositionFiltered(j2));
     float d13 = getPositionFiltered(j1).distance(getPositionFiltered(j3));
     float d23 = getPositionFiltered(j2).distance(getPositionFiltered(j3));
-    return RAD_TO_DEG * acos(( -(d13*d13) + d23*d23 + d12*d12 ) / (2*d23*d12 ) ); //cos rule
+    return (180/PI) * acos(( -(d13*d13) + d23*d23 + d12*d12 ) / (2*d23*d12 ) ); //cos rule
 }
 
 float KinectFeatures::getQom(){

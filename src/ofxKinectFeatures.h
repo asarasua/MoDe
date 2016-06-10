@@ -17,6 +17,7 @@ If you are willing to get a (non FOSS) commercial license, please contact us at 
 #define ofxKinectFeatures_h
 
 #include "kinectFeatures.h"
+#include "ofxMocapEvents.h"
 
 class ofxKinectFeatures {
 public:
@@ -55,15 +56,14 @@ public:
 	ofPoint getAccelerationMean(int j, int frames = 30);
 	float getAccelerationMagnitudeMean(int j, int frames = 30);
 
-
 	float getAccelerationTrajectory(int j);
 	vector<float> getAccelerationTrajectoryHistory(int j);
 	vector<float> getAccelerationTrajectoryHistory(int j, int frames);
 	float getAccelerationTrajectoryMean(int j, int frames = 30);
 
-	/*ofPoint getRelativePositionToTorso(int j);
+	ofPoint getRelativePositionToTorso(int j);
 	vector<ofPoint> getRelativePositionToTorsoHistory(int j);
-	vector<ofPoint> getRelativePositionToTorsoHistory(int j, int frames);*/
+	vector<ofPoint> getRelativePositionToTorsoHistory(int j, int frames);
 
 	//SPECIAL DESCRIPTORS
 	float getAngle(int j1, int j2, int j3);
@@ -81,6 +81,8 @@ public:
 	bool isNewDataAvailable();
 
 private:
+	void checkMaxAndMin(vector<ofPoint> descriptorHistory, unsigned int jointId, unsigned int feature);
+	void checkMaxAndMin(vector<float> descriptorHistory, unsigned int jointId, unsigned int feature);
 	ofPoint toOfPoint(MocapPoint point);
 	vector<ofPoint> toOfPointVector(vector <MocapPoint> pointVector);
 	MocapPoint toMocapPoint(ofPoint point);
