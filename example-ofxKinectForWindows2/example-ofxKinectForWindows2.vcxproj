@@ -176,15 +176,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\mocapPoint.h" />
+    <ClCompile Include="..\src\kinectFeatures.cpp" />
+    <ClCompile Include="..\src\mocapElement.cpp" />
     <ClCompile Include="..\src\ofxKinectFeatures.cpp" />
-    <ClCompile Include="..\src\ofxMocapElement.cpp" />
     <ClCompile Include="..\src\ofxMocapEvents.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\kinectFeatures.h" />
+    <ClInclude Include="..\src\mocapElement.h" />
     <ClInclude Include="..\src\ofxKinectFeatures.h" />
-    <ClInclude Include="..\src\ofxMocapElement.h" />
     <ClInclude Include="..\src\ofxMocapEvents.h" />
     <ClInclude Include="src\ofApp.h" />
   </ItemGroup>

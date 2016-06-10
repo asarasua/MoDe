@@ -26,14 +26,9 @@ void ofApp::update() {
 	{
 		if (body.tracked)
 		{
-			map<int, MocapPoint> joints;
+			map<int, ofPoint> joints;
 			for (auto joint : body.joints)
-			{	
-				ofPoint jp = joint.second.getPosition();
-				joints[joint.first].x = jp.x;
-				joints[joint.first].y = jp.y;
-				joints[joint.first].z = jp.z;
-			}
+				joints[joint.first] = joint.second.getPosition();
 			featExtractor.update(joints);
 		}
 	}

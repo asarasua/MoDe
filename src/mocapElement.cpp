@@ -12,9 +12,9 @@
  
  If you are willing to get a (non FOSS) commercial license, please contact us at mtg@upf.edu
  */
-#include "ofxMocapElement.h"
+#include "mocapElement.h"
 
-ofxMocapElement::ofxMocapElement(){
+MocapElement::MocapElement(){
     MocapPoint zeros = MocapPoint(0.0,0.0,0.0);
     for (int i = 0; i < historyDepth_; i++) {
         setPosition(zeros);
@@ -27,7 +27,7 @@ ofxMocapElement::ofxMocapElement(){
     }
 }
 
-ofxMocapElement::ofxMocapElement(int elementId, int depth){
+MocapElement::MocapElement(int elementId, int depth){
     elementId_ = elementId;
     historyDepth_ = depth;
     MocapPoint zeros = MocapPoint(0.0,0.0,0.0);
@@ -42,26 +42,26 @@ ofxMocapElement::ofxMocapElement(int elementId, int depth){
     }
 }
 
-unsigned int ofxMocapElement::getElementId(){
+unsigned int MocapElement::getElementId(){
     return elementId_;
 }
 
-void ofxMocapElement::setElementId(int newId){
+void MocapElement::setElementId(int newId){
     elementId_ = newId;
 }
 
 
-void ofxMocapElement::setHistoryDepth(int depth){
+void MocapElement::setHistoryDepth(int depth){
     historyDepth_ = depth;
 }
 
 //Getters & setters
 
-vector<MocapPoint> ofxMocapElement::getPosition(){
+vector<MocapPoint> MocapElement::getPosition(){
     return position_;
 }
 
-void ofxMocapElement::setPosition(MocapPoint position){
+void MocapElement::setPosition(MocapPoint position){
     // Add position to history
 	if (position_.size() <= historyDepth_) {
         position_.insert(position_.begin(), position);
@@ -73,11 +73,11 @@ void ofxMocapElement::setPosition(MocapPoint position){
 	}
 }
 
-vector<MocapPoint> ofxMocapElement::getPositionFiltered(){
+vector<MocapPoint> MocapElement::getPositionFiltered(){
     return positionFiltered_;
 }
 
-void ofxMocapElement::setPositionFiltered(MocapPoint positionFiltered){
+void MocapElement::setPositionFiltered(MocapPoint positionFiltered){
     // Add position to history
 	if (positionFiltered_.size() <= historyDepth_) {
         positionFiltered_.insert(positionFiltered_.begin(), positionFiltered);
@@ -89,11 +89,11 @@ void ofxMocapElement::setPositionFiltered(MocapPoint positionFiltered){
 	}
 }
 
-vector<MocapPoint> ofxMocapElement::getVelocity(){
+vector<MocapPoint> MocapElement::getVelocity(){
     return velocity_;
 }
 
-void ofxMocapElement::setVelocity(MocapPoint velocity){
+void MocapElement::setVelocity(MocapPoint velocity){
     // Add position to history
 	if (velocity_.size() <= historyDepth_) {
         velocity_.insert(velocity_.begin(), velocity);
@@ -105,11 +105,11 @@ void ofxMocapElement::setVelocity(MocapPoint velocity){
 	}
 }
 
-vector<MocapPoint> ofxMocapElement::getAcceleration(){
+vector<MocapPoint> MocapElement::getAcceleration(){
     return acceleration_;
 }
 
-void ofxMocapElement::setAcceleration(MocapPoint acceleration){
+void MocapElement::setAcceleration(MocapPoint acceleration){
     // Add position to history
 	if (acceleration_.size() <= historyDepth_) {
         acceleration_.insert(acceleration_.begin(), acceleration);
@@ -121,11 +121,11 @@ void ofxMocapElement::setAcceleration(MocapPoint acceleration){
 	}
 }
 
-vector<float> ofxMocapElement::getAccelerationTrajectory(){
+vector<float> MocapElement::getAccelerationTrajectory(){
     return accelerationTrajectory_;
 }
 
-void ofxMocapElement::setAccelerationTrajectory(float accelerationTrajectory){
+void MocapElement::setAccelerationTrajectory(float accelerationTrajectory){
     if (accelerationTrajectory_.size() <= historyDepth_) {
         accelerationTrajectory_.insert(accelerationTrajectory_.begin(), accelerationTrajectory);
 	}
@@ -136,11 +136,11 @@ void ofxMocapElement::setAccelerationTrajectory(float accelerationTrajectory){
 	}
 }
 
-vector<float> ofxMocapElement::getDistanceToTorso(){
+vector<float> MocapElement::getDistanceToTorso(){
     return distanceToTorso_;
 }
 
-void ofxMocapElement::setDistanceToTorso(float distanceToTorso){
+void MocapElement::setDistanceToTorso(float distanceToTorso){
     if (distanceToTorso_.size() <= historyDepth_) {
         distanceToTorso_.insert(distanceToTorso_.begin(), distanceToTorso);
 	}
@@ -151,11 +151,11 @@ void ofxMocapElement::setDistanceToTorso(float distanceToTorso){
 	}
 }
 
-vector<MocapPoint> ofxMocapElement::getRelativePositionToTorso(){
+vector<MocapPoint> MocapElement::getRelativePositionToTorso(){
     return relativePositionToTorso_;
 }
 
-void ofxMocapElement::setRelativePositionToTorso(MocapPoint relativePositionToTorso){
+void MocapElement::setRelativePositionToTorso(MocapPoint relativePositionToTorso){
     if (relativePositionToTorso_.size() <= historyDepth_) {
         relativePositionToTorso_.insert(relativePositionToTorso_.begin(), relativePositionToTorso);
 	}

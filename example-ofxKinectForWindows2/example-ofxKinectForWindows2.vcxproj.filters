@@ -7,16 +7,19 @@
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\ofxKinectFeatures.cpp">
-      <Filter>addons\ofxKinectFeatures\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\ofxMocapElement.cpp">
-      <Filter>addons\ofxKinectFeatures\src</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\ofxMocapEvents.cpp">
       <Filter>addons\ofxKinectFeatures\src</Filter>
     </ClCompile>
     <ClCompile Include="..\src\mocapPoint.h">
+      <Filter>addons\ofxKinectFeatures\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mocapElement.cpp">
+      <Filter>addons\ofxKinectFeatures\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\kinectFeatures.cpp">
+      <Filter>addons\ofxKinectFeatures\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ofxKinectFeatures.cpp">
       <Filter>addons\ofxKinectFeatures\src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -38,13 +41,16 @@
     <ClInclude Include="src\ofApp.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\ofxKinectFeatures.h">
-      <Filter>addons\ofxKinectFeatures\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\ofxMocapElement.h">
-      <Filter>addons\ofxKinectFeatures\src</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\ofxMocapEvents.h">
+      <Filter>addons\ofxKinectFeatures\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\mocapElement.h">
+      <Filter>addons\ofxKinectFeatures\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\kinectFeatures.h">
+      <Filter>addons\ofxKinectFeatures\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ofxKinectFeatures.h">
       <Filter>addons\ofxKinectFeatures\src</Filter>
     </ClInclude>
   </ItemGroup>

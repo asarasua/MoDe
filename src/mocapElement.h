@@ -13,15 +13,15 @@
  If you are willing to get a (non FOSS) commercial license, please contact us at mtg@upf.edu
  */
 
-#ifndef openNiFeatures_ofxMocapElement_h
-#define openNiFeatures_ofxMocapElement_h
+#ifndef openNiFeatures_MocapElement_h
+#define openNiFeatures_MocapElement_h
 
 #include "mocapPoint.h"
 
-class ofxMocapElement{
+class MocapElement{
 public:
-    ofxMocapElement();
-    ofxMocapElement(int elementId, int depth);
+    MocapElement();
+    MocapElement(int elementId, int depth);
     
     unsigned int getElementId();
     void setElementId(int newId);
