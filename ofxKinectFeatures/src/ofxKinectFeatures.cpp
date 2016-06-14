@@ -176,6 +176,10 @@ float ofxKinectFeatures::getAngle(int j1, int j2, int j3)
 	return featExtractor->getAngle(j1, j2, j3);
 }
 
+ofPoint ofxKinectFeatures::getAccelerationCrest(int j, int frames){
+    return toOfPoint(featExtractor->getAccelerationCrest(j, frames));
+}
+
 float ofxKinectFeatures::getQom()
 {
 	return featExtractor->getQom();

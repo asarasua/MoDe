@@ -645,6 +645,47 @@ float KinectFeatures::getAngle(int j1, int j2, int j3){
     return (180/PI) * acos(( -(d13*d13) + d23*d23 + d12*d12 ) / (2*d23*d12 ) ); //cos rule
 }
 
+MocapPoint KinectFeatures::getAccelerationCrest(int j, int frames){
+    vector<MocapPoint> acc = getAccelerationHistory(j, frames);
+    vector<float> x_vec, y_vec, z_vec, x_max, y_max, z_max;
+    float rms_x = 0.0, rms_y = 0.0, rms_z = 0.0;
+
+    for (auto it : acc) {
+        x_vec.push_back(it.x);
+        rms_x += it.x * it.x;
+        y_vec.push_back(it.y);
+        rms_y += it.y * it.y;
+        z_vec.push_back(it.z);
+        rms_z += it.z * it.z;
+    }
+    
+    rms_x = sqrt(rms_x / acc.size());
+    rms_y = sqrt(rms_y / acc.size());
+    rms_z = sqrt(rms_z / acc.size());
+    
+    //Find maxima
+    for (int i = 0; i < acc.size()-4; i++) {
+        if (distance(x_vec.begin()+i, max_element(x_vec.begin()+i, x_vec.end()+i+4)) == 2){
+            x_max.push_back(x_vec[i + 2]);
+        }
+        if (distance(y_vec.begin()+i, max_element(y_vec.begin()+i, y_vec.end()+i+4)) == 2){
+            y_max.push_back(y_vec[i + 2]);
+        }
+        if (distance(z_vec.begin()+i, max_element(z_vec.begin()+i, z_vec.end()+i+4)) == 2){
+            z_max.push_back(z_vec[i + 2]);
+        }
+    }
+    
+    float foox = ( accumulate( x_max.begin(), x_max.end(), 0.0)/x_max.size() ) / rms_x;
+    float foo = ( accumulate( y_max.begin(), y_max.end(), 0.0)/y_max.size() ) / rms_y;
+    float fooz = ( accumulate( z_max.begin(), z_max.end(), 0.0)/z_max.size() ) / rms_z;
+    
+    return MocapPoint( ( accumulate( x_max.begin(), x_max.end(), 0.0)/x_max.size() ) / rms_x,
+                      ( accumulate( y_max.begin(), y_max.end(), 0.0)/y_max.size() ) / rms_y,
+                      ( accumulate( z_max.begin(), z_max.end(), 0.0)/z_max.size() ) / rms_z );   
+    
+}
+
 float KinectFeatures::getQom(){
     return qom_[0];
 }

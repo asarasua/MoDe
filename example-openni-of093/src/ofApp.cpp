@@ -16,11 +16,11 @@ void ofApp::setup(){
     featExtractor.setup(JOINT_HEAD, JOINT_TORSO);
     
     ofAddListener(kinect.userEvent, this, &ofApp::userEvent);
-    ofAddListener(MocapMaxEvent::events, this, &ofApp::mocapMax);
+    ofAddListener(MocapEvent::events, this, &ofApp::mocapBeat);
     
     ofSetWindowShape(640, 480);
     
-    font.loadFont("verdana.ttf", 18);
+    font.load("verdana.ttf", 18);
     
     j = JOINT_RIGHT_HAND;
     f = VELOCITY_MEAN;
@@ -93,8 +93,10 @@ void ofApp::draw(){
             break;
     }
     
+    os << featExtractor.getAccelerationCrest(JOINT_RIGHT_HAND, 30);
+    
     ofSetColor(0,0,0,100);
-    ofRect(10, 10, 500, 150);
+    ofDrawRectangle(10, 10, 500, 150);
     ofSetColor(255,255,255);
     ofDrawBitmapString(os.str(), 20, 30);
 }
@@ -133,7 +135,7 @@ void ofApp::userEvent(ofxOpenNIUserEvent &event){
     //    }
 }
 
-void ofApp::mocapMax(MocapMaxEvent &e){
+void ofApp::mocapBeat(MocapEvent &e){
     //    if (e.joint == JOINT_RIGHT_HAND && e.value > 5.0) {
     //        cout << "Max in right hand axis " << ofGetTimestampString() << endl;
     //    }

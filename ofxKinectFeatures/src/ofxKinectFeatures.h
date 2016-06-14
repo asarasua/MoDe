@@ -78,6 +78,7 @@ public:
 
 	//SPECIAL DESCRIPTORS
 	float getAngle(int j1, int j2, int j3);
+    ofPoint getAccelerationCrest(int j, int frames);
 
 	//OVERALL DESCRIPTORS
 	float getQom();
