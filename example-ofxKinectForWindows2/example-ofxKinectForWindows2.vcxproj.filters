@@ -7,20 +7,14 @@
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\ofxMocapEvents.cpp">
-      <Filter>addons\ofxKinectFeatures\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\mocapPoint.h">
-      <Filter>addons\ofxKinectFeatures\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\mocapElement.cpp">
+    <ClCompile Include="..\ofxKinectFeatures\src\ofxKinectFeatures.cpp">
       <Filter>addons\ofxKinectFeatures\src</Filter>
     </ClCompile>
     <ClCompile Include="..\src\kinectFeatures.cpp">
-      <Filter>addons\ofxKinectFeatures\src</Filter>
+      <Filter>addons\ofxKinectFeatures\lib</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\ofxKinectFeatures.cpp">
-      <Filter>addons\ofxKinectFeatures\src</Filter>
+    <ClCompile Include="..\src\mocapElement.cpp">
+      <Filter>addons\ofxKinectFeatures\lib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -36,22 +30,25 @@
     <Filter Include="addons\ofxKinectFeatures\src">
       <UniqueIdentifier>{84aa364b-68fc-4e6c-a5e7-030575be35a0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="addons\ofxKinectFeatures\lib">
+      <UniqueIdentifier>{466ad751-0ad9-4e2a-9c46-45aeae1aab81}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ofApp.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\ofxMocapEvents.h">
-      <Filter>addons\ofxKinectFeatures\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\mocapElement.h">
+    <ClInclude Include="..\ofxKinectFeatures\src\ofxKinectFeatures.h">
       <Filter>addons\ofxKinectFeatures\src</Filter>
     </ClInclude>
     <ClInclude Include="..\src\kinectFeatures.h">
-      <Filter>addons\ofxKinectFeatures\src</Filter>
+      <Filter>addons\ofxKinectFeatures\lib</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\ofxKinectFeatures.h">
-      <Filter>addons\ofxKinectFeatures\src</Filter>
+    <ClInclude Include="..\src\mocapElement.h">
+      <Filter>addons\ofxKinectFeatures\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\mocapPoint.h">
+      <Filter>addons\ofxKinectFeatures\lib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

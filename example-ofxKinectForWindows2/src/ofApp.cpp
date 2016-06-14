@@ -6,9 +6,12 @@ void ofApp::setup() {
 	kinect.initColorSource();
 	kinect.initBodySource();
 
+
 	//kinect.addKinectListener(this, &ofApp::kinectPlugged, &ofApp::kinectUnplugged);
 
 	featExtractor.setup(JointType_Head, JointType_SpineMid);
+
+	ofAddListener(MocapEvent::events, this, &ofApp::mocapBeat);
 
 	ofSetWindowShape(1080, 720);
 
@@ -41,7 +44,6 @@ void ofApp::draw() {
 	ofSetColor(ofColor::white);
 	float w = ofGetWidth(); //w
 	float h = ofGetHeight(); //h
-
 							 //image
 	kinect.getColorSource()->draw(0, 0, w, h);
 	kinect.getBodySource()->drawProjected(0, 0, w, h);
@@ -131,7 +133,8 @@ void ofApp::draw() {
 			case VELOCITY_MEAN:
 				os << "Velocity magnitude mean" << endl;
 				os << jointProjectivePosition << endl;
-				font.drawString(ofToString(featExtractor.getVelocityMean(joint)), jointProjectivePosition.x, jointProjectivePosition.y);
+				//font.drawString(ofToString(featExtractor.getVelocityMean(joint)), jointProjectivePosition.x, jointProjectivePosition.y);
+				font.drawString(ofToString(featExtractor.getVelocity(joint)), jointProjectivePosition.x, jointProjectivePosition.y);
 				break;
 			case ACCELERATION_Y:
 				os << "Acceleration along y axis (up-down movement)" << endl;
@@ -213,6 +216,13 @@ void ofApp::windowResized(int w, int h) {
 //--------------------------------------------------------------
 void ofApp::gotMessage(ofMessage msg) {
 
+}
+
+void ofApp::mocapBeat(MocapEvent & e)
+{
+	if (e.feature == FEAT_VELOCITY && e.beatType == BEAT_TYPE_MAX && e.joint == JointType_HandRight && e.axis == MOCAP_Y && e.value > 1.0) {
+		cout << "max in velocity right hand!" << endl;
+	}
 }
 
 //--------------------------------------------------------------

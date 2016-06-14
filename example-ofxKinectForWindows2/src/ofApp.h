@@ -30,6 +30,8 @@ public:
 	void gotMessage(ofMessage msg);
 	//void userEvent(ofxOpenNIUserEvent & event);
 
+	void mocapBeat(MocapEvent &e);
+
 	ofxKFW2::Device kinect;
 	//bool hadUsers;
 	ofxKinectFeatures featExtractor;

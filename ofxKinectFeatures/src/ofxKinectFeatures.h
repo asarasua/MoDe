@@ -17,15 +17,26 @@ If you are willing to get a (non FOSS) commercial license, please contact us at 
 #define ofxKinectFeatures_h
 
 #include "kinectFeatures.h"
-#include "ofxMocapEvents.h"
+#include "ofMain.h"
 
-class ofxKinectFeatures {
+class MocapEvent : public ofEventArgs, public MocapBeat {
+
 public:
-	ofxKinectFeatures() {};
+	MocapEvent() {}
+
+	static ofEvent <MocapEvent> events;
+};
+
+
+class ofxKinectFeatures : public BeatListener {
+public:
+	ofxKinectFeatures() : BeatListener(new KinectFeatures()) {};
 	ofxKinectFeatures(int head, int torso);
 
 	void setup(int head, int torso);
 	void update(map<int, ofPoint> joints);
+
+	void newBeat(MocapBeat beat); //method from BeatListener, called whenever a new beat is found
 
 	void setFilterLevel(int filterLevel);
 
@@ -81,12 +92,9 @@ public:
 	bool isNewDataAvailable();
 
 private:
-	void checkMaxAndMin(vector<ofPoint> descriptorHistory, unsigned int jointId, unsigned int feature);
-	void checkMaxAndMin(vector<float> descriptorHistory, unsigned int jointId, unsigned int feature);
 	ofPoint toOfPoint(MocapPoint point);
 	vector<ofPoint> toOfPointVector(vector <MocapPoint> pointVector);
 	MocapPoint toMocapPoint(ofPoint point);
-	KinectFeatures featExtractor;
 };
 
 #endif

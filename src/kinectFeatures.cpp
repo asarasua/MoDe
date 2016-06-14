@@ -120,6 +120,11 @@ int KinectFeatures::getDepth(){
     return depth_;
 }
 
+void KinectFeatures::addBeatListener(BeatListener * beatListener)
+{
+	beatListeners.push_back(beatListener);
+}
+
 void KinectFeatures::update(map<int, MocapPoint> joints){
     //Initialize elements
     if (elements_.empty()) {
@@ -195,16 +200,20 @@ void KinectFeatures::update(map<int, MocapPoint> joints){
     if (qom_.size() > depth_) {
         qom_.pop_back();
     }
+
+	checkMaxAndMin(getQomHistory(5), NO_JOINT, FEAT_QOM);
     
     
     //ci_ = ( -4.0 + (( abs(xMax-xMin) + abs(yMax-yMin) + abs(zMax-zMin) ) / h) ) / 6.0;
     if (ci_.size() <= depth_) {
         ci_.insert(ci_.begin(), ( -4.0 + (( abs(xMax-xMin) + abs(yMax-yMin) + abs(zMax-zMin) ) / h) ) / 6.0);
     }
-    // QOM delete
+    // CI delete
     if (ci_.size() > depth_) {
         ci_.pop_back();
     }
+
+	checkMaxAndMin(getCIHistory(5), NO_JOINT, FEAT_CI);
     
     //TODO solve this!!
 //    symmetry_ = 1.0 - (0.5 * (abs(sqrt(getDistanceToTorso(JOINT_RIGHT_HAND))-sqrt(getDistanceToTorso(JOINT_LEFT_HAND))) + abs(sqrt(getDistanceToTorso(JOINT_RIGHT_ELBOW))-sqrt(getDistanceToTorso(JOINT_LEFT_ELBOW)))) / h);
@@ -232,14 +241,17 @@ void KinectFeatures::computeJointDescriptors(int jointId, MocapPoint jointPos, c
     
     //Velocity
     mocapElement->setVelocity(applyFilter(mocapElement->getPosition(), mocapElement->getVelocity(), aLpd1, bLpd1));
+	checkMaxAndMin(getVelocityHistory(jointId, 5), jointId, FEAT_VELOCITY);
     
     //Acceleration
     mocapElement->setAcceleration(applyFilter(mocapElement->getPosition(), mocapElement->getAcceleration(), aLpd2, bLpd2));
+	checkMaxAndMin(getAccelerationHistory(jointId, 5), jointId, FEAT_ACCELERATION);
     
     //Acceleration along trajectory
     MocapPoint acc = mocapElement->getAcceleration()[0];
 	MocapPoint vel = mocapElement->getVelocity()[0];
     mocapElement->setAccelerationTrajectory(acc.dot(vel) / vel.length());
+	checkMaxAndMin(getAccelerationTrajectoryHistory(jointId, 5), jointId, FEAT_ACCELERATION_TRAJECTORY);
     
     //Relative position to torso
     //TODO solve this!!
@@ -248,6 +260,7 @@ void KinectFeatures::computeJointDescriptors(int jointId, MocapPoint jointPos, c
     relPosToTorso[1] = (jointPos.y - getPositionFiltered(torso_).y) / (h * 1.8);
     relPosToTorso[2] = -((jointPos.z - getPositionFiltered(torso_).z) / h) / 1.4;
     mocapElement->setRelativePositionToTorso(relPosToTorso);
+	checkMaxAndMin(getRelativePositionToTorsoHistory(jointId, 5), jointId, FEAT_RELATIVEPOSTOTORSO);
     
     //TODO: auto hand
     //beatTracker.update(getAccTrVector(JOINT_RIGHT_HAND), get3DFiltPosVector(JOINT_RIGHT_HAND)[coord::Y]);
@@ -264,6 +277,100 @@ MocapElement* KinectFeatures::getElement(int _id){
 
 MocapPoint KinectFeatures::applyFilter(vector<MocapPoint> x, vector<MocapPoint> y, float *a, float *b){
 	return b[0] * x[0] + b[1] * x[1] + b[2] * x[2] + b[3] * x[3] + b[4] * x[4] - (a[1] * y[0] + a[2] * y[1] + a[3] * y[2] + a[4] * y[3]);
+}
+
+void KinectFeatures::notify(MocapBeat newBeat)
+{
+	for (auto& beatListener : beatListeners) {
+		beatListener->newBeat(newBeat);
+	}
+}
+
+void KinectFeatures::checkMaxAndMin(vector<MocapPoint> descriptorHistory, unsigned int jointId, unsigned int feature) {
+	vector<float> x_vec, y_vec, z_vec;
+	//for (vector<MocapPoint>::iterator it = descriptorHistory.begin(); it != descriptorHistory.end(); it++) {
+	for (auto it : descriptorHistory) {
+		x_vec.push_back(it.x);
+		y_vec.push_back(it.y);
+		z_vec.push_back(it.z);
+	}
+
+	//x
+	if (distance(x_vec.begin(), max_element(x_vec.begin(), x_vec.end())) == 2) {
+		static MocapBeat newBeat;
+		newBeat.joint = jointId;
+		newBeat.axis = MOCAP_X;
+		newBeat.feature = feature;
+		newBeat.value = descriptorHistory[1].x;
+		newBeat.beatType = BEAT_TYPE_MAX;
+		notify(newBeat);
+	}
+	else if (distance(x_vec.begin(), min_element(x_vec.begin(), x_vec.end())) == 2) {
+		static MocapBeat newBeat;
+		newBeat.joint = jointId;
+		newBeat.axis = MOCAP_X;
+		newBeat.feature = feature;
+		newBeat.value = descriptorHistory[1].x;
+		newBeat.beatType = BEAT_TYPE_MIN;
+		notify(newBeat);
+	}
+	//y
+	if (distance(y_vec.begin(), max_element(y_vec.begin(), y_vec.end())) == 2) {
+		static MocapBeat newBeat;
+		newBeat.joint = jointId;
+		newBeat.axis = MOCAP_Y;
+		newBeat.feature = feature;
+		newBeat.value = descriptorHistory[1].y;
+		newBeat.beatType = BEAT_TYPE_MAX;
+		notify(newBeat);
+	}
+	else if (distance(y_vec.begin(), min_element(y_vec.begin(), y_vec.end())) == 2) {
+		static MocapBeat newBeat;
+		newBeat.joint = jointId;
+		newBeat.axis = MOCAP_Y;
+		newBeat.feature = feature;
+		newBeat.value = descriptorHistory[1].y;
+		newBeat.beatType = BEAT_TYPE_MIN;
+		notify(newBeat);
+	}
+	//z
+	if (distance(z_vec.begin(), max_element(z_vec.begin(), z_vec.end())) == 2) {
+		static MocapBeat newBeat;
+		newBeat.joint = jointId;
+		newBeat.axis = MOCAP_Z;
+		newBeat.feature = feature;
+		newBeat.value = descriptorHistory[1].z;
+		newBeat.beatType = BEAT_TYPE_MAX;
+		notify(newBeat);
+	}
+	else if (distance(z_vec.begin(), min_element(z_vec.begin(), z_vec.end())) == 2) {
+		static MocapBeat newBeat;
+		newBeat.joint = jointId;
+		newBeat.axis = MOCAP_Z;
+		newBeat.feature = feature;
+		newBeat.value = descriptorHistory[1].z;
+		newBeat.beatType = BEAT_TYPE_MIN;
+		notify(newBeat);
+	}
+}
+
+void KinectFeatures::checkMaxAndMin(vector<float> descriptorHistory, unsigned int jointId, unsigned int feature) {
+	if (distance(descriptorHistory.begin(), max_element(descriptorHistory.begin(), descriptorHistory.end())) == 2) {
+		static MocapBeat newBeat;
+		newBeat.joint = jointId;
+		newBeat.feature = feature;
+		newBeat.value = descriptorHistory[1];
+		newBeat.beatType = BEAT_TYPE_MAX;
+		notify(newBeat);
+	}
+	else if (distance(descriptorHistory.begin(), min_element(descriptorHistory.begin(), descriptorHistory.end())) == 2) {
+		static MocapBeat newBeat;
+		newBeat.joint = jointId;
+		newBeat.feature = feature;
+		newBeat.value = descriptorHistory[1];
+		newBeat.beatType = BEAT_TYPE_MIN;
+		notify(newBeat);
+	}
 }
 
 template <typename T>

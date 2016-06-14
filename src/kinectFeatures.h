@@ -30,7 +30,38 @@ namespace filter
     };
 } // namespace filter
 
+#define MOCAP_X 0
+#define MOCAP_Y 1
+#define MOCAP_Z 2
+#define BEAT_TYPE_MIN 0
+#define BEAT_TYPE_MAX 1
+#define NO_JOINT 999
+
+enum
+{
+	FEAT_VELOCITY,
+	FEAT_VELOCITY_MAG,
+	FEAT_VELOCITY_MEAN,
+	FEAT_ACCELERATION,
+	FEAT_ACCELERATION_MAG,
+	FEAT_ACCELERATION_MEAN,
+	FEAT_ACCELERATION_TRAJECTORY,
+	FEAT_ACCELERATION_TRAJECTORY_MEAN,
+	FEAT_RELATIVEPOSTOTORSO,
+	FEAT_QOM,
+	FEAT_CI
+};
+
+class MocapBeat{
+
+public:
+	unsigned int axis, joint, feature, beatType;
+	float value;
+	MocapBeat() {};
+};
+
 class KinectFeatures {
+	vector <class BeatListener *> beatListeners;
 public:
     KinectFeatures();
     KinectFeatures(int head, int torso);
@@ -42,6 +73,8 @@ public:
     
     void setDepth(int depth);
     int getDepth();
+
+	void addBeatListener(BeatListener* beatListener);
     
     //DESCIPTOR GETTERS
     //JOINT DESCRIPTORS
@@ -118,6 +151,9 @@ private:
     
     void computeJointDescriptors(int jointId, MocapPoint jointPos, const float &h);
     MocapPoint applyFilter (vector<MocapPoint> x, vector<MocapPoint> y, float *a, float *b);
+	void notify(MocapBeat newBeat);
+	void checkMaxAndMin(vector<MocapPoint> descriptorHistory, unsigned int jointId, unsigned int feature);
+	void checkMaxAndMin(vector<float> descriptorHistory, unsigned int jointId, unsigned int feature);
    
 	//Functor to look for mocap elements matching a Joint
     struct MatchId
@@ -130,6 +166,18 @@ private:
     private:
         const int& j_;
     };
+};
+
+class BeatListener {
+public:
+	BeatListener(KinectFeatures * featExt) {
+		featExtractor = featExt;
+		featExtractor->addBeatListener(this);
+	}
+	virtual void newBeat(MocapBeat beat) = 0;
+protected:
+	KinectFeatures *featExtractor;
+
 };
 
 #endif
