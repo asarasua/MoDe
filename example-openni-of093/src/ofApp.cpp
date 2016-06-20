@@ -93,7 +93,7 @@ void ofApp::draw(){
             break;
     }
     
-    os << featExtractor.getAccelerationCrest(JOINT_RIGHT_HAND, 30);
+    os << featExtractor.getAccelerationCrest(JOINT_RIGHT_HAND, 30).y;
     
     ofSetColor(0,0,0,100);
     ofDrawRectangle(10, 10, 500, 150);

@@ -680,9 +680,12 @@ MocapPoint KinectFeatures::getAccelerationCrest(int j, int frames){
     float foo = ( accumulate( y_max.begin(), y_max.end(), 0.0)/y_max.size() ) / rms_y;
     float fooz = ( accumulate( z_max.begin(), z_max.end(), 0.0)/z_max.size() ) / rms_z;
     
-    return MocapPoint( ( accumulate( x_max.begin(), x_max.end(), 0.0)/x_max.size() ) / rms_x,
-                      ( accumulate( y_max.begin(), y_max.end(), 0.0)/y_max.size() ) / rms_y,
-                      ( accumulate( z_max.begin(), z_max.end(), 0.0)/z_max.size() ) / rms_z );   
+    MocapPoint crest(0.0, 0.0, 0.0);
+    if (x_max.size()) crest.x = ( accumulate( x_max.begin(), x_max.end(), 0.0)/x_max.size() ) / rms_x;
+    if (y_max.size()) crest.y = ( accumulate( y_max.begin(), y_max.end(), 0.0)/y_max.size() ) / rms_y;
+    if (z_max.size()) crest.z = ( accumulate( z_max.begin(), z_max.end(), 0.0)/z_max.size() ) / rms_z;
+    
+    return crest;
     
 }
 
