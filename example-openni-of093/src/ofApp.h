@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxKinectFeatures.h"
+#include "ofxKinectFeaturesGraph.h"
 #include "ofxOpenNI.h"
 
 enum {
@@ -34,4 +35,6 @@ public:
     ofxKinectFeatures featExtractor;
     int j, f;
     ofTrueTypeFont font;
+    
+    vector<ofPtr<ofxKinectFeaturesGraph>> graphs;
 };

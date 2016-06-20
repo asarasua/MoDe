@@ -24,6 +24,9 @@ void ofApp::setup(){
     
     j = JOINT_RIGHT_HAND;
     f = VELOCITY_MEAN;
+    
+    ofPtr<ofxKinectFeaturesGraph> g1(new ofxKinectFeaturesGraph(30, 30, 400, 100, 0));
+    graphs.push_back(g1);
 }
 
 //--------------------------------------------------------------
@@ -53,6 +56,10 @@ void ofApp::update(){
         kinect.addUserGenerator();
         kinect.setPaused(false);
     }
+    
+    for (auto graph : graphs)
+        graph->addValue(featExtractor.getAcceleration(j));
+    
 }
 
 //--------------------------------------------------------------
@@ -99,6 +106,9 @@ void ofApp::draw(){
     ofDrawRectangle(10, 10, 500, 150);
     ofSetColor(255,255,255);
     ofDrawBitmapString(os.str(), 20, 30);
+    
+    for (auto graph : graphs)
+        graph->draw();
 }
 
 //--------------------------------------------------------------
