@@ -24,7 +24,7 @@ private:
     void mousePressed(ofMouseEventArgs& event);
     void mouseDragged(ofMouseEventArgs& event);
     void mouseReleased(ofMouseEventArgs& event);
-    ofVec2f screenPos, size, prevMouseMove, prevMouseResize;
+    ofVec2f screenPos, size, prevMouseMove, prevMouseResize, prevMouseScale;
     vector<float> oneTimeSeries;
     vector<ofVec3f> threeTimeSeries;
     vector<int> events;

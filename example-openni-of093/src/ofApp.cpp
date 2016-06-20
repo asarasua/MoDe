@@ -13,6 +13,8 @@ void ofApp::setup(){
     kinect.start();
     hadUsers = false;
     
+    ofSetFrameRate(30);
+    
     featExtractor.setup(JOINT_HEAD, JOINT_TORSO);
     
     ofAddListener(kinect.userEvent, this, &ofApp::userEvent);

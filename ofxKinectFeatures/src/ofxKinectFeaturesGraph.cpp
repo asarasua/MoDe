@@ -21,6 +21,7 @@ ofxKinectFeaturesGraph::ofxKinectFeaturesGraph()
     }
     prevMouseMove = ofVec2f(0.0);
     prevMouseResize = ofVec2f(0.0);
+    prevMouseScale = ofVec2f(0.0);
 }
 
 ofxKinectFeaturesGraph::ofxKinectFeaturesGraph(float x, float y, float w, float h, float colorHue)
@@ -44,6 +45,7 @@ ofxKinectFeaturesGraph::ofxKinectFeaturesGraph(float x, float y, float w, float 
     }
     prevMouseMove = ofVec2f(0.0);
     prevMouseResize = ofVec2f(0.0);
+    prevMouseScale = ofVec2f(0.0);
 }
 
 void ofxKinectFeaturesGraph::setPos(float x, float y)
@@ -175,12 +177,7 @@ void ofxKinectFeaturesGraph::mousePressed(ofMouseEventArgs& event) {
     else if (scale >= 0.0 &&
              event.x > screenPos.x && event.x < screenPos.x + 0.03 * size.x &&
              event.y > screenPos.y + size.y - 0.03 * size.x && event.y < screenPos.y + size.y)
-        scale -= 0.05;
-    
-    //bottom-left corner 2 (change joint)
-    else if (event.x > screenPos.x + 0.03 * size.x && event.x < screenPos.x + 0.06 * size.x &&
-             event.y > screenPos.y + size.y - 0.03 * size.x && event.y < screenPos.y + size.y)
-        scale += 0.05;
+        prevMouseScale = event;
     
     //everywhere else (move)
     else if (event.x > screenPos.x && event.x < screenPos.x + size.x &&
@@ -191,6 +188,7 @@ void ofxKinectFeaturesGraph::mousePressed(ofMouseEventArgs& event) {
 void ofxKinectFeaturesGraph::mouseReleased(ofMouseEventArgs& event) {
     prevMouseMove = ofVec2f(0.0);
     prevMouseResize = ofVec2f(0.0);
+    prevMouseScale = ofVec2f(0.0);
 }
 
 
@@ -202,5 +200,10 @@ void ofxKinectFeaturesGraph::mouseDragged(ofMouseEventArgs & event)
     } else if (prevMouseResize != ofVec2f(0.0)) {
         size += event - prevMouseResize;
         prevMouseResize = event;
+    } else if (prevMouseScale != ofVec2f(0.0)) {
+        scale += (prevMouseScale.y - event.y) / 100.0;
+        if (scale <= 0.0) scale = 0.0;
+        prevMouseScale = event;
     }
+    
 }
