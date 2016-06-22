@@ -44,6 +44,9 @@ public:
 
 	
 	MocapPoint();
+    
+    /// \brief Construt a 3D vector with same value for three axes
+    MocapPoint(float v);
 
 	/// \brief Construt a 3D vector with `x`, `y` and `z` specified
 	MocapPoint(float x, float y, float z = 0);
@@ -416,6 +419,7 @@ MocapPoint operator/(float f, const MocapPoint& vec);
 
 
 inline MocapPoint::MocapPoint() : x(0), y(0), z(0) {}
+inline MocapPoint::MocapPoint(float _v) : x(_v), y(_v), z(_v) {}
 inline MocapPoint::MocapPoint(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {}
 inline MocapPoint::MocapPoint(vector<float> floatVector) : x(floatVector[0]), y(floatVector[1]), z(floatVector[2]) {}
 

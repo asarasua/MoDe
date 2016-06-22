@@ -16,6 +16,8 @@
 #include "KinectFeatures.h"
 #include <algorithm>    // std::find_if
 
+#include <iostream>
+
 //Real-time filters for MoCap by Skogstad et al ( http://www.uio.no/english/research/groups/fourms/projects/sma/subprojects/mocapfilters/ )
 
 float lpf_soft_a[] = {1,-1.2982434912,1.4634092217,-0.7106501488,0.2028836637};
@@ -41,7 +43,7 @@ float lpd2_hard_b[] = {-0.0738989849,0.1351624829,-0.0512998379,-0.0072918334,-0
 
 //____________________________________________________KinectFeatures
 
-KinectFeatures::KinectFeatures(){
+KinectFeatures::KinectFeatures() : qom(0), ci(0){
     newValues_ = false;
     setDepth(30);
     aFilter = lpf_soft_a;
@@ -52,14 +54,9 @@ KinectFeatures::KinectFeatures(){
     bLpd2 = lpd2_soft_b;
     //TODO
     
-    for (int i = 0; i < depth_; i++) {
-        qom_.push_back(0.0);
-        ci_.push_back(0.0);
-    }
-    
 }
 
-KinectFeatures::KinectFeatures(int head, int torso){
+KinectFeatures::KinectFeatures(int head, int torso, int depth) : qom(depth), ci(depth){
     newValues_ = false;
     setDepth(30);
     aFilter = lpf_soft_a;
@@ -70,16 +67,14 @@ KinectFeatures::KinectFeatures(int head, int torso){
     bLpd2 = lpd2_soft_b;
     head_ = head;
     torso_ = torso;
-    
-    for (int i = 0; i < depth_; i++) {
-        qom_.push_back(0.0);
-        ci_.push_back(0.0);
-    }
 }
 
-void KinectFeatures::setup(int head, int torso){
+void KinectFeatures::setup(int head, int torso, int depth){
     head_ = head;
     torso_ = torso;
+    setDepth(depth);
+    qom.setDepth(depth);
+    ci.setDepth(depth);
 }
 
 void KinectFeatures::setFilterLevel(int filterLevel){
@@ -191,28 +186,12 @@ void KinectFeatures::update(map<int, MocapPoint> joints){
         meanVels_.pop_back();
     }
     
-    //qom_ = accumulate(meanVels_.begin(), meanVels_.end(), 0.0) / (meanVels_.size());
-    // QOM insert
-    if (qom_.size() <= depth_) {
-        qom_.insert(qom_.begin(), accumulate(meanVels_.begin(), meanVels_.end(), 0.0) / (meanVels_.size()));
-    }
-    // QOM delete
-    if (qom_.size() > depth_) {
-        qom_.pop_back();
-    }
+    qom.push(accumulate(meanVels_.begin(), meanVels_.end(), 0.0) / (meanVels_.size()));
 
 	checkMaxAndMin(getQomHistory(5), NO_JOINT, FEAT_QOM);
     
+    ci.push(( -4.0 + (( abs(xMax-xMin) + abs(yMax-yMin) + abs(zMax-zMin) ) / h) ) / 6.0);
     
-    //ci_ = ( -4.0 + (( abs(xMax-xMin) + abs(yMax-yMin) + abs(zMax-zMin) ) / h) ) / 6.0;
-    if (ci_.size() <= depth_) {
-        ci_.insert(ci_.begin(), ( -4.0 + (( abs(xMax-xMin) + abs(yMax-yMin) + abs(zMax-zMin) ) / h) ) / 6.0);
-    }
-    // CI delete
-    if (ci_.size() > depth_) {
-        ci_.pop_back();
-    }
-
 	checkMaxAndMin(getCIHistory(5), NO_JOINT, FEAT_CI);
     
     //TODO solve this!!
@@ -234,23 +213,23 @@ void KinectFeatures::computeJointDescriptors(int jointId, MocapPoint jointPos, c
     MocapElement* mocapElement = getElement(jointId);
     
     //Position
-    mocapElement->setPosition(jointPos);
+    mocapElement->position.push(jointPos);
     
     //Filtered position
-    mocapElement->setPositionFiltered(applyFilter(mocapElement->getPosition(), mocapElement->getPositionFiltered(), aFilter, bFilter));
+    mocapElement->positionFiltered.push(applyFilter(mocapElement->position.getData(), mocapElement->positionFiltered.getData(), aFilter, bFilter));
     
     //Velocity
-    mocapElement->setVelocity(applyFilter(mocapElement->getPosition(), mocapElement->getVelocity(), aLpd1, bLpd1));
+    mocapElement->velocity.push(applyFilter(mocapElement->position.getData(), mocapElement->velocity.getData(), aLpd1, bLpd1));
 	checkMaxAndMin(getVelocityHistory(jointId, 5), jointId, FEAT_VELOCITY);
     
     //Acceleration
-    mocapElement->setAcceleration(applyFilter(mocapElement->getPosition(), mocapElement->getAcceleration(), aLpd2, bLpd2));
+    mocapElement->acceleration.push(applyFilter(mocapElement->position.getData(), mocapElement->acceleration.getData(), aLpd2, bLpd2));
 	checkMaxAndMin(getAccelerationHistory(jointId, 5), jointId, FEAT_ACCELERATION);
     
     //Acceleration along trajectory
-    MocapPoint acc = mocapElement->getAcceleration()[0];
-	MocapPoint vel = mocapElement->getVelocity()[0];
-    mocapElement->setAccelerationTrajectory(acc.dot(vel) / vel.length());
+    MocapPoint acc = mocapElement->acceleration.getData().back();
+	MocapPoint vel = mocapElement->velocity.getData().back();
+    mocapElement->accelerationTrajectory.push(acc.dot(vel) / vel.length());
 	checkMaxAndMin(getAccelerationTrajectoryHistory(jointId, 5), jointId, FEAT_ACCELERATION_TRAJECTORY);
     
     //Relative position to torso
@@ -259,7 +238,7 @@ void KinectFeatures::computeJointDescriptors(int jointId, MocapPoint jointPos, c
     relPosToTorso[0] = (jointPos.x - getPositionFiltered(torso_).x) / (h * 1.8);
     relPosToTorso[1] = (jointPos.y - getPositionFiltered(torso_).y) / (h * 1.8);
     relPosToTorso[2] = -((jointPos.z - getPositionFiltered(torso_).z) / h) / 1.4;
-    mocapElement->setRelativePositionToTorso(relPosToTorso);
+    mocapElement->relativePositionToTorso.push(relPosToTorso);
 	checkMaxAndMin(getRelativePositionToTorsoHistory(jointId, 5), jointId, FEAT_RELATIVEPOSTOTORSO);
     
     //TODO: auto hand
@@ -276,6 +255,8 @@ MocapElement* KinectFeatures::getElement(int _id){
 }
 
 MocapPoint KinectFeatures::applyFilter(vector<MocapPoint> x, vector<MocapPoint> y, float *a, float *b){
+    reverse(x.begin(), x.end());
+    reverse(y.begin(), y.end());
 	return b[0] * x[0] + b[1] * x[1] + b[2] * x[2] + b[3] * x[3] + b[4] * x[4] - (a[1] * y[0] + a[2] * y[1] + a[3] * y[2] + a[4] * y[3]);
 }
 
@@ -384,7 +365,7 @@ vector<T> KinectFeatures::createVector(T element){
 
 MocapPoint KinectFeatures::getPosition(int j){
     if (getElement(j)) {
-        return getElement(j)->getPosition()[0];
+        return getElement(j)->position.getData().back();
     } else {
         return MocapPoint(0,0,0);
     }
@@ -392,7 +373,7 @@ MocapPoint KinectFeatures::getPosition(int j){
 
 vector<MocapPoint> KinectFeatures::getPositionHistory(int j){
     if (getElement(j)) {
-        return getElement(j)->getPosition();
+        return getElement(j)->position.getData();
     } else {
         return createVector(MocapPoint(0.0,0.0,0.0));
     }
@@ -400,8 +381,8 @@ vector<MocapPoint> KinectFeatures::getPositionHistory(int j){
 
 vector<MocapPoint> KinectFeatures::getPositionHistory(int j, int frames){
     if (getElement(j)) {
-        vector<MocapPoint> fullHistory = getElement(j)->getPosition();
-        vector<MocapPoint> history(fullHistory.begin(), fullHistory.begin() + frames);
+        vector<MocapPoint> fullHistory = getElement(j)->position.getData();
+        vector<MocapPoint> history(fullHistory.end()-frames, fullHistory.end());
         return history;
     } else {
         return createVector(MocapPoint(0.0,0.0,0.0));
@@ -410,7 +391,7 @@ vector<MocapPoint> KinectFeatures::getPositionHistory(int j, int frames){
 
 MocapPoint KinectFeatures::getPositionFiltered(int j){
     if (getElement(j)) {
-        return getElement(j)->getPositionFiltered()[0];
+        return getElement(j)->position.getData().back();
     } else {
         return MocapPoint(0,0,0);
     }
@@ -418,7 +399,7 @@ MocapPoint KinectFeatures::getPositionFiltered(int j){
 
 vector<MocapPoint> KinectFeatures::getPositionFilteredHistory(int j){
     if (getElement(j)) {
-        return getElement(j)->getPositionFiltered();
+        return getElement(j)->positionFiltered.getData();
     } else {
         return createVector(MocapPoint(0.0,0.0,0.0));
     }
@@ -426,8 +407,8 @@ vector<MocapPoint> KinectFeatures::getPositionFilteredHistory(int j){
 
 vector<MocapPoint> KinectFeatures::getPositionFilteredHistory(int j, int frames){
     if (getElement(j)) {
-        vector<MocapPoint> fullHistory = getElement(j)->getPositionFiltered();
-        vector<MocapPoint> history(fullHistory.begin(), fullHistory.begin() + frames);
+        vector<MocapPoint> fullHistory = getElement(j)->positionFiltered.getData();
+        vector<MocapPoint> history(fullHistory.end()-frames, fullHistory.end());
         return history;
     } else {
         return createVector(MocapPoint(0.0,0.0,0.0));
@@ -436,7 +417,7 @@ vector<MocapPoint> KinectFeatures::getPositionFilteredHistory(int j, int frames)
 
 MocapPoint KinectFeatures::getVelocity(int j){
     if (getElement(j)) {
-        return getElement(j)->getVelocity()[0];
+        return getElement(j)->velocity.getData().back();
     } else {
         return MocapPoint(0.0,0.0,0.0);
     }
@@ -444,7 +425,7 @@ MocapPoint KinectFeatures::getVelocity(int j){
 
 vector<MocapPoint> KinectFeatures::getVelocityHistory(int j){
     if (getElement(j)) {
-        return getElement(j)->getVelocity();
+        return getElement(j)->velocity.getData();
     } else {
         return createVector(MocapPoint(0.0,0.0,0.0));
     }
@@ -452,8 +433,8 @@ vector<MocapPoint> KinectFeatures::getVelocityHistory(int j){
 
 vector<MocapPoint> KinectFeatures::getVelocityHistory(int j, int frames){
     if (getElement(j)) {
-        vector<MocapPoint> fullHistory = getElement(j)->getVelocity();
-        vector<MocapPoint> history(fullHistory.begin(), fullHistory.begin() + frames);
+        vector<MocapPoint> fullHistory = getElement(j)->velocity.getData();
+        vector<MocapPoint> history(fullHistory.end()-frames, fullHistory.end());
         return history;
     } else {
         return createVector(MocapPoint(0.0,0.0,0.0));
@@ -462,49 +443,50 @@ vector<MocapPoint> KinectFeatures::getVelocityHistory(int j, int frames){
 
 float KinectFeatures::getVelocityMagnitude(int j){
     if (getElement(j)) {
-        return getElement(j)->getVelocity()[0].length();
+        return getElement(j)->velocity.getData().back().length();
     } else {
         return 0.0;
     }
 }
 
 MocapPoint KinectFeatures::getVelocityMean(int j, int frames){
-    if (getElement(j)) {
-        float sumx = 0, sumy = 0, sumz = 0.0;
-        for (int i = 0; i < frames && i < getElement(j)->getVelocity().size(); i++) {
-            sumx += getElement(j)->getVelocity()[i].x;
-            sumy += getElement(j)->getVelocity()[i].y;
-            sumz += getElement(j)->getVelocity()[i].z;
-        }
-        if (frames <= getElement(j)->getVelocity().size()) {
-            return MocapPoint(sumx / frames, sumy / frames, sumz / frames);
-        } else {
-            return MocapPoint(sumx / getElement(j)->getVelocity().size(), sumy / getElement(j)->getVelocity().size(), sumz / getElement(j)->getVelocity().size());
-        }
-    } else {
+//    if (getElement(j)) {
+//        getElement(j)->velocity.getMean();
+//        float sumx = 0, sumy = 0, sumz = 0.0;
+//        for (int i = 0; i < frames && i < getElement(j)->getVelocity().size(); i++) {
+//            sumx += getElement(j)->getVelocity()[i].x;
+//            sumy += getElement(j)->getVelocity()[i].y;
+//            sumz += getElement(j)->getVelocity()[i].z;
+//        }
+//        if (frames <= getElement(j)->getVelocity().size()) {
+//            return MocapPoint(sumx / frames, sumy / frames, sumz / frames);
+//        } else {
+//            return MocapPoint(sumx / getElement(j)->getVelocity().size(), sumy / getElement(j)->getVelocity().size(), sumz / getElement(j)->getVelocity().size());
+//        }
+//    } else {
         return MocapPoint(0.0,0.0,0.0);
-    }
+//    }
 }
 
 float KinectFeatures::getVelocityMagnitudeMean(int j, int frames){
-    if (getElement(j)) {
-        float sum = 0.0;
-        for (int i = 0; i < frames && i < getElement(j)->getVelocity().size(); i++) {
-            sum += getElement(j)->getVelocity()[i].length();
-        }
-        if (frames <= getElement(j)->getVelocity().size()) {
-            return sum / frames;
-        } else {
-            return sum / getElement(j)->getVelocity().size();
-        }
-    } else {
+//    if (getElement(j)) {
+//        float sum = 0.0;
+//        for (int i = 0; i < frames && i < getElement(j)->getVelocity().size(); i++) {
+//            sum += getElement(j)->getVelocity()[i].length();
+//        }
+//        if (frames <= getElement(j)->getVelocity().size()) {
+//            return sum / frames;
+//        } else {
+//            return sum / getElement(j)->getVelocity().size();
+//        }
+//    } else {
         return 0.0;
-    }
+    //}
 }
 
 MocapPoint KinectFeatures::getAcceleration(int j){
     if (getElement(j)) {
-        return getElement(j)->getAcceleration()[0];
+        return getElement(j)->acceleration.getData().back();
     } else {
         return MocapPoint(0.0,0.0,0.0);
     }
@@ -512,7 +494,7 @@ MocapPoint KinectFeatures::getAcceleration(int j){
 
 vector<MocapPoint> KinectFeatures::getAccelerationHistory(int j){
     if (getElement(j)) {
-        return getElement(j)->getAcceleration();
+        return getElement(j)->acceleration.getData();
     } else {
         return createVector(MocapPoint(0.0,0.0,0.0));
     }
@@ -520,8 +502,8 @@ vector<MocapPoint> KinectFeatures::getAccelerationHistory(int j){
 
 vector<MocapPoint> KinectFeatures::getAccelerationHistory(int j, int frames){
     if (getElement(j)) {
-        vector<MocapPoint> fullHistory = getElement(j)->getAcceleration();
-        vector<MocapPoint> history(fullHistory.begin(), fullHistory.begin() + frames);
+        vector<MocapPoint> fullHistory = getElement(j)->acceleration.getData();
+        vector<MocapPoint> history(fullHistory.end()-frames, fullHistory.end());
         return history;
     } else {
         return createVector(MocapPoint(0.0,0.0,0.0));
@@ -530,49 +512,49 @@ vector<MocapPoint> KinectFeatures::getAccelerationHistory(int j, int frames){
 
 float KinectFeatures::getAccelerationMagnitude(int j){
     if (getElement(j)) {
-        return getElement(j)->getAcceleration()[0].length();
+        return getElement(j)->acceleration.getData().back().length();
     } else {
         return 0.0;
     }
 }
 
 MocapPoint KinectFeatures::getAccelerationMean(int j, int frames){
-    if (getElement(j)) {
-        float sumx = 0, sumy = 0, sumz = 0.0;
-        for (int i = 0; i < frames && i < getElement(j)->getVelocity().size(); i++) {
-            sumx += getElement(j)->getAcceleration()[i].x;
-            sumy += getElement(j)->getAcceleration()[i].y;
-            sumz += getElement(j)->getAcceleration()[i].z;
-        }
-        if (frames <= getElement(j)->getVelocity().size()) {
-            return MocapPoint(sumx / frames, sumy / frames, sumz / frames);
-        } else {
-            return MocapPoint(sumx / getElement(j)->getAcceleration().size(), sumy / getElement(j)->getAcceleration().size(), sumz / getElement(j)->getAcceleration().size());
-        }
-    } else {
+//    if (getElement(j)) {
+//        float sumx = 0, sumy = 0, sumz = 0.0;
+//        for (int i = 0; i < frames && i < getElement(j)->getVelocity().size(); i++) {
+//            sumx += getElement(j)->getAcceleration()[i].x;
+//            sumy += getElement(j)->getAcceleration()[i].y;
+//            sumz += getElement(j)->getAcceleration()[i].z;
+//        }
+//        if (frames <= getElement(j)->getVelocity().size()) {
+//            return MocapPoint(sumx / frames, sumy / frames, sumz / frames);
+//        } else {
+//            return MocapPoint(sumx / getElement(j)->getAcceleration().size(), sumy / getElement(j)->getAcceleration().size(), sumz / getElement(j)->getAcceleration().size());
+//        }
+//    } else {
         return MocapPoint(0.0,0.0,0.0);
-    }
+//    }
 }
 
 float KinectFeatures::getAccelerationMagnitudeMean(int j, int frames){
-    if (getElement(j)) {
-        float sum = 0.0;
-        for (int i = 0; i < frames && i < getElement(j)->getAcceleration().size(); i++) {
-            sum += getElement(j)->getAcceleration()[i].length();
-        }
-        if (frames <= getElement(j)->getAcceleration().size()) {
-            return sum / frames;
-        } else {
-            return sum / getElement(j)->getAcceleration().size();
-        }
-    } else {
+//    if (getElement(j)) {
+//        float sum = 0.0;
+//        for (int i = 0; i < frames && i < getElement(j)->getAcceleration().size(); i++) {
+//            sum += getElement(j)->getAcceleration()[i].length();
+//        }
+//        if (frames <= getElement(j)->getAcceleration().size()) {
+//            return sum / frames;
+//        } else {
+//            return sum / getElement(j)->getAcceleration().size();
+//        }
+//    } else {
         return 0.0;
-    }
+//    }
 }
 
 float KinectFeatures::getAccelerationTrajectory(int j){
     if (getElement(j)){
-        return getElement(j)->getAccelerationTrajectory()[0];
+        return getElement(j)->accelerationTrajectory.getData().back();
     } else {
         return 0.0;
     }
@@ -580,7 +562,7 @@ float KinectFeatures::getAccelerationTrajectory(int j){
 
 vector<float> KinectFeatures::getAccelerationTrajectoryHistory(int j){
     if (getElement(j)) {
-        return getElement(j)->getAccelerationTrajectory();
+        return getElement(j)->accelerationTrajectory.getData();
     } else {
         return createVector(0.0f);
     }
@@ -588,8 +570,8 @@ vector<float> KinectFeatures::getAccelerationTrajectoryHistory(int j){
 
 vector<float> KinectFeatures::getAccelerationTrajectoryHistory(int j, int frames){
     if (getElement(j)) {
-        vector<float> fullHistory = getElement(j)->getAccelerationTrajectory();
-        vector<float> history(fullHistory.begin(), fullHistory.begin() + frames);
+        vector<float> fullHistory = getElement(j)->accelerationTrajectory.getData();
+        vector<float> history(fullHistory.end()-frames, fullHistory.end());
         return history;
     } else {
         return createVector(0.0f);
@@ -597,24 +579,24 @@ vector<float> KinectFeatures::getAccelerationTrajectoryHistory(int j, int frames
 }
 
 float KinectFeatures::getAccelerationTrajectoryMean(int j, int frames){
-    if (getElement(j)) {
-        float sum = 0.0;
-        for (int i = 0; i < frames && i < getElement(j)->getAccelerationTrajectory().size(); i++) {
-            sum += getElement(j)->getAccelerationTrajectory()[i];
-        }
-        if (frames <= getElement(j)->getAccelerationTrajectory().size()) {
-            return sum / frames;
-        } else {
-            return sum / getElement(j)->getAccelerationTrajectory().size();
-        }
-    } else {
+//    if (getElement(j)) {
+//        float sum = 0.0;
+//        for (int i = 0; i < frames && i < getElement(j)->getAccelerationTrajectory().size(); i++) {
+//            sum += getElement(j)->getAccelerationTrajectory()[i];
+//        }
+//        if (frames <= getElement(j)->getAccelerationTrajectory().size()) {
+//            return sum / frames;
+//        } else {
+//            return sum / getElement(j)->getAccelerationTrajectory().size();
+//        }
+//    } else {
         return 0.0;
-    }
+//    }
 }
 
 MocapPoint KinectFeatures::getRelativePositionToTorso(int j){
     if (getElement(j)) {
-        return getElement(j)->getRelativePositionToTorso()[0];
+        return getElement(j)->relativePositionToTorso.getData().back();
     } else {
         return MocapPoint(0.0,0.0,0.0);
     }
@@ -622,7 +604,7 @@ MocapPoint KinectFeatures::getRelativePositionToTorso(int j){
 
 vector<MocapPoint> KinectFeatures::getRelativePositionToTorsoHistory(int j){
     if (getElement(j)) {
-        return getElement(j)->getRelativePositionToTorso();
+        return getElement(j)->relativePositionToTorso.getData();
     } else {
         return createVector(MocapPoint(0.0,0.0,0.0));
     }
@@ -630,8 +612,8 @@ vector<MocapPoint> KinectFeatures::getRelativePositionToTorsoHistory(int j){
 
 vector<MocapPoint> KinectFeatures::getRelativePositionToTorsoHistory(int j, int frames){
     if (getElement(j)) {
-        vector<MocapPoint> fullHistory = getElement(j)->getRelativePositionToTorso();
-        vector<MocapPoint> history(fullHistory.begin(), fullHistory.begin() + frames);
+        vector<MocapPoint> fullHistory = getElement(j)->relativePositionToTorso.getData();
+        vector<MocapPoint> history(fullHistory.end()-frames, fullHistory.end());
         return history;
     } else {
         return createVector(MocapPoint(0.0,0.0,0.0));
@@ -646,72 +628,93 @@ float KinectFeatures::getAngle(int j1, int j2, int j3){
 }
 
 MocapPoint KinectFeatures::getAccelerationCrest(int j, int frames){
-    vector<MocapPoint> acc = getAccelerationHistory(j, frames);
-    vector<float> x_vec, y_vec, z_vec, x_max, y_max, z_max;
-    float rms_x = 0.0, rms_y = 0.0, rms_z = 0.0;
+    
+    if (getElement(j)) {
+        cout << ":::" << endl;
+        vector<MocapPoint> acc = getAccelerationHistory(j, frames);
+        vector<double> x_vec, y_vec, z_vec, x_max, y_max, z_max;
 
-    for (auto it : acc) {
-        x_vec.push_back(it.x);
-        rms_x += it.x * it.x;
-        y_vec.push_back(it.y);
-        rms_y += it.y * it.y;
-        z_vec.push_back(it.z);
-        rms_z += it.z * it.z;
+        for (auto it : acc) {
+            x_vec.push_back(it.x);
+            y_vec.push_back(it.y);
+            cout << it.y << ", ";
+            z_vec.push_back(it.z);
+        }
+        
+    //    double sq_sum_x = inner_product(x_vec.begin(), x_vec.end(), x_vec.begin(), 0.0);
+    //    double sq_sum_y = inner_product(y_vec.begin(), y_vec.end(), y_vec.begin(), 0.0);
+    //    double sq_sum_z = inner_product(z_vec.begin(), z_vec.end(), z_vec.begin(), 0.0);
+    //    
+    //    double mean_x = accumulate(x_vec.begin(), x_vec.end(), 0.0) / acc.size();
+    //    double mean_y = accumulate(y_vec.begin(), y_vec.end(), 0.0) / acc.size();
+    //    double mean_z = accumulate(z_vec.begin(), z_vec.end(), 0.0) / acc.size();
+    //    
+    //    double std_x = sqrt(sq_sum_x / acc.size() - mean_x * mean_x);
+    //    double std_y = sqrt(sq_sum_y / acc.size() - mean_y * mean_y);
+    //    double std_z = sqrt(sq_sum_z / acc.size() - mean_z * mean_z);
+        
+        //Find maxima
+        float threshold_y = getElement(j)->acceleration.getMean().y + getElement(j)->acceleration.getStdev().y;
+        cout << endl << "th: " << threshold_y << " (" << getElement(j)->acceleration.getMean().y << ", " << getElement(j)->acceleration.getStdev().y << ")" << endl;
+        cout << endl << "peaks: " << endl;
+        for (int i = 0; i < acc.size()-4; i++) {
+            if (distance(x_vec.begin()+i, max_element(x_vec.begin()+i, x_vec.begin()+i+4)) == 2){
+                x_max.push_back(x_vec[i + 2]);
+            }
+            if (distance(y_vec.begin()+i, max_element(y_vec.begin()+i, y_vec.begin()+i+4)) == 2
+                && y_vec[i + 2] > threshold_y){
+                y_max.push_back(y_vec[i + 2]);
+                cout << y_vec[i + 2] << endl;
+            }
+            if (distance(z_vec.begin()+i, max_element(z_vec.begin()+i, z_vec.begin()+i+4)) == 2){
+                z_max.push_back(z_vec[i + 2]);
+            }
+        }
+        
+        MocapPoint crest(0.0, 0.0, 0.0);
+        if (x_max.size()) crest.x = ( accumulate( x_max.begin(), x_max.end(), 0.0)/x_max.size() ) / getElement(j)->acceleration.getStdev().x; //denom is RMS
+        if (y_max.size()) crest.y = ( accumulate( y_max.begin(), y_max.end(), 0.0)/y_max.size() ) / getElement(j)->acceleration.getStdev().y;
+        if (z_max.size()) crest.z = ( accumulate( z_max.begin(), z_max.end(), 0.0)/z_max.size() ) / getElement(j)->acceleration.getStdev().z;
+        
+        cout << "======" << endl;
+        
+        return crest;
+    } else {
+        return MocapPoint(0.0,0.0,0.0);
+    }    
+}
+
+MocapPoint KinectFeatures::getRms(int j, int frames){
+    if (getElement(j)) {
+        return getElement(j)->acceleration.getRms();
+    } else {
+        return MocapPoint(0.0,0.0,0.0);
     }
-    
-    rms_x = sqrt(rms_x / acc.size());
-    rms_y = sqrt(rms_y / acc.size());
-    rms_z = sqrt(rms_z / acc.size());
-    
-    //Find maxima
-    for (int i = 0; i < acc.size()-4; i++) {
-        if (distance(x_vec.begin()+i, max_element(x_vec.begin()+i, x_vec.end()+i+4)) == 2){
-            x_max.push_back(x_vec[i + 2]);
-        }
-        if (distance(y_vec.begin()+i, max_element(y_vec.begin()+i, y_vec.end()+i+4)) == 2){
-            y_max.push_back(y_vec[i + 2]);
-        }
-        if (distance(z_vec.begin()+i, max_element(z_vec.begin()+i, z_vec.end()+i+4)) == 2){
-            z_max.push_back(z_vec[i + 2]);
-        }
-    }
-    
-    float foox = ( accumulate( x_max.begin(), x_max.end(), 0.0)/x_max.size() ) / rms_x;
-    float foo = ( accumulate( y_max.begin(), y_max.end(), 0.0)/y_max.size() ) / rms_y;
-    float fooz = ( accumulate( z_max.begin(), z_max.end(), 0.0)/z_max.size() ) / rms_z;
-    
-    MocapPoint crest(0.0, 0.0, 0.0);
-    if (x_max.size()) crest.x = ( accumulate( x_max.begin(), x_max.end(), 0.0)/x_max.size() ) / rms_x;
-    if (y_max.size()) crest.y = ( accumulate( y_max.begin(), y_max.end(), 0.0)/y_max.size() ) / rms_y;
-    if (z_max.size()) crest.z = ( accumulate( z_max.begin(), z_max.end(), 0.0)/z_max.size() ) / rms_z;
-    
-    return crest;
-    
 }
 
 float KinectFeatures::getQom(){
-    return qom_[0];
+    return qom.getData().back();
 }
 
 vector<float> KinectFeatures::getQomHistory(){
-    return qom_;
+    return qom.getData();
 }
 
 vector<float> KinectFeatures::getQomHistory(int frames){
-    vector<float> history(qom_.begin(), qom_.begin() + frames);
+    vector<float> history(qom.getData().end()-frames, qom.getData().end());
     return history;
 }
 
 float KinectFeatures::getCI(){
-    return ci_[0];
+    return ci.getData().back();
 }
 
 vector<float> KinectFeatures::getCIHistory(){
-    return ci_;
+    return ci.getData();
 }
 
 vector<float> KinectFeatures::getCIHistory(int frames){
-    vector<float> history(ci_.begin(), ci_.begin() + frames);
+    vector<float> history(ci.getData().end()-frames, ci.getData().end());
     return history;
 }
 

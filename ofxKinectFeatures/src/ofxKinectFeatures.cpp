@@ -7,7 +7,7 @@
 
 void ofxKinectFeatures::setup(int head, int torso)
 {
-	featExtractor->setup(head, torso);
+	featExtractor->setup(head, torso, 60);
 }
 
 void ofxKinectFeatures::update(map<int, ofPoint> joints)
@@ -180,6 +180,10 @@ ofPoint ofxKinectFeatures::getAccelerationCrest(int j, int frames){
     return toOfPoint(featExtractor->getAccelerationCrest(j, frames));
 }
 
+ofPoint ofxKinectFeatures::getRms(int j, int frames){
+    return toOfPoint(featExtractor->getRms(j, frames));
+}
+
 float ofxKinectFeatures::getQom()
 {
 	return featExtractor->getQom();
@@ -217,7 +221,7 @@ bool ofxKinectFeatures::isNewDataAvailable()
 
 ofPoint ofxKinectFeatures::toOfPoint(MocapPoint point)
 {
-	return ofPoint(point.x, point.y, point.y);
+	return ofPoint(point.x, point.y, point.z);
 }
 
 vector<ofPoint> ofxKinectFeatures::toOfPointVector(vector<MocapPoint> pointVector)

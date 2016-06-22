@@ -27,8 +27,12 @@ void ofApp::setup(){
     j = JOINT_RIGHT_HAND;
     f = VELOCITY_MEAN;
     
-    ofPtr<ofxKinectFeaturesGraph> g1(new ofxKinectFeaturesGraph(30, 30, 400, 100, 0));
+    ofPtr<ofxKinectFeaturesGraph> g1(new ofxKinectFeaturesGraph(30, 30, 400, 100, 0, "acc"));
     graphs.push_back(g1);
+    ofPtr<ofxKinectFeaturesGraph> g2(new ofxKinectFeaturesGraph(60, 30, 400, 100, 100, "rms"));
+    graphs.push_back(g2);
+    ofPtr<ofxKinectFeaturesGraph> g3(new ofxKinectFeaturesGraph(60, 70, 400, 100, 200, "crest"));
+    graphs.push_back(g3);
 }
 
 //--------------------------------------------------------------
@@ -59,8 +63,9 @@ void ofApp::update(){
         kinect.setPaused(false);
     }
     
-    for (auto graph : graphs)
-        graph->addValue(featExtractor.getAcceleration(j));
+    graphs[0]->addValue(featExtractor.getAcceleration(j).y);
+    graphs[1]->addValue(featExtractor.getRms(j, 30).y);
+    graphs[2]->addValue(featExtractor.getAccelerationCrest(j, 30).y);
     
 }
 

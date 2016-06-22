@@ -18,6 +18,70 @@
 
 #include "mocapPoint.h"
 
+#define _stdev(cnt, sum, ssq) sqrt((((double)(cnt))*ssq-pow((double)(sum),2)) / ((double)(cnt)*((double)(cnt)-1)))
+
+template <typename T> class MocapDescriptor {
+private:
+    vector<T> data;
+    T sum;
+    T ssq;
+    
+    MocapPoint _sqrt(double value){
+        return sqrt(value);
+    }
+    
+    MocapPoint _sqrt(MocapPoint point){
+        return MocapPoint(std::sqrt(point.x), std::sqrt(point.y), std::sqrt(point.z));
+    }
+    
+    double stdev (int cnt, double sum, double ssq){
+        return sqrt((((double)(cnt))*ssq-pow((double)(sum),2)) / ((double)(cnt)*((double)(cnt)-1)));
+    }
+    
+    MocapPoint stdev(int cnt, MocapPoint sum, MocapPoint ssq){
+        return MocapPoint(stdev(cnt, sum.x, ssq.x), stdev(cnt, sum.y, ssq.y), stdev(cnt, sum.z, ssq.z)  );
+    }
+    
+public:
+    MocapDescriptor(int depth) : sum(0), ssq(0)  {
+        data.resize(depth);
+    }
+    ~MocapDescriptor() {}
+    
+    void push(T newValue) {
+        if (data.size() <= data.capacity()){
+            T oldestValue = data.front();
+            sum -= oldestValue;
+            ssq -= oldestValue*oldestValue;
+            data.erase(data.begin());
+        }
+        data.push_back(newValue);
+        sum += newValue;
+        ssq += newValue*newValue;
+    }
+    double size() {
+        return data.size();
+    }
+    T getMean() {
+        return sum/size();
+    }
+    T getStdev() {
+        return stdev(size(), sum, ssq);
+    }
+    T getRms() {
+        return _sqrt(ssq / size());
+    }
+    
+    vector<T> getData() {
+        return data;
+    }
+    void setDepth(int depth){
+        data.resize(depth);
+    }
+    
+};
+
+
 class MocapElement{
 public:
     MocapElement();
@@ -26,40 +90,16 @@ public:
     unsigned int getElementId();
     void setElementId(int newId);
     
-    void setHistoryDepth(int depth);    
-    
-    vector<MocapPoint> getPosition();
-    void setPosition(MocapPoint position);
-    
-    vector<MocapPoint> getPositionFiltered();
-    void setPositionFiltered(MocapPoint positionFiltered);
-    
-    vector<MocapPoint> getVelocity();
-    void setVelocity(MocapPoint velocity);
-    
-    vector<MocapPoint> getAcceleration();
-    void setAcceleration(MocapPoint acceleration);
-    
-    vector<float> getAccelerationTrajectory();
-    void setAccelerationTrajectory(float accelerationTrajectory);
-    
-    vector<float> getDistanceToTorso();
-    void setDistanceToTorso(float distanceToTorso);
-    
-    vector<MocapPoint> getRelativePositionToTorso();
-    void setRelativePositionToTorso(MocapPoint relativePositionToTorso);
+    MocapDescriptor<MocapPoint> position;
+    MocapDescriptor<MocapPoint> positionFiltered;
+    MocapDescriptor<MocapPoint> velocity;
+    MocapDescriptor<MocapPoint> acceleration;    
+    MocapDescriptor<float> accelerationTrajectory;
+    MocapDescriptor<MocapPoint> relativePositionToTorso;
 
 private:
     int historyDepth_;
-    int elementId_;
-    
-    vector<MocapPoint> position_;
-    vector<MocapPoint> positionFiltered_;
-    vector<MocapPoint> velocity_;
-    vector<MocapPoint> acceleration_;
-    vector<float> accelerationTrajectory_;
-    vector<float> distanceToTorso_;
-    vector<MocapPoint> relativePositionToTorso_;
+    int elementId_;    
 };
 
 #endif

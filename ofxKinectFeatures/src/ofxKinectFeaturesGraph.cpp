@@ -7,7 +7,7 @@ ofxKinectFeaturesGraph::ofxKinectFeaturesGraph()
     ofAddListener(ofEvents().mouseReleased, this, &ofxKinectFeaturesGraph::mouseReleased);
     
     hue = 0.0;
-    scale = 1.0;
+    scale = 0.2;
     text = "graph";
     
     screenPos = ofVec2f(0, 0);
@@ -24,7 +24,7 @@ ofxKinectFeaturesGraph::ofxKinectFeaturesGraph()
     prevMouseScale = ofVec2f(0.0);
 }
 
-ofxKinectFeaturesGraph::ofxKinectFeaturesGraph(float x, float y, float w, float h, float colorHue)
+ofxKinectFeaturesGraph::ofxKinectFeaturesGraph(float x, float y, float w, float h, float colorHue, string graphText)
 {
     screenPos = ofVec2f(x, y);
     size = ofVec2f(w, h);
@@ -34,8 +34,8 @@ ofxKinectFeaturesGraph::ofxKinectFeaturesGraph(float x, float y, float w, float 
     ofAddListener(ofEvents().mouseDragged, this, &ofxKinectFeaturesGraph::mouseDragged);
     ofAddListener(ofEvents().mouseReleased, this, &ofxKinectFeaturesGraph::mouseReleased);
     
-    scale = 1.0;
-    text = "graph";
+    scale = 0.2;
+    text = graphText;
     
     mode = MODE_1D;
     for (size_t i = 0; i < N_POINTS; i++)
@@ -46,6 +46,10 @@ ofxKinectFeaturesGraph::ofxKinectFeaturesGraph(float x, float y, float w, float 
     prevMouseMove = ofVec2f(0.0);
     prevMouseResize = ofVec2f(0.0);
     prevMouseScale = ofVec2f(0.0);
+}
+
+void ofxKinectFeaturesGraph::setText(string graphText){
+    text = graphText;
 }
 
 void ofxKinectFeaturesGraph::setPos(float x, float y)

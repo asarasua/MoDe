@@ -52,6 +52,8 @@ enum
 	FEAT_CI
 };
 
+#define _stdev(cnt, sum, ssq) sqrt((((double)(cnt))*ssq-pow((double)(sum),2)) / ((double)(cnt)*((double)(cnt)-1)))
+
 class MocapBeat{
 
 public:
@@ -64,9 +66,9 @@ class KinectFeatures {
 	vector <class BeatListener *> beatListeners;
 public:
     KinectFeatures();
-    KinectFeatures(int head, int torso);
+    KinectFeatures(int head, int torso, int depth);
     
-    void setup(int head, int torso);
+    void setup(int head, int torso, int depth);
     void update(map<int, MocapPoint> joints);
     
     void setFilterLevel(int filterLevel);
@@ -112,6 +114,7 @@ public:
     //SPECIAL DESCRIPTORS
     float getAngle(int j1, int j2, int j3);
     MocapPoint getAccelerationCrest(int j, int frames);
+    MocapPoint getRms(int j, int frames);
     
     //OVERALL DESCRIPTORS
     float getQom();
@@ -141,7 +144,7 @@ private:
     float *bLpd2;
     
     //overall descriptors
-    vector<float> qom_, ci_;//, symmetry_, yMaxHands_;
+    MocapDescriptor<float> qom, ci;//, symmetry_, yMaxHands_;
     vector<float> meanVels_;
     
     bool newValues_;
