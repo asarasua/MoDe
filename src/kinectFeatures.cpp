@@ -630,14 +630,14 @@ float KinectFeatures::getAngle(int j1, int j2, int j3){
 MocapPoint KinectFeatures::getAccelerationCrest(int j, int frames){
     
     if (getElement(j)) {
-        cout << ":::" << endl;
+//        cout << ":::" << endl;
         vector<MocapPoint> acc = getAccelerationHistory(j, frames);
         vector<double> x_vec, y_vec, z_vec, x_max, y_max, z_max;
 
         for (auto it : acc) {
             x_vec.push_back(it.x);
             y_vec.push_back(it.y);
-            cout << it.y << ", ";
+//            cout << it.y << ", ";
             z_vec.push_back(it.z);
         }
         
@@ -654,15 +654,15 @@ MocapPoint KinectFeatures::getAccelerationCrest(int j, int frames){
     //    double std_z = sqrt(sq_sum_z / acc.size() - mean_z * mean_z);
         
         //Find maxima
-        float threshold_y = getElement(j)->acceleration.getMean().y + getElement(j)->acceleration.getStdev().y;
-        cout << endl << "th: " << threshold_y << " (" << getElement(j)->acceleration.getMean().y << ", " << getElement(j)->acceleration.getStdev().y << ")" << endl;
-        cout << endl << "peaks: " << endl;
+        MocapPoint threshold = getElement(j)->acceleration.getMeanC() + 2 * getElement(j)->acceleration.getStdevC();
+//        cout << endl << "th: " << threshold.y << " (" << getElement(j)->acceleration.getMean().y << ", " << getElement(j)->acceleration.getStdev().y << ")" << endl;
+//        cout << endl << "peaks: " << endl;
         for (int i = 0; i < acc.size()-4; i++) {
             if (distance(x_vec.begin()+i, max_element(x_vec.begin()+i, x_vec.begin()+i+4)) == 2){
                 x_max.push_back(x_vec[i + 2]);
             }
             if (distance(y_vec.begin()+i, max_element(y_vec.begin()+i, y_vec.begin()+i+4)) == 2
-                && y_vec[i + 2] > threshold_y){
+                && y_vec[i + 2] > threshold.y){
                 y_max.push_back(y_vec[i + 2]);
                 cout << y_vec[i + 2] << endl;
             }
@@ -676,7 +676,7 @@ MocapPoint KinectFeatures::getAccelerationCrest(int j, int frames){
         if (y_max.size()) crest.y = ( accumulate( y_max.begin(), y_max.end(), 0.0)/y_max.size() ) / getElement(j)->acceleration.getStdev().y;
         if (z_max.size()) crest.z = ( accumulate( z_max.begin(), z_max.end(), 0.0)/z_max.size() ) / getElement(j)->acceleration.getStdev().z;
         
-        cout << "======" << endl;
+//        cout << "======" << endl;
         
         return crest;
     } else {
@@ -701,7 +701,8 @@ vector<float> KinectFeatures::getQomHistory(){
 }
 
 vector<float> KinectFeatures::getQomHistory(int frames){
-    vector<float> history(qom.getData().end()-frames, qom.getData().end());
+    vector<float> qomH = qom.getData();
+    vector<float> history(qomH.end()-frames, qomH.end());
     return history;
 }
 
@@ -714,7 +715,8 @@ vector<float> KinectFeatures::getCIHistory(){
 }
 
 vector<float> KinectFeatures::getCIHistory(int frames){
-    vector<float> history(ci.getData().end()-frames, ci.getData().end());
+    vector<float> ciH = ci.getData();
+    vector<float> history(ciH.end()-frames, ciH.end());
     return history;
 }
 

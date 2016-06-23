@@ -17,6 +17,7 @@
 #define openNiFeatures_MocapElement_h
 
 #include "mocapPoint.h"
+#include <iostream>
 
 #define _stdev(cnt, sum, ssq) sqrt((((double)(cnt))*ssq-pow((double)(sum),2)) / ((double)(cnt)*((double)(cnt)-1)))
 
@@ -25,6 +26,9 @@ private:
     vector<T> data;
     T sum;
     T ssq;
+    T sum_c;
+    T ssq_c;
+//    int countNoOutliers
     
     MocapPoint _sqrt(double value){
         return sqrt(value);
@@ -42,8 +46,17 @@ private:
         return MocapPoint(stdev(cnt, sum.x, ssq.x), stdev(cnt, sum.y, ssq.y), stdev(cnt, sum.z, ssq.z)  );
     }
     
+    bool isOutlier(double value){
+        return abs(value - getMean()) > getStdev();
+    }
+    
+    bool isOutlier(MocapPoint point){
+        MocapPoint std(getStdev());
+        return abs(point.x - getMean().x) > std.x && abs(point.y - getMean().y) > std.y && abs(point.z - getMean().z) > std.z;
+    }
+    
 public:
-    MocapDescriptor(int depth) : sum(0), ssq(0)  {
+    MocapDescriptor(int depth) : sum(0), ssq(0), sum_c(0), ssq_c(0)  {
         data.resize(depth);
     }
     ~MocapDescriptor() {}
@@ -58,6 +71,11 @@ public:
         data.push_back(newValue);
         sum += newValue;
         ssq += newValue*newValue;
+        if (!isOutlier(newValue)) {
+            sum_c += newValue;
+            ssq_c += newValue*newValue;
+        } 
+        
     }
     double size() {
         return data.size();
@@ -65,8 +83,14 @@ public:
     T getMean() {
         return sum/size();
     }
+    T getMeanC() {
+        return sum_c/size();
+    }
     T getStdev() {
         return stdev(size(), sum, ssq);
+    }
+    T getStdevC() {
+        return stdev(size(), sum_c, ssq_c);
     }
     T getRms() {
         return _sqrt(ssq / size());

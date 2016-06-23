@@ -4,7 +4,7 @@ Copyright © 2014  Music Technology Group - Universitat Pompeu Fabra / Escola Sup
 
 This file is part of ofxKinectFeatures, created and maintained by Álvaro Sarasúa <http://www.alvarosarasua.com>
 
-This particular class is inspired and partially copied from openFrameworks ofVec3f (https://github.com/openframeworks/openFrameworks/blob/master/libs/openFrameworks/math/MocapPoint.h)
+This particular class is inspired and partially copied from openFrameworks ofVec3f (https://github.com/openframeworks/openFrameworks/blob/master/libs/openFrameworks/math/ofVec3f.h )
 
 ofxKinectFeatures is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License (LGPL v3) as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
@@ -22,6 +22,7 @@ using namespace std;
 
 #include <cmath>
 #include <vector>
+#include <iostream>
 
 #ifndef PI
 	#define PI       3.14159265358979323846
@@ -291,6 +292,8 @@ public:
 	/// ~~~~
 	MocapPoint& operator/=(const float f);
 
+    friend ostream& operator<<(ostream& os, const MocapPoint& vec);
+    friend istream& operator>>(istream& is, MocapPoint& vec);
 
 	//---------------------
 	/// \name Distance
@@ -454,6 +457,19 @@ inline bool MocapPoint::match(const MocapPoint& vec, float tolerance) const {
 		&& (fabs(z - vec.z) < tolerance);
 }
 
+inline ostream& operator<<(ostream& os, const MocapPoint& vec) {
+    os << vec.x << ", " << vec.y << ", " << vec.z;
+    return os;
+}
+
+inline istream& operator>>(istream& is, MocapPoint& vec) {
+    is >> vec.x;
+    is.ignore(2);
+    is >> vec.y;
+    is.ignore(2);
+    is >> vec.z;
+    return is;
+}
 
 inline MocapPoint MocapPoint::operator+(const MocapPoint& pnt) const {
 	return MocapPoint(x + pnt.x, y + pnt.y, z + pnt.z);
