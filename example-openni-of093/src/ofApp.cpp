@@ -157,9 +157,9 @@ void ofApp::mocapBeat(MocapEvent &e){
     //        cout << "Max in right hand axis " << ofGetTimestampString() << endl;
     //    }
     
-    if (e.feature == FEAT_QOM && e.value > 20.0){
-        cout << "max in QOM!" << endl;
-    }
+//    if (e.feature == FEAT_QOM && e.value > 20.0){
+//        cout << "max in QOM!" << endl;
+//    }
 }
 
 //--------------------------------------------------------------

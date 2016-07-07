@@ -28,9 +28,10 @@ private:
     T ssq;
     T sum_c;
     T ssq_c;
+    float influence;
 //    int countNoOutliers
     
-    MocapPoint _sqrt(double value){
+    double _sqrt(double value){
         return sqrt(value);
     }
     
@@ -47,25 +48,33 @@ private:
     }
     
     bool isOutlier(double value){
-        return abs(value - getMean()) > getStdev();
+        return abs(value - getMeanC()) > getStdevC();
     }
     
     bool isOutlier(MocapPoint point){
-        MocapPoint std(getStdev());
-        return abs(point.x - getMean().x) > std.x && abs(point.y - getMean().y) > std.y && abs(point.z - getMean().z) > std.z;
+        MocapPoint std(getStdevC());
+        return abs(point.x - getMeanC().x) > std.x && abs(point.y - getMeanC().y) > std.y && abs(point.z - getMeanC().z) > std.z;
     }
     
 public:
-    MocapDescriptor(int depth) : sum(0), ssq(0), sum_c(0), ssq_c(0)  {
+    MocapDescriptor(int depth) : sum(0), ssq(0), sum_c(0), ssq_c(0), influence(0.05)  {
         data.resize(depth);
     }
     ~MocapDescriptor() {}
     
     void push(T newValue) {
-        if (data.size() <= data.capacity()){
+        if (data.size() == data.capacity()){
             T oldestValue = data.front();
             sum -= oldestValue;
-            ssq -= oldestValue*oldestValue;
+            ssq -= oldestValue * oldestValue;
+            //TODO not sure this is correct
+            if (!isOutlier(oldestValue)) {
+                sum_c -= oldestValue;
+                ssq_c -= oldestValue * oldestValue;
+            } else {
+                sum_c -= influence * oldestValue;
+                ssq_c -= influence * oldestValue * influence * oldestValue;
+            }
             data.erase(data.begin());
         }
         data.push_back(newValue);
@@ -73,8 +82,11 @@ public:
         ssq += newValue*newValue;
         if (!isOutlier(newValue)) {
             sum_c += newValue;
-            ssq_c += newValue*newValue;
-        } 
+            ssq_c += newValue * newValue;
+        } else {
+            sum_c += influence * newValue;
+            ssq_c += influence * newValue * influence * newValue;
+        }
         
     }
     double size() {
@@ -100,7 +112,7 @@ public:
         return data;
     }
     void setDepth(int depth){
-        data.resize(depth);
+        data.reserve(depth);
     }
     
 };
