@@ -30,13 +30,6 @@ namespace filter
     };
 } // namespace filter
 
-#define MOCAP_X 0
-#define MOCAP_Y 1
-#define MOCAP_Z 2
-#define BEAT_TYPE_MIN 0
-#define BEAT_TYPE_MAX 1
-#define NO_JOINT 999
-
 enum
 {
 	FEAT_VELOCITY,

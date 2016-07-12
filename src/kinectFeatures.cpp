@@ -655,15 +655,15 @@ MocapPoint KinectFeatures::getAccelerationCrest(int j, int frames){
         
         //Find maxima
         MocapPoint sigma = getElement(j)->acceleration.getStdev();
-        MocapPoint threshold = getElement(j)->acceleration.getRms() * (1.0 + 3.0 * ( 1.0 / ( sigma + 1.0 )) );
-        cout << endl << "th: " << threshold.y << " (" << getElement(j)->acceleration.getRms().y << ", " << sigma.y << ", " << (1.0 + 3.0 * ( 1.0 / ( sigma.y + 1.0 )) ) << ")" << endl;
+        //MocapPoint threshold = getElement(j)->acceleration.getRms() * (1.0 + 3.0 * ( 1.0 / ( sigma + 1.0 )) );
+        //cout << endl << "th: " << threshold.y << " (" << getElement(j)->acceleration.getRms().y << ", " << sigma.y << ", " << (1.0 + 3.0 * ( 1.0 / ( sigma.y + 1.0 )) ) << ")" << endl;
         cout << endl << "peaks: " << endl;
         for (int i = 0; i < acc.size()-4; i++) {
             if (distance(x_vec.begin()+i, max_element(x_vec.begin()+i, x_vec.begin()+i+4)) == 2){
                 x_max.push_back(x_vec[i + 2]);
             }
-            if (distance(y_vec.begin()+i, max_element(y_vec.begin()+i, y_vec.begin()+i+4)) == 2
-                && y_vec[i + 2] > threshold.y){
+            if (distance(y_vec.begin()+i, max_element(y_vec.begin()+i, y_vec.begin()+i+4)) == 2){
+                //&& y_vec[i + 2] > threshold.y){
                 y_max.push_back(y_vec[i + 2]);
                 cout << y_vec[i + 2] << endl;
             }
