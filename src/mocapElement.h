@@ -24,21 +24,22 @@
 #define MOCAP_X 0
 #define MOCAP_Y 1
 #define MOCAP_Z 2
-#define BEAT_TYPE_MIN 0
-#define BEAT_TYPE_MAX 1
+#define EXTREME_TYPE_MIN 0
+#define EXTREME_TYPE_MAX 1
 #define NO_JOINT 999
 
-
-struct Extreme {
+class MocapExtreme{
+public:
+    unsigned int axis, joint, feature, extremeType, framesPassed;
     float value;
-    int framesPassed, axis, extremeType;
-    Extreme(): framesPassed(0){};
+    MocapExtreme() : framesPassed(0) {};
 };
+
 
 template <typename T> class MocapDescriptor {
 private:
     vector<T> data;
-    vector<Extreme> extrema;
+    vector<MocapExtreme> extrema;
     T sum;
     T ssq;
     T threshold;
@@ -73,22 +74,22 @@ private:
         if (typeid(data[0]) == typeid(double)) {
             double th = toDouble(threshold); //TODO find better way!
             vector<double> vec;
-            for (int i = data.size()-6; i < data.size(); i++) {
+            for (int i = data.size() - 5; i < data.size(); i++) {
                 vec.push_back(toDouble(data[i]));
             }
             
             if (distance(vec.begin(), max_element(vec.begin(), vec.end())) == 2
                 && vec[2] > th) {
-                Extreme max;
+                MocapExtreme max;
                 max.value = vec[2];
-                max.extremeType = BEAT_TYPE_MAX;
+                max.extremeType = EXTREME_TYPE_MAX;
                 extrema.push_back(max);
             }
             else if (distance(vec.begin(), min_element(vec.begin(), vec.end())) == 2
                      && vec[2] < -th) { //TODO not quite sure about this
-                Extreme min;
+                MocapExtreme min;
                 min.value = vec[2];
-                min.extremeType = BEAT_TYPE_MIN;
+                min.extremeType = EXTREME_TYPE_MIN;
                 extrema.push_back(min);
             }
         }
@@ -97,7 +98,7 @@ private:
             MocapPoint th(threshold);
             vector<double> x_vec, y_vec, z_vec;
             //for (vector<MocapPoint>::iterator it = descriptorHistory.begin(); it != descriptorHistory.end(); it++) {
-            for (int i = data.size()-6; i < data.size(); i++) {
+            for (int i = data.size() - 5; i < data.size(); i++) {
                 MocapPoint d(data[i]);
                 x_vec.push_back(d.x);
                 y_vec.push_back(d.y);
@@ -107,53 +108,53 @@ private:
             //x
             if (distance(x_vec.begin(), max_element(x_vec.begin(), x_vec.end())) == 2
                 && x_vec[2] > th.x) {
-                Extreme max;
+                MocapExtreme max;
                 max.value = x_vec[2];
                 max.axis = MOCAP_X;
-                max.extremeType = BEAT_TYPE_MAX;
+                max.extremeType = EXTREME_TYPE_MAX;
                 extrema.push_back(max);
             }
             else if (distance(x_vec.begin(), min_element(x_vec.begin(), x_vec.end())) == 2
                      && x_vec[2] < th.x) {
-                Extreme min;
+                MocapExtreme min;
                 min.value = x_vec[2];
                 min.axis = MOCAP_X;
-                min.extremeType = BEAT_TYPE_MIN;
-                extrema.push_back(min);
+                min.extremeType = EXTREME_TYPE_MIN;
+                //extrema.push_back(min); TODO
             }
             //y
             if (distance(y_vec.begin(), max_element(y_vec.begin(), y_vec.end())) == 2
                 && y_vec[2] > th.y) {
-                Extreme max;
+                MocapExtreme max;
                 max.value = y_vec[2];
                 max.axis = MOCAP_Y;
-                max.extremeType = BEAT_TYPE_MAX;
+                max.extremeType = EXTREME_TYPE_MAX;
                 extrema.push_back(max);
             }
             else if (distance(y_vec.begin(), min_element(y_vec.begin(), y_vec.end())) == 2
                      && y_vec[2] < th.y) {
-                Extreme min;
+                MocapExtreme min;
                 min.value = y_vec[2];
                 min.axis = MOCAP_Y;
-                min.extremeType = BEAT_TYPE_MIN;
-                extrema.push_back(min);
+                min.extremeType = EXTREME_TYPE_MIN;
+                //extrema.push_back(min); TODO
             }
             //z
             if (distance(z_vec.begin(), max_element(z_vec.begin(), z_vec.end())) == 2
                 && z_vec[2] > th.z) {
-                Extreme max;
+                MocapExtreme max;
                 max.value = z_vec[2];
                 max.axis = MOCAP_Z;
-                max.extremeType = BEAT_TYPE_MAX;
+                max.extremeType = EXTREME_TYPE_MAX;
                 extrema.push_back(max);
             }
             else if (distance(z_vec.begin(), min_element(z_vec.begin(), z_vec.end())) == 2
                      && z_vec[2] < th.z) {
-                Extreme min;
+                MocapExtreme min;
                 min.value = z_vec[2];
                 min.axis = MOCAP_Z;
-                min.extremeType = BEAT_TYPE_MIN;
-                extrema.push_back(min);
+                min.extremeType = EXTREME_TYPE_MIN;
+                //extrema.push_back(min); TODO
             }
         }
     }
@@ -165,14 +166,15 @@ public:
     ~MocapDescriptor() {}
     
     void push(T newValue) {
-        
-        
-        for (vector<Extreme>::iterator extreme = extrema.begin(); extreme!=extrema.end();)
+        //delete extrema older than data size
+        for (vector<MocapExtreme>::iterator extreme = extrema.begin(); extreme!=extrema.end();)
         {
             if(extreme->framesPassed >= data.size())
                 extreme = extrema.erase(extreme);
-            else
+            else {
+                (*extreme).framesPassed++;
                 ++extreme;
+            }
         }
         
         if (data.size() == data.capacity()){
@@ -202,12 +204,39 @@ public:
     T getRms() {
         return _sqrt(ssq / size());
     }
-    
     vector<T> getData() {
         return data;
     }
     void setDepth(int depth){
         data.reserve(depth);
+    }
+    vector<MocapExtreme> getNewExtremes(){
+        vector<MocapExtreme> newExtrema;
+        for (auto extreme : extrema){
+            if (extreme.framesPassed == 0)
+                newExtrema.push_back(extreme);
+        }
+        return newExtrema;
+    }
+    T getCrest(){
+        if (typeid(data[0]) == typeid(double)) {
+            return 0;
+        } else {
+            MocapPoint mean(0);
+            MocapPoint count(0);
+            for (auto extreme: extrema) {
+                if (extreme.axis == MOCAP_X) {
+                    mean.x += value;
+                    count.x ++;
+                } else if (extreme.axis == MOCAP_Y) {
+                    mean.y += value;
+                    count.y ++;
+                } else if (extreme.axis == MOCAP_Z) {
+                    mean.z += value;
+                    count.z ++;
+                }
+            }
+        }
     }
     
 };

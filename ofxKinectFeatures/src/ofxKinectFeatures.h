@@ -19,7 +19,7 @@ If you are willing to get a (non FOSS) commercial license, please contact us at 
 #include "kinectFeatures.h"
 #include "ofMain.h"
 
-class MocapEvent : public ofEventArgs, public MocapBeat {
+class MocapEvent : public ofEventArgs, public MocapExtreme {
 
 public:
 	MocapEvent() {}
@@ -28,15 +28,15 @@ public:
 };
 
 
-class ofxKinectFeatures : public BeatListener {
+class ofxKinectFeatures : public ExtremeListener {
 public:
-	ofxKinectFeatures() : BeatListener(new KinectFeatures()) {};
+	ofxKinectFeatures() : ExtremeListener(new KinectFeatures()) {};
 	ofxKinectFeatures(int head, int torso);
 
 	void setup(int head, int torso);
 	void update(map<int, ofPoint> joints);
 
-	void newBeat(MocapBeat beat); //method from BeatListener, called whenever a new beat is found
+	void newExtreme(MocapExtreme extreme); //method from ExtremeListener, called whenever a new extreme is found
 
 	void setFilterLevel(int filterLevel);
 

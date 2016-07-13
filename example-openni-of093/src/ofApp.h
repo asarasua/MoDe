@@ -27,7 +27,7 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
     void userEvent(ofxOpenNIUserEvent & event);
-    void mocapBeat(MocapEvent &e);
+    void mocapExtreme(MocapEvent &e);
     
     
     ofxOpenNI kinect;

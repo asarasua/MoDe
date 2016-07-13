@@ -115,9 +115,9 @@ int KinectFeatures::getDepth(){
     return depth_;
 }
 
-void KinectFeatures::addBeatListener(BeatListener * beatListener)
+void KinectFeatures::addExtremeListener(ExtremeListener * extremeListener)
 {
-	beatListeners.push_back(beatListener);
+	extremeListeners.push_back(extremeListener);
 }
 
 void KinectFeatures::update(map<int, MocapPoint> joints){
@@ -188,11 +188,12 @@ void KinectFeatures::update(map<int, MocapPoint> joints){
     
     qom.push(accumulate(meanVels_.begin(), meanVels_.end(), 0.0) / (meanVels_.size()));
 
-	checkMaxAndMin(getQomHistory(5), NO_JOINT, FEAT_QOM);
+    notify(qom.getNewExtremes(), NO_JOINT, FEAT_QOM);
+    
     
     ci.push(( -4.0 + (( abs(xMax-xMin) + abs(yMax-yMin) + abs(zMax-zMin) ) / h) ) / 6.0);
     
-	checkMaxAndMin(getCIHistory(5), NO_JOINT, FEAT_CI);
+	notify(ci.getNewExtremes(), NO_JOINT, FEAT_CI);
     
     //TODO solve this!!
 //    symmetry_ = 1.0 - (0.5 * (abs(sqrt(getDistanceToTorso(JOINT_RIGHT_HAND))-sqrt(getDistanceToTorso(JOINT_LEFT_HAND))) + abs(sqrt(getDistanceToTorso(JOINT_RIGHT_ELBOW))-sqrt(getDistanceToTorso(JOINT_LEFT_ELBOW)))) / h);
@@ -214,23 +215,25 @@ void KinectFeatures::computeJointDescriptors(int jointId, MocapPoint jointPos, c
     
     //Position
     mocapElement->position.push(jointPos);
+    notify(mocapElement->position.getNewExtremes(), jointId, FEAT_POSITION);
     
     //Filtered position
     mocapElement->positionFiltered.push(applyFilter(mocapElement->position.getData(), mocapElement->positionFiltered.getData(), aFilter, bFilter));
+    notify(mocapElement->positionFiltered.getNewExtremes(), jointId, FEAT_POSITION_FILTERED);
     
     //Velocity
     mocapElement->velocity.push(applyFilter(mocapElement->position.getData(), mocapElement->velocity.getData(), aLpd1, bLpd1));
-	checkMaxAndMin(getVelocityHistory(jointId, 5), jointId, FEAT_VELOCITY);
+	notify(mocapElement->velocity.getNewExtremes(), jointId, FEAT_VELOCITY);
     
     //Acceleration
     mocapElement->acceleration.push(applyFilter(mocapElement->position.getData(), mocapElement->acceleration.getData(), aLpd2, bLpd2));
-	checkMaxAndMin(getAccelerationHistory(jointId, 5), jointId, FEAT_ACCELERATION);
+    notify(mocapElement->acceleration.getNewExtremes(), jointId, FEAT_ACCELERATION);
     
     //Acceleration along trajectory
     MocapPoint acc = mocapElement->acceleration.getData().back();
 	MocapPoint vel = mocapElement->velocity.getData().back();
     mocapElement->accelerationTrajectory.push(acc.dot(vel) / vel.length());
-	checkMaxAndMin(getAccelerationTrajectoryHistory(jointId, 5), jointId, FEAT_ACCELERATION_TRAJECTORY);
+    notify(mocapElement->accelerationTrajectory.getNewExtremes(), jointId, FEAT_ACCELERATION_TRAJECTORY);
     
     //Relative position to torso
     //TODO solve this!!
@@ -239,7 +242,7 @@ void KinectFeatures::computeJointDescriptors(int jointId, MocapPoint jointPos, c
     relPosToTorso[1] = (jointPos.y - getPositionFiltered(torso_).y) / (h * 1.8);
     relPosToTorso[2] = -((jointPos.z - getPositionFiltered(torso_).z) / h) / 1.4;
     mocapElement->relativePositionToTorso.push(relPosToTorso);
-	checkMaxAndMin(getRelativePositionToTorsoHistory(jointId, 5), jointId, FEAT_RELATIVEPOSTOTORSO);
+    notify(mocapElement->relativePositionToTorso.getNewExtremes(), jointId, FEAT_RELATIVEPOSTOTORSO);
     
     //TODO: auto hand
     //beatTracker.update(getAccTrVector(JOINT_RIGHT_HAND), get3DFiltPosVector(JOINT_RIGHT_HAND)[coord::Y]);
@@ -260,98 +263,16 @@ MocapPoint KinectFeatures::applyFilter(vector<MocapPoint> x, vector<MocapPoint> 
 	return b[0] * x[0] + b[1] * x[1] + b[2] * x[2] + b[3] * x[3] + b[4] * x[4] - (a[1] * y[0] + a[2] * y[1] + a[3] * y[2] + a[4] * y[3]);
 }
 
-void KinectFeatures::notify(MocapBeat newBeat)
+void KinectFeatures::notify(vector<MocapExtreme> newExtremes, int jointId, int featId)
 {
-	for (auto& beatListener : beatListeners) {
-		beatListener->newBeat(newBeat);
-	}
-}
-
-void KinectFeatures::checkMaxAndMin(vector<MocapPoint> descriptorHistory, unsigned int jointId, unsigned int feature) {
-	vector<float> x_vec, y_vec, z_vec;
-	//for (vector<MocapPoint>::iterator it = descriptorHistory.begin(); it != descriptorHistory.end(); it++) {
-	for (auto it : descriptorHistory) {
-		x_vec.push_back(it.x);
-		y_vec.push_back(it.y);
-		z_vec.push_back(it.z);
-	}
-
-	//x
-	if (distance(x_vec.begin(), max_element(x_vec.begin(), x_vec.end())) == 2) {
-		static MocapBeat newBeat;
-		newBeat.joint = jointId;
-		newBeat.axis = MOCAP_X;
-		newBeat.feature = feature;
-		newBeat.value = descriptorHistory[1].x;
-		newBeat.beatType = BEAT_TYPE_MAX;
-		notify(newBeat);
-	}
-	else if (distance(x_vec.begin(), min_element(x_vec.begin(), x_vec.end())) == 2) {
-		static MocapBeat newBeat;
-		newBeat.joint = jointId;
-		newBeat.axis = MOCAP_X;
-		newBeat.feature = feature;
-		newBeat.value = descriptorHistory[1].x;
-		newBeat.beatType = BEAT_TYPE_MIN;
-		notify(newBeat);
-	}
-	//y
-	if (distance(y_vec.begin(), max_element(y_vec.begin(), y_vec.end())) == 2) {
-		static MocapBeat newBeat;
-		newBeat.joint = jointId;
-		newBeat.axis = MOCAP_Y;
-		newBeat.feature = feature;
-		newBeat.value = descriptorHistory[1].y;
-		newBeat.beatType = BEAT_TYPE_MAX;
-		notify(newBeat);
-	}
-	else if (distance(y_vec.begin(), min_element(y_vec.begin(), y_vec.end())) == 2) {
-		static MocapBeat newBeat;
-		newBeat.joint = jointId;
-		newBeat.axis = MOCAP_Y;
-		newBeat.feature = feature;
-		newBeat.value = descriptorHistory[1].y;
-		newBeat.beatType = BEAT_TYPE_MIN;
-		notify(newBeat);
-	}
-	//z
-	if (distance(z_vec.begin(), max_element(z_vec.begin(), z_vec.end())) == 2) {
-		static MocapBeat newBeat;
-		newBeat.joint = jointId;
-		newBeat.axis = MOCAP_Z;
-		newBeat.feature = feature;
-		newBeat.value = descriptorHistory[1].z;
-		newBeat.beatType = BEAT_TYPE_MAX;
-		notify(newBeat);
-	}
-	else if (distance(z_vec.begin(), min_element(z_vec.begin(), z_vec.end())) == 2) {
-		static MocapBeat newBeat;
-		newBeat.joint = jointId;
-		newBeat.axis = MOCAP_Z;
-		newBeat.feature = feature;
-		newBeat.value = descriptorHistory[1].z;
-		newBeat.beatType = BEAT_TYPE_MIN;
-		notify(newBeat);
-	}
-}
-
-void KinectFeatures::checkMaxAndMin(vector<float> descriptorHistory, unsigned int jointId, unsigned int feature) {
-	if (distance(descriptorHistory.begin(), max_element(descriptorHistory.begin(), descriptorHistory.end())) == 2) {
-		static MocapBeat newBeat;
-		newBeat.joint = jointId;
-		newBeat.feature = feature;
-		newBeat.value = descriptorHistory[1];
-		newBeat.beatType = BEAT_TYPE_MAX;
-		notify(newBeat);
-	}
-	else if (distance(descriptorHistory.begin(), min_element(descriptorHistory.begin(), descriptorHistory.end())) == 2) {
-		static MocapBeat newBeat;
-		newBeat.joint = jointId;
-		newBeat.feature = feature;
-		newBeat.value = descriptorHistory[1];
-		newBeat.beatType = BEAT_TYPE_MIN;
-		notify(newBeat);
-	}
+    for (auto newExtreme : newExtremes) {
+        newExtreme.joint = jointId;
+        newExtreme.feature = featId;        
+        for (auto& extremeListener : extremeListeners){
+            extremeListener->newExtreme(newExtreme);
+        }
+    }
+	
 }
 
 template <typename T>
@@ -630,14 +551,14 @@ float KinectFeatures::getAngle(int j1, int j2, int j3){
 MocapPoint KinectFeatures::getAccelerationCrest(int j, int frames){
     
     if (getElement(j)) {
-        cout << ":::" << endl;
+        //cout << ":::" << endl;
         vector<MocapPoint> acc = getAccelerationHistory(j, frames);
         vector<double> x_vec, y_vec, z_vec, x_max, y_max, z_max;
 
         for (auto it : acc) {
             x_vec.push_back(it.x);
             y_vec.push_back(it.y);
-            cout << it.y << ", ";
+            //cout << it.y << ", ";
             z_vec.push_back(it.z);
         }
         
@@ -657,7 +578,7 @@ MocapPoint KinectFeatures::getAccelerationCrest(int j, int frames){
         MocapPoint sigma = getElement(j)->acceleration.getStdev();
         //MocapPoint threshold = getElement(j)->acceleration.getRms() * (1.0 + 3.0 * ( 1.0 / ( sigma + 1.0 )) );
         //cout << endl << "th: " << threshold.y << " (" << getElement(j)->acceleration.getRms().y << ", " << sigma.y << ", " << (1.0 + 3.0 * ( 1.0 / ( sigma.y + 1.0 )) ) << ")" << endl;
-        cout << endl << "peaks: " << endl;
+        //cout << endl << "peaks: " << endl;
         for (int i = 0; i < acc.size()-4; i++) {
             if (distance(x_vec.begin()+i, max_element(x_vec.begin()+i, x_vec.begin()+i+4)) == 2){
                 x_max.push_back(x_vec[i + 2]);
@@ -665,7 +586,7 @@ MocapPoint KinectFeatures::getAccelerationCrest(int j, int frames){
             if (distance(y_vec.begin()+i, max_element(y_vec.begin()+i, y_vec.begin()+i+4)) == 2){
                 //&& y_vec[i + 2] > threshold.y){
                 y_max.push_back(y_vec[i + 2]);
-                cout << y_vec[i + 2] << endl;
+                //cout << y_vec[i + 2] << endl;
             }
             if (distance(z_vec.begin()+i, max_element(z_vec.begin()+i, z_vec.begin()+i+4)) == 2){
                 z_max.push_back(z_vec[i + 2]);
@@ -677,7 +598,7 @@ MocapPoint KinectFeatures::getAccelerationCrest(int j, int frames){
         if (y_max.size()) crest.y = ( accumulate( y_max.begin(), y_max.end(), 0.0)/y_max.size() ) / getElement(j)->acceleration.getStdev().y;
         if (z_max.size()) crest.z = ( accumulate( z_max.begin(), z_max.end(), 0.0)/z_max.size() ) / getElement(j)->acceleration.getStdev().z;
         
-        cout << "======" << endl;
+        //cout << "======" << endl;
         
         return crest;
     } else {

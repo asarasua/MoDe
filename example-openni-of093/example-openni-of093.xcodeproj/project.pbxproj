@@ -841,6 +841,7 @@
 					bin/data/openni/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)Debug";
+				STRIP_STYLE = all;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -883,6 +884,7 @@
 					bin/data/openni/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_STYLE = all;
 				WRAPPER_EXTENSION = app;
 				baseConfigurationReference = E4EB6923138AFD0F00A09F29;
 			};

@@ -19,14 +19,14 @@ void ofxKinectFeatures::update(map<int, ofPoint> joints)
 	featExtractor->update(jointsMap);
 }
 
-void ofxKinectFeatures::newBeat(MocapBeat beat)
+void ofxKinectFeatures::newExtreme(MocapExtreme beat)
 {
 	static MocapEvent newEvent;
 	newEvent.joint = beat.joint;
 	newEvent.axis = beat.axis;
 	newEvent.feature = beat.feature;
 	newEvent.value = beat.value;
-	newEvent.beatType = beat.beatType;
+	newEvent.extremeType = beat.extremeType;
 
 	ofNotifyEvent(MocapEvent::events, newEvent);
 }

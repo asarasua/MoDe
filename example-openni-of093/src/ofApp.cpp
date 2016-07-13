@@ -18,7 +18,7 @@ void ofApp::setup(){
     featExtractor.setup(JOINT_HEAD, JOINT_TORSO);
     
     ofAddListener(kinect.userEvent, this, &ofApp::userEvent);
-    ofAddListener(MocapEvent::events, this, &ofApp::mocapBeat);
+    ofAddListener(MocapEvent::events, this, &ofApp::mocapExtreme);
     
     ofSetWindowShape(640, 480);
     
@@ -152,14 +152,10 @@ void ofApp::userEvent(ofxOpenNIUserEvent &event){
     //    }
 }
 
-void ofApp::mocapBeat(MocapEvent &e){
-    //    if (e.joint == JOINT_RIGHT_HAND && e.value > 5.0) {
-    //        cout << "Max in right hand axis " << ofGetTimestampString() << endl;
-    //    }
-    
-//    if (e.feature == FEAT_QOM && e.value > 20.0){
-//        cout << "max in QOM!" << endl;
-//    }
+void ofApp::mocapExtreme(MocapEvent &e){
+    if (e.joint == JOINT_RIGHT_HAND && e.feature == FEAT_ACCELERATION && e.axis == MOCAP_Y && e.extremeType == EXTREME_TYPE_MAX) {
+        cout << "new beat on right hand with value " << e.value << " in axis " << e.axis << endl;
+    }
 }
 
 //--------------------------------------------------------------

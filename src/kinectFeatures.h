@@ -32,6 +32,8 @@ namespace filter
 
 enum
 {
+    FEAT_POSITION,
+    FEAT_POSITION_FILTERED,
 	FEAT_VELOCITY,
 	FEAT_VELOCITY_MAG,
 	FEAT_VELOCITY_MEAN,
@@ -47,16 +49,8 @@ enum
 
 #define _stdev(cnt, sum, ssq) sqrt((((double)(cnt))*ssq-pow((double)(sum),2)) / ((double)(cnt)*((double)(cnt)-1)))
 
-class MocapBeat{
-
-public:
-	unsigned int axis, joint, feature, beatType;
-	float value;
-	MocapBeat() {};
-};
-
 class KinectFeatures {
-	vector <class BeatListener *> beatListeners;
+	vector <class ExtremeListener *> extremeListeners;
 public:
     KinectFeatures();
     KinectFeatures(int head, int torso, int depth);
@@ -69,7 +63,7 @@ public:
     void setDepth(int depth);
     int getDepth();
 
-	void addBeatListener(BeatListener* beatListener);
+	void addExtremeListener(ExtremeListener* extremeListener);
     
     //DESCIPTOR GETTERS
     //JOINT DESCRIPTORS
@@ -148,9 +142,7 @@ private:
     
     void computeJointDescriptors(int jointId, MocapPoint jointPos, const float &h);
     MocapPoint applyFilter (vector<MocapPoint> x, vector<MocapPoint> y, float *a, float *b);
-	void notify(MocapBeat newBeat);
-	void checkMaxAndMin(vector<MocapPoint> descriptorHistory, unsigned int jointId, unsigned int feature);
-	void checkMaxAndMin(vector<float> descriptorHistory, unsigned int jointId, unsigned int feature);
+	void notify(vector<MocapExtreme> newExtremes, int jointId, int featId);
    
 	//Functor to look for mocap elements matching a Joint
     struct MatchId
@@ -165,13 +157,13 @@ private:
     };
 };
 
-class BeatListener {
+class ExtremeListener {
 public:
-	BeatListener(KinectFeatures * featExt) {
+	ExtremeListener(KinectFeatures * featExt) {
 		featExtractor = featExt;
-		featExtractor->addBeatListener(this);
+		featExtractor->addExtremeListener(this);
 	}
-	virtual void newBeat(MocapBeat beat) = 0;
+	virtual void newExtreme(MocapExtreme extreme) = 0;
 protected:
 	KinectFeatures *featExtractor;
 
