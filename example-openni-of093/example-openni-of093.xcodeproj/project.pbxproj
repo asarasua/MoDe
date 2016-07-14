@@ -26,7 +26,6 @@
 		EB1D57011CC7C0C300658E48 /* libXnVFeatures_1_5_2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EB1D56F31CC7C0C300658E48 /* libXnVFeatures_1_5_2.dylib */; };
 		EB1D57021CC7C0C300658E48 /* libXnVHandGenerator_1_5_2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EB1D56F41CC7C0C300658E48 /* libXnVHandGenerator_1_5_2.dylib */; };
 		EB1D57031CC7C0C300658E48 /* libXnVNite_1_5_2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EB1D56F51CC7C0C300658E48 /* libXnVNite_1_5_2.dylib */; };
-		EB4524191D103F74007D2430 /* ofxKinectFeatures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB4524171D103F74007D2430 /* ofxKinectFeatures.cpp */; };
 		EB4524201D103F81007D2430 /* kinectFeatures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45241B1D103F81007D2430 /* kinectFeatures.cpp */; };
 		EB4524211D103F81007D2430 /* mocapElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45241D1D103F81007D2430 /* mocapElement.cpp */; };
 		EB5C484B1D18440A00965D66 /* ofxKinectFeaturesGraph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB5C48491D18440A00965D66 /* ofxKinectFeaturesGraph.cpp */; };
@@ -212,8 +211,6 @@
 		EB1D56F31CC7C0C300658E48 /* libXnVFeatures_1_5_2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnVFeatures_1_5_2.dylib; sourceTree = "<group>"; };
 		EB1D56F41CC7C0C300658E48 /* libXnVHandGenerator_1_5_2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnVHandGenerator_1_5_2.dylib; sourceTree = "<group>"; };
 		EB1D56F51CC7C0C300658E48 /* libXnVNite_1_5_2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnVNite_1_5_2.dylib; sourceTree = "<group>"; };
-		EB4524171D103F74007D2430 /* ofxKinectFeatures.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxKinectFeatures.cpp; path = ../ofxKinectFeatures/src/ofxKinectFeatures.cpp; sourceTree = "<group>"; };
-		EB4524181D103F74007D2430 /* ofxKinectFeatures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxKinectFeatures.h; path = ../ofxKinectFeatures/src/ofxKinectFeatures.h; sourceTree = "<group>"; };
 		EB45241B1D103F81007D2430 /* kinectFeatures.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = kinectFeatures.cpp; path = ../src/kinectFeatures.cpp; sourceTree = "<group>"; };
 		EB45241C1D103F81007D2430 /* kinectFeatures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kinectFeatures.h; path = ../src/kinectFeatures.h; sourceTree = "<group>"; };
 		EB45241D1D103F81007D2430 /* mocapElement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mocapElement.cpp; path = ../src/mocapElement.cpp; sourceTree = "<group>"; };
@@ -560,8 +557,6 @@
 		EA1B6BEA7DD727EDE5C6D23A /* src */ = {
 			isa = PBXGroup;
 			children = (
-				EB4524171D103F74007D2430 /* ofxKinectFeatures.cpp */,
-				EB4524181D103F74007D2430 /* ofxKinectFeatures.h */,
 				EB5C48491D18440A00965D66 /* ofxKinectFeaturesGraph.cpp */,
 				EB5C484A1D18440A00965D66 /* ofxKinectFeaturesGraph.h */,
 			);
@@ -696,7 +691,6 @@
 				EB4524211D103F81007D2430 /* mocapElement.cpp in Sources */,
 				53B8DC1D45EBD5267B24B601 /* ofxOpenNITypes.cpp in Sources */,
 				EB4524201D103F81007D2430 /* kinectFeatures.cpp in Sources */,
-				EB4524191D103F74007D2430 /* ofxKinectFeatures.cpp in Sources */,
 				EB5C484B1D18440A00965D66 /* ofxKinectFeaturesGraph.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

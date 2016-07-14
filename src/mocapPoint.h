@@ -16,13 +16,23 @@ If you are willing to get a (non FOSS) commercial license, please contact us at 
 
 */
 
-using namespace std;
-
 #pragma once
+
+#define OPENFRAMEWORKS 1
+
+#if OPENFRAMEWORKS
+
+#include "ofMain.h"
+
+#else
 
 #include <cmath>
 #include <vector>
 #include <iostream>
+
+#endif
+
+using namespace std;
 
 #ifndef PI
 	#define PI       3.14159265358979323846
@@ -291,6 +301,12 @@ public:
 	/// v1 /= 4; // (0.5, 1.25, 0.25)
 	/// ~~~~
 	MocapPoint& operator/=(const float f);
+    
+#if OPENFRAMEWORKS
+    
+    operator ofPoint();
+    
+#endif
 
     friend ostream& operator<<(ostream& os, const MocapPoint& vec);
     friend istream& operator>>(istream& is, MocapPoint& vec);
@@ -577,6 +593,13 @@ inline MocapPoint& MocapPoint::operator/=(const float f) {
 	return *this;
 }
 
+#if OPENFRAMEWORKS
+
+inline MocapPoint::operator ofPoint(){
+    return ofPoint(x, y, z);
+}
+
+#endif
 
 // Distance between two points.
 //

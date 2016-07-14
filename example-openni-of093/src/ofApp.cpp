@@ -15,7 +15,7 @@ void ofApp::setup(){
     
     ofSetFrameRate(30);
     
-    featExtractor.setup(JOINT_HEAD, JOINT_TORSO);
+    featExtractor.setup(JOINT_HEAD, JOINT_TORSO, 60);
     
     ofAddListener(kinect.userEvent, this, &ofApp::userEvent);
     ofAddListener(MocapEvent::events, this, &ofApp::mocapExtreme);
@@ -43,7 +43,7 @@ void ofApp::update(){
         ofxOpenNIUser user = kinect.getTrackedUser(i);
         //The following "if" statement is a hard-coded alternative for if(kinect.getUserGenerator().IsNewDataAvailable()), which doesn't work properly in ofxOpenNI
         if (user.getJoint((Joint)0).getWorldPosition() != ofPoint(0,0,0) &&
-            user.getJoint((Joint)0).getWorldPosition() != featExtractor.getPosition(0) ) {
+            user.getJoint((Joint)0).getWorldPosition() != featExtractor.getJoint(0).position.getCurrent() ) {
             map<int, ofPoint> joints;
             for (int j = 0; j < user.getNumJoints(); j++) {
                 joints[j] = user.getJoint((Joint)j).getWorldPosition();
@@ -63,9 +63,10 @@ void ofApp::update(){
         kinect.setPaused(false);
     }
     
-    graphs[0]->addValue(featExtractor.getAcceleration(j).y);
-    graphs[1]->addValue(featExtractor.getRms(j, 30).y);
-    graphs[2]->addValue(featExtractor.getAccelerationCrest(j, 30).y);
+    //graphs[0]->addValue(featExtractor.getAcceleration(j).y);
+    graphs[0]->addValue(featExtractor.getJoint(j).acceleration.getCurrent().y);
+    graphs[1]->addValue(featExtractor.getJoint(j).acceleration.getRms().y);
+    graphs[2]->addValue(featExtractor.getJoint(j).acceleration.getCrest().y);
     
 }
 
@@ -82,7 +83,7 @@ void ofApp::draw(){
     ostringstream os;
     os << "ofxKinectFeatures example " << endl;
     os << "FPS: " << ofGetFrameRate() << endl;
-    ofPoint jointProjectivePosition = kinect.worldToProjective(featExtractor.getPosition(j));
+    ofPoint jointProjectivePosition = kinect.worldToProjective(featExtractor.getJoint(j).position.getCurrent());
     os << "Quantity of Motion: " << featExtractor.getQom() << endl;
     //os << "Symmetry: " << featExtractor.getSymmetry() << endl;
     os << "Contraction Index: " << featExtractor.getCI() << endl << endl;
@@ -91,23 +92,22 @@ void ofApp::draw(){
     switch (f) {
         case VELOCITY_MEAN:
             os << "Velocity magnitude mean" << endl;
-            //font.drawString(ofToString(featExtractor.getVelocity(j).y), jointProjectivePosition.x, jointProjectivePosition.y);
-            font.drawString(ofToString(featExtractor.getVelocity(j).y), jointProjectivePosition.x, jointProjectivePosition.y);
+            font.drawString(ofToString(featExtractor.getJoint(j).velocity.getCurrent().y), jointProjectivePosition.x, jointProjectivePosition.y);
             break;
         case ACCELERATION_Y:
             os << "Acceleration along y axis (up-down movement)" << endl;
-            font.drawString(ofToString(featExtractor.getAcceleration(j).y), jointProjectivePosition.x, jointProjectivePosition.y);
+            //font.drawString(ofToString(featExtractor.getAcceleration(j).y), jointProjectivePosition.x, jointProjectivePosition.y);
             break;
         case RELPOSTOTORSO_X:
             os << "Relative position to torso in x axis" << endl;
-            font.drawString(ofToString(featExtractor.getRelativePositionToTorso(j).x), jointProjectivePosition.x, jointProjectivePosition.y);
+            //font.drawString(ofToString(featExtractor.getRelativePositionToTorso(j).x), jointProjectivePosition.x, jointProjectivePosition.y);
             break;
             
         default:
             break;
     }
     
-    os << featExtractor.getAccelerationCrest(JOINT_RIGHT_HAND, 30).y;
+    os << featExtractor.getAccelerationCrest(JOINT_RIGHT_HAND).y;
     
     ofSetColor(0,0,0,100);
     ofDrawRectangle(10, 10, 500, 150);

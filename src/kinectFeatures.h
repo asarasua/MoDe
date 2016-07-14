@@ -47,7 +47,14 @@ enum
 	FEAT_CI
 };
 
-#define _stdev(cnt, sum, ssq) sqrt((((double)(cnt))*ssq-pow((double)(sum),2)) / ((double)(cnt)*((double)(cnt)-1)))
+#if OPENFRAMEWORKS
+class MocapEvent : public ofEventArgs, public MocapExtreme {
+    
+public:
+    MocapEvent() {}
+    static ofEvent <MocapEvent> events;
+};
+#endif
 
 class KinectFeatures {
 	vector <class ExtremeListener *> extremeListeners;
@@ -57,6 +64,15 @@ public:
     
     void setup(int head, int torso, int depth);
     void update(map<int, MocapPoint> joints);
+#if OPENFRAMEWORKS
+    void update(map<int, ofPoint> joints){
+        map<int, MocapPoint> jointsMap;
+        for (auto joint : joints)
+            jointsMap[joint.first] = MocapPoint(joint.second.x, joint.second.y, joint.second.z);
+        
+        update(jointsMap);
+    }
+#endif
     
     void setFilterLevel(int filterLevel);
     
@@ -65,42 +81,9 @@ public:
 
 	void addExtremeListener(ExtremeListener* extremeListener);
     
-    //DESCIPTOR GETTERS
-    //JOINT DESCRIPTORS
-    MocapPoint getPosition(int j);
-    vector<MocapPoint> getPositionHistory(int j);
-    vector<MocapPoint> getPositionHistory(int j, int frames);
-    
-	MocapPoint getPositionFiltered(int j);
-    vector<MocapPoint> getPositionFilteredHistory(int j);
-    vector<MocapPoint> getPositionFilteredHistory(int j, int frames);
-    
-	MocapPoint getVelocity(int j);
-    vector<MocapPoint> getVelocityHistory(int j);
-    vector<MocapPoint> getVelocityHistory(int j, int frames);
-    float getVelocityMagnitude(int j);
-    MocapPoint getVelocityMean(int j, int frames = 30);
-    float getVelocityMagnitudeMean(int j, int frames = 30);
-    
-	MocapPoint getAcceleration(int j);
-    vector<MocapPoint> getAccelerationHistory(int j);
-    vector<MocapPoint> getAccelerationHistory(int j, int frames);
-    float getAccelerationMagnitude(int j);
-    MocapPoint getAccelerationMean(int j, int frames = 30);
-    float getAccelerationMagnitudeMean(int j, int frames = 30);
-    
-    float getAccelerationTrajectory(int j);
-    vector<float> getAccelerationTrajectoryHistory(int j);
-    vector<float> getAccelerationTrajectoryHistory(int j, int frames);
-    float getAccelerationTrajectoryMean(int j, int frames = 30);
-    
-	MocapPoint getRelativePositionToTorso(int j);
-    vector<MocapPoint> getRelativePositionToTorsoHistory(int j);
-    vector<MocapPoint> getRelativePositionToTorsoHistory(int j, int frames);
-    
     //SPECIAL DESCRIPTORS
     float getAngle(int j1, int j2, int j3);
-    MocapPoint getAccelerationCrest(int j, int frames);
+    MocapPoint getAccelerationCrest(int j);
     MocapPoint getRms(int j, int frames);
     
     //OVERALL DESCRIPTORS
@@ -115,10 +98,12 @@ public:
     
     bool isNewDataAvailable();
     
+    const MocapElement getJoint(int jointId);
+    
 private:
     int head_, torso_;
 
-	MocapElement* getElement(int _id);
+	MocapElement* getElement(int jointId);
     
     template <typename T>
     vector<T> createVector (T element);
@@ -166,7 +151,6 @@ public:
 	virtual void newExtreme(MocapExtreme extreme) = 0;
 protected:
 	KinectFeatures *featExtractor;
-
 };
 
 #endif

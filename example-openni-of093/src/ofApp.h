@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxKinectFeatures.h"
+#include "KinectFeatures.h"
 #include "ofxKinectFeaturesGraph.h"
 #include "ofxOpenNI.h"
 
@@ -32,7 +32,7 @@ public:
     
     ofxOpenNI kinect;
     bool hadUsers;
-    ofxKinectFeatures featExtractor;
+    KinectFeatures featExtractor;
     int j, f;
     ofTrueTypeFont font;
     

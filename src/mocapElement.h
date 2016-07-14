@@ -19,7 +19,6 @@
 #include "mocapPoint.h"
 #include <iostream>
 
-#define _stdev(cnt, sum, ssq) sqrt((((double)(cnt))*ssq-pow((double)(sum),2)) / ((double)(cnt)*((double)(cnt)-1)))
 
 #define MOCAP_X 0
 #define MOCAP_Y 1
@@ -45,27 +44,27 @@ private:
     T threshold;
     
     //TODO find better way to do this!!
-    double toDouble(double value){
+    double toDouble(double value) const {
         return value;
     }
     
-    double toDouble(MocapPoint value){
+    double toDouble(MocapPoint value) const {
         return value.x;
     }
     
-    double _sqrt(double value){
+    double _sqrt(double value) const {
         return sqrt(value);
     }
     
-    MocapPoint _sqrt(MocapPoint point){
+    MocapPoint _sqrt(MocapPoint point) const {
         return MocapPoint(std::sqrt(point.x), std::sqrt(point.y), std::sqrt(point.z));
     }
     
-    double stdev (int cnt, double sum, double ssq){
+    double stdev (int cnt, double sum, double ssq) const {
         return sqrt((((double)(cnt))*ssq-pow((double)(sum),2)) / ((double)(cnt)*((double)(cnt)-1)));
     }
     
-    MocapPoint stdev(int cnt, MocapPoint sum, MocapPoint ssq){
+    MocapPoint stdev(int cnt, MocapPoint sum, MocapPoint ssq) const {
         return MocapPoint(stdev(cnt, sum.x, ssq.x), stdev(cnt, sum.y, ssq.y), stdev(cnt, sum.z, ssq.z)  );
     }
     
@@ -192,25 +191,35 @@ public:
         checkMaxAndMin();
         
     }
-    double size() {
+    double size() const {
         return data.size();
     }
-    T getMean() {
+    T getMean() const {
         return sum/size();
     }
-    T getStdev() {
+    T getStdev() const {
         return stdev(size(), sum, ssq);
     }
-    T getRms() {
+    T getRms() const  {
         return _sqrt(ssq / size());
     }
-    vector<T> getData() {
+    double getMagnitude() const {
+        if (typeid(data[0]) == typeid(double)) {
+            return toDouble(getCurrent());
+        } else {
+            return getCurrent().length();
+        }
+    }
+    vector<T> getData() const {
         return data;
+    }
+    T getCurrent() const {
+        return data[data.size()-1];
     }
     void setDepth(int depth){
         data.reserve(depth);
     }
-    vector<MocapExtreme> getNewExtremes(){
+    vector<MocapExtreme> getNewExtremes() const {
         vector<MocapExtreme> newExtrema;
         for (auto extreme : extrema){
             if (extreme.framesPassed == 0)
@@ -218,7 +227,7 @@ public:
         }
         return newExtrema;
     }
-    T getCrest(){
+    T getCrest() const {
         if (typeid(data[0]) == typeid(double)) {
             return 0;
         } else {
@@ -226,16 +235,24 @@ public:
             MocapPoint count(0);
             for (auto extreme: extrema) {
                 if (extreme.axis == MOCAP_X) {
-                    mean.x += value;
+                    mean.x += extreme.value;
                     count.x ++;
                 } else if (extreme.axis == MOCAP_Y) {
-                    mean.y += value;
+                    mean.y += extreme.value;
                     count.y ++;
                 } else if (extreme.axis == MOCAP_Z) {
-                    mean.z += value;
+                    mean.z += extreme.value;
                     count.z ++;
                 }
             }
+            
+            MocapPoint crest(0);
+            MocapPoint rms(getRms());
+            if (count.x) crest.x = ( mean.x / count.x ) / rms.x;
+            if (count.y) crest.y = ( mean.y / count.y ) / rms.y;
+            if (count.z) crest.z = ( mean.z / count.z ) / rms.z;
+            
+            return crest;
         }
     }
     
