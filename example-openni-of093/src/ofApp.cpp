@@ -154,7 +154,10 @@ void ofApp::userEvent(ofxOpenNIUserEvent &event){
 
 void ofApp::mocapExtreme(MocapEvent &e){
     if (e.joint == JOINT_RIGHT_HAND && e.feature == FEAT_ACCELERATION && e.axis == MOCAP_Y && e.extremeType == EXTREME_TYPE_MAX) {
-        cout << "new beat on right hand with value " << e.value << " in axis " << e.axis << endl;
+        cout << "new MAX on right hand with value " << e.value << " in axis " << e.axis << endl;
+    }
+    else if (e.joint == JOINT_RIGHT_HAND && e.feature == FEAT_ACCELERATION && e.axis == MOCAP_Y && e.extremeType == EXTREME_TYPE_MIN) {
+        cout << "new MIN on right hand with value " << e.value << " in axis " << e.axis << endl;
     }
 }
 

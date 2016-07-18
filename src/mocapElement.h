@@ -27,7 +27,7 @@
 #define EXTREME_TYPE_MAX 1
 #define NO_JOINT 999
 
-class MocapExtreme{
+class MocapExtreme {
 public:
     unsigned int axis, joint, feature, extremeType, framesPassed;
     float value;
@@ -41,9 +41,16 @@ private:
     vector<MocapExtreme> extrema;
     T sum;
     T ssq;
-    T threshold;
+    T upThreshold, lowThreshold;
     
     //TODO find better way to do this!!
+    bool hasNegative(){
+        for (auto d : data) {
+            if (d < 0) return true;
+        }
+        return false;
+    }
+    
     double toDouble(double value) const {
         return value;
     }
@@ -71,21 +78,23 @@ private:
     void checkMaxAndMin(){
         //one dimensional case
         if (typeid(data[0]) == typeid(double)) {
-            double th = toDouble(threshold); //TODO find better way!
+            double uth = toDouble(upThreshold); //TODO find better way!
+            double lth = toDouble(lowThreshold); //TODO find better way!
             vector<double> vec;
+            
             for (int i = data.size() - 5; i < data.size(); i++) {
                 vec.push_back(toDouble(data[i]));
             }
             
             if (distance(vec.begin(), max_element(vec.begin(), vec.end())) == 2
-                && vec[2] > th) {
+                && vec[2] > uth) {
                 MocapExtreme max;
                 max.value = vec[2];
                 max.extremeType = EXTREME_TYPE_MAX;
                 extrema.push_back(max);
             }
             else if (distance(vec.begin(), min_element(vec.begin(), vec.end())) == 2
-                     && vec[2] < -th) { //TODO not quite sure about this
+                     && vec[2] < lth) {
                 MocapExtreme min;
                 min.value = vec[2];
                 min.extremeType = EXTREME_TYPE_MIN;
@@ -94,9 +103,9 @@ private:
         }
         //3d case
         else {
-            MocapPoint th(threshold);
+            MocapPoint uth(upThreshold);
+            MocapPoint lth(lowThreshold);
             vector<double> x_vec, y_vec, z_vec;
-            //for (vector<MocapPoint>::iterator it = descriptorHistory.begin(); it != descriptorHistory.end(); it++) {
             for (int i = data.size() - 5; i < data.size(); i++) {
                 MocapPoint d(data[i]);
                 x_vec.push_back(d.x);
@@ -106,7 +115,7 @@ private:
             
             //x
             if (distance(x_vec.begin(), max_element(x_vec.begin(), x_vec.end())) == 2
-                && x_vec[2] > th.x) {
+                && x_vec[2] > uth.x) {
                 MocapExtreme max;
                 max.value = x_vec[2];
                 max.axis = MOCAP_X;
@@ -114,16 +123,16 @@ private:
                 extrema.push_back(max);
             }
             else if (distance(x_vec.begin(), min_element(x_vec.begin(), x_vec.end())) == 2
-                     && x_vec[2] < th.x) {
+                     && x_vec[2] < lth.x) {
                 MocapExtreme min;
                 min.value = x_vec[2];
                 min.axis = MOCAP_X;
                 min.extremeType = EXTREME_TYPE_MIN;
-                //extrema.push_back(min); TODO
+                extrema.push_back(min);
             }
             //y
             if (distance(y_vec.begin(), max_element(y_vec.begin(), y_vec.end())) == 2
-                && y_vec[2] > th.y) {
+                && y_vec[2] > uth.y) {
                 MocapExtreme max;
                 max.value = y_vec[2];
                 max.axis = MOCAP_Y;
@@ -131,16 +140,16 @@ private:
                 extrema.push_back(max);
             }
             else if (distance(y_vec.begin(), min_element(y_vec.begin(), y_vec.end())) == 2
-                     && y_vec[2] < th.y) {
+                     && y_vec[2] < lth.y) {
                 MocapExtreme min;
                 min.value = y_vec[2];
                 min.axis = MOCAP_Y;
                 min.extremeType = EXTREME_TYPE_MIN;
-                //extrema.push_back(min); TODO
+                extrema.push_back(min);
             }
             //z
             if (distance(z_vec.begin(), max_element(z_vec.begin(), z_vec.end())) == 2
-                && z_vec[2] > th.z) {
+                && z_vec[2] > uth.z) {
                 MocapExtreme max;
                 max.value = z_vec[2];
                 max.axis = MOCAP_Z;
@@ -148,18 +157,18 @@ private:
                 extrema.push_back(max);
             }
             else if (distance(z_vec.begin(), min_element(z_vec.begin(), z_vec.end())) == 2
-                     && z_vec[2] < th.z) {
+                     && z_vec[2] < lth.z) {
                 MocapExtreme min;
                 min.value = z_vec[2];
                 min.axis = MOCAP_Z;
                 min.extremeType = EXTREME_TYPE_MIN;
-                //extrema.push_back(min); TODO
+                extrema.push_back(min);
             }
         }
     }
     
 public:
-    MocapDescriptor(int depth) : sum(0), ssq(0), threshold(0)  {
+    MocapDescriptor(int depth) : sum(0), ssq(0), upThreshold(0), lowThreshold(0)  {
         data.resize(depth);
     }
     ~MocapDescriptor() {}
@@ -186,7 +195,12 @@ public:
         sum += newValue;
         ssq += newValue*newValue;
         
-        threshold = getRms() * (1.0 + 3.0 * ( 1.0 / ( getStdev() + 1.0 )) );
+        upThreshold = getRms() * (1.0 + 3.0 * ( 1.0 / ( getStdev() + 1.0 )) );
+        if (hasNegative()) {
+            lowThreshold = -upThreshold;
+        } else {
+            lowThreshold = getRms() * (1.0 - 3.0 * ( 1.0 / ( getStdev() + 1.0 )) );
+        }
         
         checkMaxAndMin();
         
@@ -261,11 +275,19 @@ public:
 
 class MocapElement{
 public:
-    MocapElement();
-    MocapElement(int elementId, int depth);
+    MocapElement() : position(0), positionFiltered(0), velocity(0), acceleration(0), accelerationTrajectory(0), relativePositionToTorso(0) {};
+    MocapElement(int elementId, int depth) : position(depth), positionFiltered(depth), velocity(depth), acceleration(depth), accelerationTrajectory(depth), relativePositionToTorso(depth){
+        elementId_ = elementId;
+        historyDepth_ = depth;
+    }
     
-    unsigned int getElementId();
-    void setElementId(int newId);
+    unsigned int getElementId(){
+        return elementId_;
+    }
+    
+    void setElementId(int newId){
+        elementId_ = newId;
+    }
     
     MocapDescriptor<MocapPoint> position;
     MocapDescriptor<MocapPoint> positionFiltered;

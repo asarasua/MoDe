@@ -130,6 +130,14 @@ public:
 	/// ~~~~
 	/// 
 	bool match(const MocapPoint& vec, float tolerance = 0.0001f) const;
+    
+    bool operator<(const float f) const;
+    
+    bool operator<=(const float f) const;
+    
+    bool operator>(const float f) const;
+    
+    bool operator>=(const float f) const;
 
 	//---------------------
 	/// \name Operators
@@ -472,6 +480,23 @@ inline bool MocapPoint::match(const MocapPoint& vec, float tolerance) const {
 		&& (fabs(y - vec.y) < tolerance)
 		&& (fabs(z - vec.z) < tolerance);
 }
+
+inline bool MocapPoint::operator<(const float f) const{
+    return (x < f) || (y < f) || (z < f);
+}
+
+inline bool MocapPoint::operator<=(const float f) const{
+    return (x <= f) || (y <= f) || (z <= f);
+}
+
+inline bool MocapPoint::operator>(const float f) const{
+    return (x > f) || (y > f) || (z > f);
+}
+
+inline bool MocapPoint::operator>=(const float f) const{
+    return (x >= f) || (y >= f) || (z >= f);
+}
+
 
 inline ostream& operator<<(ostream& os, const MocapPoint& vec) {
     os << vec.x << ", " << vec.y << ", " << vec.z;

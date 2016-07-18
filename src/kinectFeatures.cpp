@@ -243,9 +243,6 @@ void KinectFeatures::computeJointDescriptors(int jointId, MocapPoint jointPos, c
     relPosToTorso[2] = -((jointPos.z - getJoint(torso_).positionFiltered.getCurrent().z) / h) / 1.4;
     mocapElement->relativePositionToTorso.push(relPosToTorso);
     notify(mocapElement->relativePositionToTorso.getNewExtremes(), jointId, FEAT_RELATIVEPOSTOTORSO);
-    
-    //TODO: auto hand
-    //beatTracker.update(getAccTrVector(JOINT_RIGHT_HAND), get3DFiltPosVector(JOINT_RIGHT_HAND)[coord::Y]);
 }
 
 const MocapElement KinectFeatures::getJoint(int jointId){
