@@ -1,22 +1,20 @@
 /*
- KinectFeatures
+ MoDeExtractor
  Copyright © 2014  Music Technology Group - Universitat Pompeu Fabra / Escola Superior de Música de Catalunya
  
- This file is part of KinectFeatures, created and maintained by Álvaro Sarasúa <http://www.alvarosarasua.com>
+ This file is part of MoDeExtractor, created and maintained by Álvaro Sarasúa <http://www.alvarosarasua.com>
  
- KinectFeatures is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License (LGPL v3) as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ MoDeExtractor is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License (LGPL v3) as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  
- KinectFeatures is distributed in the hope that it will be useful, but WITHOUT  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License (LGPL v3).
+ MoDeExtractor is distributed in the hope that it will be useful, but WITHOUT  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License (LGPL v3).
  
- You should have received a copy of the GNU Lesser General Public License long within the KinectFeatures SW package.  If not, see <http://www.gnu.org/licenses/>.
+ You should have received a copy of the GNU Lesser General Public License long within the MoDeExtractor SW package.  If not, see <http://www.gnu.org/licenses/>.
  
  If you are willing to get a (non FOSS) commercial license, please contact us at mtg@upf.edu
  */
 
-#include "KinectFeatures.h"
+#include "mode_extractor.h"
 #include <algorithm>    // std::find_if
-
-#include <iostream>
 
 //Real-time filters for MoCap by Skogstad et al ( http://www.uio.no/english/research/groups/fourms/projects/sma/subprojects/mocapfilters/ )
 
@@ -41,9 +39,11 @@ float lpd2_med_b[] = {-0.0795571277,0.1390709784,-0.0479192600,-0.0031459045,-0.
 float lpd2_hard_a[] = {1,-1.628286742,1.418759018,-0.6223424612,0.1085280231};
 float lpd2_hard_b[] = {-0.0738989849,0.1351624829,-0.0512998379,-0.0072918334,-0.0026718267};
 
-//____________________________________________________KinectFeatures
+using namespace MoDe;
 
-KinectFeatures::KinectFeatures() : qom(30), ci(30){
+//____________________________________________________MoDeExtractor
+
+MoDeExtractor::MoDeExtractor() : qom(30), ci(30){
     newValues_ = false;
     setDepth(30);
     aFilter = lpf_soft_a;
@@ -56,7 +56,7 @@ KinectFeatures::KinectFeatures() : qom(30), ci(30){
     
 }
 
-KinectFeatures::KinectFeatures(int head, int torso, int depth) : qom(depth), ci(depth){
+MoDeExtractor::MoDeExtractor(int head, int torso, int depth) : qom(depth), ci(depth){
     newValues_ = false;
     setDepth(30);
     aFilter = lpf_soft_a;
@@ -69,7 +69,7 @@ KinectFeatures::KinectFeatures(int head, int torso, int depth) : qom(depth), ci(
     torso_ = torso;
 }
 
-void KinectFeatures::setup(int head, int torso, int depth){
+void MoDeExtractor::setup(int head, int torso, int depth){
     head_ = head;
     torso_ = torso;
     setDepth(depth);
@@ -77,9 +77,9 @@ void KinectFeatures::setup(int head, int torso, int depth){
     ci.setDepth(depth);
 }
 
-void KinectFeatures::setFilterLevel(int filterLevel){
+void MoDeExtractor::setFilterLevel(int filterLevel){
     switch (filterLevel) {
-        case filter::HARD:
+        case FILTER_HARD:
             aFilter = lpf_hard_a;
             bFilter = lpf_hard_b;
             aLpd1 = lpd1_hard_a;
@@ -87,7 +87,7 @@ void KinectFeatures::setFilterLevel(int filterLevel){
             aLpd2 = lpd2_hard_a;
             bLpd2 = lpd2_hard_b;
             break;
-        case filter::MED:
+        case FILTER_MED:
             aFilter = lpf_med_a;
             bFilter = lpf_med_b;
             aLpd1 = lpd1_med_a;
@@ -95,7 +95,7 @@ void KinectFeatures::setFilterLevel(int filterLevel){
             aLpd2 = lpd2_med_a;
             bLpd2 = lpd2_med_b;
             break;
-        case filter::SOFT:
+        case FILTER_SOFT:
             aFilter = lpf_soft_a;
             bFilter = lpf_soft_b;
             aLpd1 = lpd1_soft_a;
@@ -107,24 +107,24 @@ void KinectFeatures::setFilterLevel(int filterLevel){
     }
 }
 
-void KinectFeatures::setDepth(int depth){
+void MoDeExtractor::setDepth(int depth){
     depth_ = depth;
 }
 
-int KinectFeatures::getDepth(){
+int MoDeExtractor::getDepth(){
     return depth_;
 }
 
-void KinectFeatures::addExtremeListener(ExtremeListener * extremeListener)
+void MoDeExtractor::addExtremeListener(ExtremeListener * extremeListener)
 {
 	extremeListeners.push_back(extremeListener);
 }
 
-void KinectFeatures::update(map<int, MocapPoint> joints){
+void MoDeExtractor::update(map<int, MoDePoint> joints){
     //Initialize elements
     if (elements_.empty()) {
 		for (auto joint : joints) {
-			MocapElement newElement(joint.first, depth_);
+			MoDeJoint newElement(joint.first, depth_);
 			elements_.push_back(newElement);
 		}
     }
@@ -133,8 +133,8 @@ void KinectFeatures::update(map<int, MocapPoint> joints){
 	newValues_ = true;
     
     //TODO solve this!!
-    MocapPoint headPos(joints[head_]);
-	MocapPoint torsoPos(joints[torso_]);
+    MoDePoint headPos(joints[head_]);
+	MoDePoint torsoPos(joints[torso_]);
     
 	float h = headPos.distance(torsoPos);
     float meanVel = 0.0; //for qom
@@ -149,7 +149,7 @@ void KinectFeatures::update(map<int, MocapPoint> joints){
 	for (auto joint : joints)
 	{
 		int j = joint.first;
-		MocapPoint jointPos(joint.second);
+		MoDePoint jointPos(joint.second);
         computeJointDescriptors(j, jointPos, h);
         
         //qom
@@ -198,42 +198,32 @@ void KinectFeatures::update(map<int, MocapPoint> joints){
     //TODO solve this!!
 //    symmetry_ = 1.0 - (0.5 * (abs(sqrt(getDistanceToTorso(JOINT_RIGHT_HAND))-sqrt(getDistanceToTorso(JOINT_LEFT_HAND))) + abs(sqrt(getDistanceToTorso(JOINT_RIGHT_ELBOW))-sqrt(getDistanceToTorso(JOINT_LEFT_ELBOW)))) / h);
     //symmetry_ = 0.0;
- 
-    //TODO solve this!!
-    //yMaxHands_ = max(getRelativePositionToTorso(JOINT_RIGHT_HAND)[1], getRelativePositionToTorso(JOINT_LEFT_HAND)[1]);
-    //yMaxHands_ = 0.0;
-        
-        
-//    } else {
-//        newValues_
-//        = false;
-//    }
 }
 
-void KinectFeatures::computeJointDescriptors(int jointId, MocapPoint jointPos, const float &h){
-    MocapElement* mocapElement = getElement(jointId);
+void MoDeExtractor::computeJointDescriptors(int jointId, MoDePoint jointPos, const float &h){
+    MoDeJoint* MoDeJoint = getElement(jointId);
     
     //Position
-    mocapElement->position.push(jointPos);
-    notify(mocapElement->position.getNewExtremes(), jointId, FEAT_POSITION);
+    MoDeJoint->position.push(jointPos);
+    notify(MoDeJoint->position.getNewExtremes(), jointId, FEAT_POSITION);
     
     //Filtered position
-    mocapElement->positionFiltered.push(applyFilter(mocapElement->position.getData(), mocapElement->positionFiltered.getData(), aFilter, bFilter));
-    notify(mocapElement->positionFiltered.getNewExtremes(), jointId, FEAT_POSITION_FILTERED);
+    MoDeJoint->positionFiltered.push(applyFilter(MoDeJoint->position.getData(), MoDeJoint->positionFiltered.getData(), aFilter, bFilter));
+    notify(MoDeJoint->positionFiltered.getNewExtremes(), jointId, FEAT_POSITION_FILTERED);
     
     //Velocity
-    mocapElement->velocity.push(applyFilter(mocapElement->position.getData(), mocapElement->velocity.getData(), aLpd1, bLpd1));
-	notify(mocapElement->velocity.getNewExtremes(), jointId, FEAT_VELOCITY);
+    MoDeJoint->velocity.push(applyFilter(MoDeJoint->position.getData(), MoDeJoint->velocity.getData(), aLpd1, bLpd1));
+	notify(MoDeJoint->velocity.getNewExtremes(), jointId, FEAT_VELOCITY);
     
     //Acceleration
-    mocapElement->acceleration.push(applyFilter(mocapElement->position.getData(), mocapElement->acceleration.getData(), aLpd2, bLpd2));
-    notify(mocapElement->acceleration.getNewExtremes(), jointId, FEAT_ACCELERATION);
+    MoDeJoint->acceleration.push(applyFilter(MoDeJoint->position.getData(), MoDeJoint->acceleration.getData(), aLpd2, bLpd2));
+    notify(MoDeJoint->acceleration.getNewExtremes(), jointId, FEAT_ACCELERATION);
     
     //Acceleration along trajectory
-    MocapPoint acc = mocapElement->acceleration.getData().back();
-	MocapPoint vel = mocapElement->velocity.getData().back();
-    mocapElement->accelerationTrajectory.push(acc.dot(vel) / vel.length());
-    notify(mocapElement->accelerationTrajectory.getNewExtremes(), jointId, FEAT_ACCELERATION_TRAJECTORY);
+    MoDePoint acc = MoDeJoint->acceleration.getData().back();
+	MoDePoint vel = MoDeJoint->velocity.getData().back();
+    MoDeJoint->accelerationTrajectory.push(acc.dot(vel) / vel.length());
+    notify(MoDeJoint->accelerationTrajectory.getNewExtremes(), jointId, FEAT_ACCELERATION_TRAJECTORY);
     
     //Relative position to torso
     //TODO solve this!!
@@ -241,21 +231,21 @@ void KinectFeatures::computeJointDescriptors(int jointId, MocapPoint jointPos, c
     relPosToTorso[0] = (jointPos.x - getJoint(torso_).positionFiltered.getCurrent().x) / (h * 1.8);
     relPosToTorso[1] = (jointPos.y - getJoint(torso_).positionFiltered.getCurrent().y) / (h * 1.8);
     relPosToTorso[2] = -((jointPos.z - getJoint(torso_).positionFiltered.getCurrent().z) / h) / 1.4;
-    mocapElement->relativePositionToTorso.push(relPosToTorso);
-    notify(mocapElement->relativePositionToTorso.getNewExtremes(), jointId, FEAT_RELATIVEPOSTOTORSO);
+    MoDeJoint->relativePositionToTorso.push(relPosToTorso);
+    notify(MoDeJoint->relativePositionToTorso.getNewExtremes(), jointId, FEAT_RELATIVEPOSTOTORSO);
 }
 
-const MocapElement KinectFeatures::getJoint(int jointId){
-    vector<MocapElement>::iterator it = find_if(elements_.begin(), elements_.end(), MatchId(jointId));
+const MoDeJoint MoDeExtractor::getJoint(int jointId){
+    vector<MoDeJoint>::iterator it = find_if(elements_.begin(), elements_.end(), MatchId(jointId));
     if (it != elements_.end()){
         return *it;
     } else {
-        return MocapElement(0, 1);
+        return MoDeJoint(0, 1);
     }
 }
 
-MocapElement* KinectFeatures::getElement(int jointId){
-    vector<MocapElement>::iterator it = find_if(elements_.begin(), elements_.end(), MatchId(jointId));
+MoDeJoint* MoDeExtractor::getElement(int jointId){
+    vector<MoDeJoint>::iterator it = find_if(elements_.begin(), elements_.end(), MatchId(jointId));
     if (it != elements_.end()){
         return &(*it);
     } else {
@@ -263,13 +253,13 @@ MocapElement* KinectFeatures::getElement(int jointId){
     }
 }
 
-MocapPoint KinectFeatures::applyFilter(vector<MocapPoint> x, vector<MocapPoint> y, float *a, float *b){
+MoDePoint MoDeExtractor::applyFilter(vector<MoDePoint> x, vector<MoDePoint> y, float *a, float *b){
     reverse(x.begin(), x.end());
     reverse(y.begin(), y.end());
 	return b[0] * x[0] + b[1] * x[1] + b[2] * x[2] + b[3] * x[3] + b[4] * x[4] - (a[1] * y[0] + a[2] * y[1] + a[3] * y[2] + a[4] * y[3]);
 }
 
-void KinectFeatures::notify(vector<MocapExtreme> newExtremes, int jointId, int featId)
+void MoDeExtractor::notify(vector<MoDeExtreme> newExtremes, int jointId, int featId)
 {
     for (auto newExtreme : newExtremes) {
         newExtreme.joint = jointId;
@@ -278,106 +268,49 @@ void KinectFeatures::notify(vector<MocapExtreme> newExtremes, int jointId, int f
             extremeListener->newExtreme(newExtreme);
         }
 #if OPENFRAMEWORKS
-        static MocapEvent newEvent;
+        static ofxMoDeEvent newEvent;
         newEvent.joint = newExtreme.joint;
         newEvent.axis = newExtreme.axis;
         newEvent.feature = newExtreme.feature;
         newEvent.value = newExtreme.value;
         newEvent.extremeType = newExtreme.extremeType;
         
-        ofNotifyEvent(MocapEvent::events, newEvent);
+        ofNotifyEvent(ofxMoDeEvent::events, newEvent);
 #endif
     }
-    
-	
 }
 
 template <typename T>
-vector<T> KinectFeatures::createVector(T element){
+vector<T> MoDeExtractor::createVector(T element){
     vector<T> v (depth_);
     fill(v.begin(), v.begin()+depth_, element);
     return v;
 }
 
-float KinectFeatures::getAngle(int j1, int j2, int j3){
+float MoDeExtractor::getAngle(int j1, int j2, int j3){
     float d12 = getJoint(j1).positionFiltered.getCurrent().distance(getJoint(j2).positionFiltered.getCurrent());
     float d13 = getJoint(j1).positionFiltered.getCurrent().distance(getJoint(j3).positionFiltered.getCurrent());
     float d23 = getJoint(j2).positionFiltered.getCurrent().distance(getJoint(j3).positionFiltered.getCurrent());
     return (180/PI) * acos(( -(d13*d13) + d23*d23 + d12*d12 ) / (2*d23*d12 ) ); //cos rule
 }
 
-MocapPoint KinectFeatures::getAccelerationCrest(int j){
+MoDePoint MoDeExtractor::getAccelerationCrest(int j){
     if (getElement(j)) {
         return getElement(j)->acceleration.getCrest();
     } else {
-        return MocapPoint(0.0);
+        return MoDePoint(0.0);
     }
-//    
-//    if (getElement(j)) {
-//        //cout << ":::" << endl;
-//        vector<MocapPoint> acc = getAccelerationHistory(j, frames);
-//        vector<double> x_vec, y_vec, z_vec, x_max, y_max, z_max;
-//
-//        for (auto it : acc) {
-//            x_vec.push_back(it.x);
-//            y_vec.push_back(it.y);
-//            //cout << it.y << ", ";
-//            z_vec.push_back(it.z);
-//        }
-//        
-//    //    double sq_sum_x = inner_product(x_vec.begin(), x_vec.end(), x_vec.begin(), 0.0);
-//    //    double sq_sum_y = inner_product(y_vec.begin(), y_vec.end(), y_vec.begin(), 0.0);
-//    //    double sq_sum_z = inner_product(z_vec.begin(), z_vec.end(), z_vec.begin(), 0.0);
-//    //    
-//    //    double mean_x = accumulate(x_vec.begin(), x_vec.end(), 0.0) / acc.size();
-//    //    double mean_y = accumulate(y_vec.begin(), y_vec.end(), 0.0) / acc.size();
-//    //    double mean_z = accumulate(z_vec.begin(), z_vec.end(), 0.0) / acc.size();
-//    //    
-//    //    double std_x = sqrt(sq_sum_x / acc.size() - mean_x * mean_x);
-//    //    double std_y = sqrt(sq_sum_y / acc.size() - mean_y * mean_y);
-//    //    double std_z = sqrt(sq_sum_z / acc.size() - mean_z * mean_z);
-//        
-//        //Find maxima
-//        MocapPoint sigma = getElement(j)->acceleration.getStdev();
-//        //MocapPoint threshold = getElement(j)->acceleration.getRms() * (1.0 + 3.0 * ( 1.0 / ( sigma + 1.0 )) );
-//        //cout << endl << "th: " << threshold.y << " (" << getElement(j)->acceleration.getRms().y << ", " << sigma.y << ", " << (1.0 + 3.0 * ( 1.0 / ( sigma.y + 1.0 )) ) << ")" << endl;
-//        //cout << endl << "peaks: " << endl;
-//        for (int i = 0; i < acc.size()-4; i++) {
-//            if (distance(x_vec.begin()+i, max_element(x_vec.begin()+i, x_vec.begin()+i+4)) == 2){
-//                x_max.push_back(x_vec[i + 2]);
-//            }
-//            if (distance(y_vec.begin()+i, max_element(y_vec.begin()+i, y_vec.begin()+i+4)) == 2){
-//                //&& y_vec[i + 2] > threshold.y){
-//                y_max.push_back(y_vec[i + 2]);
-//                //cout << y_vec[i + 2] << endl;
-//            }
-//            if (distance(z_vec.begin()+i, max_element(z_vec.begin()+i, z_vec.begin()+i+4)) == 2){
-//                z_max.push_back(z_vec[i + 2]);
-//            }
-//        }
-//        
-//        MocapPoint crest(0.0, 0.0, 0.0);
-//        if (x_max.size()) crest.x = ( accumulate( x_max.begin(), x_max.end(), 0.0)/x_max.size() ) / getElement(j)->acceleration.getStdev().x; //denom is RMS
-//        if (y_max.size()) crest.y = ( accumulate( y_max.begin(), y_max.end(), 0.0)/y_max.size() ) / getElement(j)->acceleration.getStdev().y;
-//        if (z_max.size()) crest.z = ( accumulate( z_max.begin(), z_max.end(), 0.0)/z_max.size() ) / getElement(j)->acceleration.getStdev().z;
-//        
-//        //cout << "======" << endl;
-//        
-//        return crest;
-//    } else {
-//        return MocapPoint(0.0,0.0,0.0);
-//    }    
 }
 
-MocapPoint KinectFeatures::getRms(int j, int frames){
+MoDePoint MoDeExtractor::getRms(int j, int frames){
     if (getElement(j)) {
         return getElement(j)->acceleration.getRms();
     } else {
-        return MocapPoint(0.0,0.0,0.0);
+        return MoDePoint(0.0,0.0,0.0);
     }
 }
 
-float KinectFeatures::getQom(){
+float MoDeExtractor::getQom(){
     if (qom.getData().size()) {
         return qom.getData().back();
     } else {
@@ -385,17 +318,17 @@ float KinectFeatures::getQom(){
     }
 }
 
-vector<float> KinectFeatures::getQomHistory(){
+vector<float> MoDeExtractor::getQomHistory(){
     return qom.getData();
 }
 
-vector<float> KinectFeatures::getQomHistory(int frames){
+vector<float> MoDeExtractor::getQomHistory(int frames){
     vector<float> qomH = qom.getData();
     vector<float> history(qomH.end()-frames, qomH.end());
     return history;
 }
 
-float KinectFeatures::getCI(){
+float MoDeExtractor::getCI(){
     if (ci.getData().size()) {
         return ci.getData().back();
     } else {
@@ -403,28 +336,28 @@ float KinectFeatures::getCI(){
     }
 }
 
-vector<float> KinectFeatures::getCIHistory(){
+vector<float> MoDeExtractor::getCIHistory(){
     return ci.getData();
 }
 
-vector<float> KinectFeatures::getCIHistory(int frames){
+vector<float> MoDeExtractor::getCIHistory(int frames){
     vector<float> ciH = ci.getData();
     vector<float> history(ciH.end()-frames, ciH.end());
     return history;
 }
 
-/*float KinectFeatures::getSymmetry(){
+/*float MoDeExtractor::getSymmetry(){
     return symmetry_;
 }
 
-float KinectFeatures::getYMaxHands(){
+float MoDeExtractor::getYMaxHands(){
     return yMaxHands_;
 }*/
 
-bool KinectFeatures::isNewDataAvailable(){
+bool MoDeExtractor::isNewDataAvailable(){
     return newValues_;
 }
 
 #if OPENFRAMEWORKS
-ofEvent<MocapEvent> MocapEvent::events;
+ofEvent<ofxMoDeEvent> ofxMoDeEvent::events;
 #endif

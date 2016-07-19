@@ -1,8 +1,8 @@
 #pragma once
 
 #include "ofMain.h"
-#include "KinectFeatures.h"
-#include "ofxKinectFeaturesGraph.h"
+#include "mode_extractor.h"
+#include "ofxMoDeGraph.h"
 #include "ofxOpenNI.h"
 
 enum {
@@ -27,14 +27,14 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
     void userEvent(ofxOpenNIUserEvent & event);
-    void mocapExtreme(MocapEvent &e);
+    void mocapExtreme(MoDe::ofxMoDeEvent &e);
     
     
     ofxOpenNI kinect;
     bool hadUsers;
-    KinectFeatures featExtractor;
+    MoDe::ofxMoDe featExtractor;
     int j, f;
     ofTrueTypeFont font;
     
-    vector<ofPtr<ofxKinectFeaturesGraph>> graphs;
+    vector<ofPtr<ofxMoDeGraph>> graphs;
 };

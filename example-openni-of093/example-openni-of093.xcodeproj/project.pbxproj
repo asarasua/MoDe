@@ -26,8 +26,8 @@
 		EB1D57011CC7C0C300658E48 /* libXnVFeatures_1_5_2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EB1D56F31CC7C0C300658E48 /* libXnVFeatures_1_5_2.dylib */; };
 		EB1D57021CC7C0C300658E48 /* libXnVHandGenerator_1_5_2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EB1D56F41CC7C0C300658E48 /* libXnVHandGenerator_1_5_2.dylib */; };
 		EB1D57031CC7C0C300658E48 /* libXnVNite_1_5_2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EB1D56F51CC7C0C300658E48 /* libXnVNite_1_5_2.dylib */; };
-		EB4524201D103F81007D2430 /* kinectFeatures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45241B1D103F81007D2430 /* kinectFeatures.cpp */; };
-		EB5C484B1D18440A00965D66 /* ofxKinectFeaturesGraph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB5C48491D18440A00965D66 /* ofxKinectFeaturesGraph.cpp */; };
+		EB4524201D103F81007D2430 /* mode_extractor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45241B1D103F81007D2430 /* mode_extractor.cpp */; };
+		EB5C484B1D18440A00965D66 /* ofxModeGraph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB5C48491D18440A00965D66 /* ofxModeGraph.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -210,12 +210,13 @@
 		EB1D56F31CC7C0C300658E48 /* libXnVFeatures_1_5_2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnVFeatures_1_5_2.dylib; sourceTree = "<group>"; };
 		EB1D56F41CC7C0C300658E48 /* libXnVHandGenerator_1_5_2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnVHandGenerator_1_5_2.dylib; sourceTree = "<group>"; };
 		EB1D56F51CC7C0C300658E48 /* libXnVNite_1_5_2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnVNite_1_5_2.dylib; sourceTree = "<group>"; };
-		EB45241B1D103F81007D2430 /* kinectFeatures.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = kinectFeatures.cpp; path = ../src/kinectFeatures.cpp; sourceTree = "<group>"; };
-		EB45241C1D103F81007D2430 /* kinectFeatures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kinectFeatures.h; path = ../src/kinectFeatures.h; sourceTree = "<group>"; };
-		EB45241E1D103F81007D2430 /* mocapElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mocapElement.h; path = ../src/mocapElement.h; sourceTree = "<group>"; };
-		EB45241F1D103F81007D2430 /* mocapPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mocapPoint.h; path = ../src/mocapPoint.h; sourceTree = "<group>"; };
-		EB5C48491D18440A00965D66 /* ofxKinectFeaturesGraph.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxKinectFeaturesGraph.cpp; path = ../ofxKinectFeatures/src/ofxKinectFeaturesGraph.cpp; sourceTree = "<group>"; };
-		EB5C484A1D18440A00965D66 /* ofxKinectFeaturesGraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxKinectFeaturesGraph.h; path = ../ofxKinectFeatures/src/ofxKinectFeaturesGraph.h; sourceTree = "<group>"; };
+		EB45241B1D103F81007D2430 /* mode_extractor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mode_extractor.cpp; path = ../src/mode_extractor.cpp; sourceTree = "<group>"; };
+		EB45241C1D103F81007D2430 /* mode_extractor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mode_extractor.h; path = ../src/mode_extractor.h; sourceTree = "<group>"; };
+		EB45241E1D103F81007D2430 /* mode_joint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mode_joint.h; path = ../src/mode_joint.h; sourceTree = "<group>"; };
+		EB45241F1D103F81007D2430 /* mode_point.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mode_point.h; path = ../src/mode_point.h; sourceTree = "<group>"; };
+		EB5C48491D18440A00965D66 /* ofxModeGraph.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxModeGraph.cpp; path = ../ofxKinectFeatures/src/ofxModeGraph.cpp; sourceTree = "<group>"; };
+		EB5C484A1D18440A00965D66 /* ofxMoDeGraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxMoDeGraph.h; path = ../ofxKinectFeatures/src/ofxMoDeGraph.h; sourceTree = "<group>"; };
+		EBC134A91D3E616200C301C7 /* mode_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mode_descriptor.h; path = ../src/mode_descriptor.h; sourceTree = "<group>"; };
 		F06484C0F76E7F5648C9B1CD /* XnVSlider1D.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVSlider1D.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVSlider1D.h; sourceTree = SOURCE_ROOT; };
 		F0F72943A4BDA515D61AB3D7 /* XnDerivedCast.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnDerivedCast.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnDerivedCast.h; sourceTree = SOURCE_ROOT; };
 		F5845951CC5E609A3DB759A0 /* usb100.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = usb100.h; path = ../../../addons/ofxOpenNI/libs/include/openni/Win32/usb100.h; sourceTree = SOURCE_ROOT; };
@@ -555,8 +556,8 @@
 		EA1B6BEA7DD727EDE5C6D23A /* src */ = {
 			isa = PBXGroup;
 			children = (
-				EB5C48491D18440A00965D66 /* ofxKinectFeaturesGraph.cpp */,
-				EB5C484A1D18440A00965D66 /* ofxKinectFeaturesGraph.h */,
+				EB5C48491D18440A00965D66 /* ofxModeGraph.cpp */,
+				EB5C484A1D18440A00965D66 /* ofxMoDeGraph.h */,
 			);
 			name = src;
 			sourceTree = "<group>";
@@ -587,10 +588,11 @@
 		EB45241A1D103F78007D2430 /* lib */ = {
 			isa = PBXGroup;
 			children = (
-				EB45241B1D103F81007D2430 /* kinectFeatures.cpp */,
-				EB45241C1D103F81007D2430 /* kinectFeatures.h */,
-				EB45241E1D103F81007D2430 /* mocapElement.h */,
-				EB45241F1D103F81007D2430 /* mocapPoint.h */,
+				EB45241B1D103F81007D2430 /* mode_extractor.cpp */,
+				EB45241C1D103F81007D2430 /* mode_extractor.h */,
+				EBC134A91D3E616200C301C7 /* mode_descriptor.h */,
+				EB45241E1D103F81007D2430 /* mode_joint.h */,
+				EB45241F1D103F81007D2430 /* mode_point.h */,
 			);
 			name = lib;
 			sourceTree = "<group>";
@@ -686,8 +688,8 @@
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
 				89D91BBAE9596D6E30AA6E35 /* ofxOpenNI.cpp in Sources */,
 				53B8DC1D45EBD5267B24B601 /* ofxOpenNITypes.cpp in Sources */,
-				EB4524201D103F81007D2430 /* kinectFeatures.cpp in Sources */,
-				EB5C484B1D18440A00965D66 /* ofxKinectFeaturesGraph.cpp in Sources */,
+				EB4524201D103F81007D2430 /* mode_extractor.cpp in Sources */,
+				EB5C484B1D18440A00965D66 /* ofxModeGraph.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,10 +8,10 @@
 
 #include "ofMain.h"
 
-class ofxKinectFeaturesGraph {
+class ofxMoDeGraph {
 public:
-    ofxKinectFeaturesGraph();
-    ofxKinectFeaturesGraph(float x, float y, float w, float h, float colorHue, string graphText);
+    ofxMoDeGraph();
+    ofxMoDeGraph(float x, float y, float w, float h, float colorHue, string graphText);
     void setText(string graphText);
     void setPos(float x, float y);
     void setSize(float w, float h);

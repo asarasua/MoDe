@@ -1,10 +1,10 @@
-#include "ofxKinectFeaturesGraph.h"
+#include "ofxMoDeGraph.h"
 
-ofxKinectFeaturesGraph::ofxKinectFeaturesGraph()
+ofxMoDeGraph::ofxMoDeGraph()
 {
-    ofAddListener(ofEvents().mousePressed, this, &ofxKinectFeaturesGraph::mousePressed);
-    ofAddListener(ofEvents().mouseDragged, this, &ofxKinectFeaturesGraph::mouseDragged);
-    ofAddListener(ofEvents().mouseReleased, this, &ofxKinectFeaturesGraph::mouseReleased);
+    ofAddListener(ofEvents().mousePressed, this, &ofxMoDeGraph::mousePressed);
+    ofAddListener(ofEvents().mouseDragged, this, &ofxMoDeGraph::mouseDragged);
+    ofAddListener(ofEvents().mouseReleased, this, &ofxMoDeGraph::mouseReleased);
     
     hue = 0.0;
     scale = 0.2;
@@ -24,15 +24,15 @@ ofxKinectFeaturesGraph::ofxKinectFeaturesGraph()
     prevMouseScale = ofVec2f(0.0);
 }
 
-ofxKinectFeaturesGraph::ofxKinectFeaturesGraph(float x, float y, float w, float h, float colorHue, string graphText)
+ofxMoDeGraph::ofxMoDeGraph(float x, float y, float w, float h, float colorHue, string graphText)
 {
     screenPos = ofVec2f(x, y);
     size = ofVec2f(w, h);
     hue = colorHue;
     
-    ofAddListener(ofEvents().mousePressed, this, &ofxKinectFeaturesGraph::mousePressed);
-    ofAddListener(ofEvents().mouseDragged, this, &ofxKinectFeaturesGraph::mouseDragged);
-    ofAddListener(ofEvents().mouseReleased, this, &ofxKinectFeaturesGraph::mouseReleased);
+    ofAddListener(ofEvents().mousePressed, this, &ofxMoDeGraph::mousePressed);
+    ofAddListener(ofEvents().mouseDragged, this, &ofxMoDeGraph::mouseDragged);
+    ofAddListener(ofEvents().mouseReleased, this, &ofxMoDeGraph::mouseReleased);
     
     scale = 0.2;
     text = graphText;
@@ -48,31 +48,31 @@ ofxKinectFeaturesGraph::ofxKinectFeaturesGraph(float x, float y, float w, float 
     prevMouseScale = ofVec2f(0.0);
 }
 
-void ofxKinectFeaturesGraph::setText(string graphText){
+void ofxMoDeGraph::setText(string graphText){
     text = graphText;
 }
 
-void ofxKinectFeaturesGraph::setPos(float x, float y)
+void ofxMoDeGraph::setPos(float x, float y)
 {
     screenPos = ofVec2f(x, y);
 }
 
-void ofxKinectFeaturesGraph::setSize(float w, float h)
+void ofxMoDeGraph::setSize(float w, float h)
 {
     size = ofVec2f(w, h);
 }
 
-void ofxKinectFeaturesGraph::setHue(float colorHue)
+void ofxMoDeGraph::setHue(float colorHue)
 {
     hue = colorHue;
 }
 
-float ofxKinectFeaturesGraph::getHue()
+float ofxMoDeGraph::getHue()
 {
     return hue;
 }
 
-void ofxKinectFeaturesGraph::addValue(float value)
+void ofxMoDeGraph::addValue(float value)
 {
     mode = MODE_1D;
     if (oneTimeSeries.size() <= N_POINTS) {
@@ -86,7 +86,7 @@ void ofxKinectFeaturesGraph::addValue(float value)
         event += 1;
 }
 
-void ofxKinectFeaturesGraph::addValue(ofVec3f value)
+void ofxMoDeGraph::addValue(ofVec3f value)
 {
     mode = MODE_3D;
     if (threeTimeSeries.size() <= N_POINTS) {
@@ -100,7 +100,7 @@ void ofxKinectFeaturesGraph::addValue(ofVec3f value)
         event += 1;
 }
 
-void ofxKinectFeaturesGraph::newEvent()
+void ofxMoDeGraph::newEvent()
 {
     if (events.size() <= N_EVENTS) {
         events.insert(events.begin(), 0);
@@ -110,7 +110,7 @@ void ofxKinectFeaturesGraph::newEvent()
     }
 }
 
-void ofxKinectFeaturesGraph::draw()
+void ofxMoDeGraph::draw()
 {
     ofPushMatrix();
     ofPushStyle();
@@ -171,7 +171,7 @@ void ofxKinectFeaturesGraph::draw()
     
 }
 
-void ofxKinectFeaturesGraph::mousePressed(ofMouseEventArgs& event) {
+void ofxMoDeGraph::mousePressed(ofMouseEventArgs& event) {
     //bottom-right corner (change size)
     if (event.x > screenPos.x + 0.97 * size.x && event.x < screenPos.x + size.x &&
         event.y > screenPos.y + size.y - 0.03 * size.x && event.y < screenPos.y + size.y)
@@ -189,14 +189,14 @@ void ofxKinectFeaturesGraph::mousePressed(ofMouseEventArgs& event) {
         prevMouseMove = event;
 }
 
-void ofxKinectFeaturesGraph::mouseReleased(ofMouseEventArgs& event) {
+void ofxMoDeGraph::mouseReleased(ofMouseEventArgs& event) {
     prevMouseMove = ofVec2f(0.0);
     prevMouseResize = ofVec2f(0.0);
     prevMouseScale = ofVec2f(0.0);
 }
 
 
-void ofxKinectFeaturesGraph::mouseDragged(ofMouseEventArgs & event)
+void ofxMoDeGraph::mouseDragged(ofMouseEventArgs & event)
 {
     if (prevMouseMove != ofVec2f(0.0)) {
         screenPos += event - prevMouseMove;

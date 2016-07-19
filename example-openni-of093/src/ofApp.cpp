@@ -18,7 +18,7 @@ void ofApp::setup(){
     featExtractor.setup(JOINT_HEAD, JOINT_TORSO, 60);
     
     ofAddListener(kinect.userEvent, this, &ofApp::userEvent);
-    ofAddListener(MocapEvent::events, this, &ofApp::mocapExtreme);
+    ofAddListener(MoDe::ofxMoDeEvent::events, this, &ofApp::mocapExtreme);
     
     ofSetWindowShape(640, 480);
     
@@ -27,11 +27,11 @@ void ofApp::setup(){
     j = JOINT_RIGHT_HAND;
     f = VELOCITY_MEAN;
     
-    ofPtr<ofxKinectFeaturesGraph> g1(new ofxKinectFeaturesGraph(30, 30, 400, 100, 0, "acc"));
+    ofPtr<ofxMoDeGraph> g1(new ofxMoDeGraph(30, 30, 400, 100, 0, "acc"));
     graphs.push_back(g1);
-    ofPtr<ofxKinectFeaturesGraph> g2(new ofxKinectFeaturesGraph(60, 30, 400, 100, 100, "rms"));
+    ofPtr<ofxMoDeGraph> g2(new ofxMoDeGraph(60, 30, 400, 100, 100, "rms"));
     graphs.push_back(g2);
-    ofPtr<ofxKinectFeaturesGraph> g3(new ofxKinectFeaturesGraph(60, 70, 400, 100, 200, "crest"));
+    ofPtr<ofxMoDeGraph> g3(new ofxMoDeGraph(60, 70, 400, 100, 200, "crest"));
     graphs.push_back(g3);
 }
 
@@ -65,7 +65,7 @@ void ofApp::update(){
     
     //graphs[0]->addValue(featExtractor.getAcceleration(j).y);
     graphs[0]->addValue(featExtractor.getJoint(j).acceleration.getCurrent().y);
-    graphs[1]->addValue(featExtractor.getJoint(j).acceleration.getRms().y);
+    graphs[1]->addValue(featExtractor.getJoint(j).velocity.getCrest().y);
     graphs[2]->addValue(featExtractor.getJoint(j).acceleration.getCrest().y);
     
 }
@@ -81,7 +81,7 @@ void ofApp::draw(){
     kinect.drawSkeletons();
     
     ostringstream os;
-    os << "ofxKinectFeatures example " << endl;
+    os << "ofxMoDe example " << endl;
     os << "FPS: " << ofGetFrameRate() << endl;
     ofPoint jointProjectivePosition = kinect.worldToProjective(featExtractor.getJoint(j).position.getCurrent());
     os << "Quantity of Motion: " << featExtractor.getQom() << endl;
@@ -152,11 +152,11 @@ void ofApp::userEvent(ofxOpenNIUserEvent &event){
     //    }
 }
 
-void ofApp::mocapExtreme(MocapEvent &e){
-    if (e.joint == JOINT_RIGHT_HAND && e.feature == FEAT_ACCELERATION && e.axis == MOCAP_Y && e.extremeType == EXTREME_TYPE_MAX) {
+void ofApp::mocapExtreme(MoDe::ofxMoDeEvent &e){
+    if (e.joint == JOINT_RIGHT_HAND && e.feature == MoDe::FEAT_ACCELERATION && e.axis == MoDe::MOCAP_Y && e.extremeType == MoDe::EXTREME_TYPE_MAX) {
         cout << "new MAX on right hand with value " << e.value << " in axis " << e.axis << endl;
     }
-    else if (e.joint == JOINT_RIGHT_HAND && e.feature == FEAT_ACCELERATION && e.axis == MOCAP_Y && e.extremeType == EXTREME_TYPE_MIN) {
+    else if (e.joint == JOINT_RIGHT_HAND && e.feature == MoDe::FEAT_ACCELERATION && e.axis == MoDe::MOCAP_Y && e.extremeType == MoDe::EXTREME_TYPE_MIN) {
         cout << "new MIN on right hand with value " << e.value << " in axis " << e.axis << endl;
     }
 }
