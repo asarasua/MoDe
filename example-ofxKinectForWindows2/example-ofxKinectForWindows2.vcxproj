@@ -175,17 +175,17 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\ofxKinectFeatures\src\ofxKinectFeatures.cpp" />
-    <ClCompile Include="..\src\kinectFeatures.cpp" />
-    <ClCompile Include="..\src\mocapElement.cpp" />
+    <ClCompile Include="..\ofxMoDe\src\ofxModeGraph.cpp" />
+    <ClCompile Include="..\src\mode_extractor.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\ofxKinectFeatures\src\ofxKinectFeatures.h" />
-    <ClInclude Include="..\src\kinectFeatures.h" />
-    <ClInclude Include="..\src\mocapElement.h" />
-    <ClInclude Include="..\src\mocapPoint.h" />
+    <ClInclude Include="..\ofxMoDe\src\ofxMoDeGraph.h" />
+    <ClInclude Include="..\src\mode_descriptor.h" />
+    <ClInclude Include="..\src\mode_extractor.h" />
+    <ClInclude Include="..\src\mode_joint.h" />
+    <ClInclude Include="..\src\mode_point.h" />
     <ClInclude Include="src\ofApp.h" />
   </ItemGroup>
   <ItemGroup>

@@ -9,9 +9,9 @@ void ofApp::setup() {
 
 	//kinect.addKinectListener(this, &ofApp::kinectPlugged, &ofApp::kinectUnplugged);
 
-	featExtractor.setup(JointType_Head, JointType_SpineMid);
+	featExtractor.setup(JointType_Head, JointType_SpineMid, 60);
 
-	ofAddListener(MocapEvent::events, this, &ofApp::mocapBeat);
+	ofAddListener(MoDe::ofxMoDeEvent::events, this, &ofApp::mocapBeat);
 
 	ofSetWindowShape(1080, 720);
 
@@ -133,16 +133,15 @@ void ofApp::draw() {
 			case VELOCITY_MEAN:
 				os << "Velocity magnitude mean" << endl;
 				os << jointProjectivePosition << endl;
-				//font.drawString(ofToString(featExtractor.getVelocityMean(joint)), jointProjectivePosition.x, jointProjectivePosition.y);
-				font.drawString(ofToString(featExtractor.getVelocity(joint)), jointProjectivePosition.x, jointProjectivePosition.y);
+				font.drawString(ofToString(featExtractor.getJoint(joint).velocity.getMagnitude()), jointProjectivePosition.x, jointProjectivePosition.y);
 				break;
 			case ACCELERATION_Y:
 				os << "Acceleration along y axis (up-down movement)" << endl;
-				font.drawString(ofToString(featExtractor.getAcceleration(joint).y), jointProjectivePosition.x, jointProjectivePosition.y);
+				font.drawString(ofToString(featExtractor.getJoint(joint).acceleration.getCurrent().y), jointProjectivePosition.x, jointProjectivePosition.y);
 				break;
 			case RELPOSTOTORSO_X:
 				os << "Relative position to torso in x axis" << endl;
-				font.drawString(ofToString(featExtractor.getRelativePositionToTorso(joint).x), jointProjectivePosition.x, jointProjectivePosition.y);
+				font.drawString(ofToString(featExtractor.getJoint(joint).relativePositionToTorso.getCurrent().x), jointProjectivePosition.x, jointProjectivePosition.y);
 				break;
 			default:
 				break;
@@ -218,9 +217,9 @@ void ofApp::gotMessage(ofMessage msg) {
 
 }
 
-void ofApp::mocapBeat(MocapEvent & e)
+void ofApp::mocapBeat(MoDe::ofxMoDeEvent & e)
 {
-	if (e.feature == FEAT_VELOCITY && e.beatType == BEAT_TYPE_MAX && e.joint == JointType_HandRight && e.axis == MOCAP_Y && e.value > 1.0) {
+	if (e.feature == MoDe::FEAT_VELOCITY && e.extremeType == MoDe::EXTREME_TYPE_MAX && e.joint == JointType_HandRight && e.axis == MoDe::MOCAP_Y && e.value > 1.0) {
 		cout << "max in velocity right hand!" << endl;
 	}
 }

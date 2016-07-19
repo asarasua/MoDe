@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxKinectFeatures.h"
+#include "mode_extractor.h"
 #include "ofxKinectForWindows2.h"
 
 class ofxKinectNuiDrawTexture;
@@ -30,11 +30,11 @@ public:
 	void gotMessage(ofMessage msg);
 	//void userEvent(ofxOpenNIUserEvent & event);
 
-	void mocapBeat(MocapEvent &e);
+	void mocapBeat(MoDe::ofxMoDeEvent &e);
 
 	ofxKFW2::Device kinect;
 	//bool hadUsers;
-	ofxKinectFeatures featExtractor;
+	MoDe::ofxMoDe featExtractor;
 	int joint, feature;
 	ofTrueTypeFont font;
 };
