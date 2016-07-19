@@ -214,8 +214,8 @@
 		EB45241C1D103F81007D2430 /* mode_extractor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mode_extractor.h; path = ../src/mode_extractor.h; sourceTree = "<group>"; };
 		EB45241E1D103F81007D2430 /* mode_joint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mode_joint.h; path = ../src/mode_joint.h; sourceTree = "<group>"; };
 		EB45241F1D103F81007D2430 /* mode_point.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mode_point.h; path = ../src/mode_point.h; sourceTree = "<group>"; };
-		EB5C48491D18440A00965D66 /* ofxModeGraph.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxModeGraph.cpp; path = ../ofxKinectFeatures/src/ofxModeGraph.cpp; sourceTree = "<group>"; };
-		EB5C484A1D18440A00965D66 /* ofxMoDeGraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxMoDeGraph.h; path = ../ofxKinectFeatures/src/ofxMoDeGraph.h; sourceTree = "<group>"; };
+		EB5C48491D18440A00965D66 /* ofxModeGraph.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxModeGraph.cpp; path = ../ofxMoDe/src/ofxModeGraph.cpp; sourceTree = "<group>"; };
+		EB5C484A1D18440A00965D66 /* ofxMoDeGraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxMoDeGraph.h; path = ../ofxMoDe/src/ofxMoDeGraph.h; sourceTree = "<group>"; };
 		EBC134A91D3E616200C301C7 /* mode_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mode_descriptor.h; path = ../src/mode_descriptor.h; sourceTree = "<group>"; };
 		F06484C0F76E7F5648C9B1CD /* XnVSlider1D.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnVSlider1D.h; path = ../../../addons/ofxOpenNI/libs/include/nite/XnVSlider1D.h; sourceTree = SOURCE_ROOT; };
 		F0F72943A4BDA515D61AB3D7 /* XnDerivedCast.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = XnDerivedCast.h; path = ../../../addons/ofxOpenNI/libs/include/openni/XnDerivedCast.h; sourceTree = SOURCE_ROOT; };
@@ -418,13 +418,13 @@
 			name = ARC;
 			sourceTree = "<group>";
 		};
-		AD2DF1D30BB4967CAAEA0B8D /* ofxKinectFeatures */ = {
+		AD2DF1D30BB4967CAAEA0B8D /* ofxMoDe */ = {
 			isa = PBXGroup;
 			children = (
 				EB45241A1D103F78007D2430 /* lib */,
 				EA1B6BEA7DD727EDE5C6D23A /* src */,
 			);
-			name = ofxKinectFeatures;
+			name = ofxMoDe;
 			sourceTree = "<group>";
 		};
 		B27381E69ADB6E3A5F749D08 /* MacOSX */ = {
@@ -438,7 +438,7 @@
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
-				AD2DF1D30BB4967CAAEA0B8D /* ofxKinectFeatures */,
+				AD2DF1D30BB4967CAAEA0B8D /* ofxMoDe */,
 				4D153BDEF846FA13A4C07F5F /* ofxOpenNI */,
 			);
 			name = addons;
