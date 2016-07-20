@@ -5,180 +5,90 @@ void ofApp::setup() {
 	kinect.open();
 	kinect.initColorSource();
 	kinect.initBodySource();
+	kinect.initInfraredSource();
+	featExtractor.setup(JointType_Head, JointType_SpineShoulder, 60);
+	featExtractor.setFilterLevel(MoDe::FILTER_HARD);
 
+	ofSetFrameRate(30.0);
 
-	//kinect.addKinectListener(this, &ofApp::kinectPlugged, &ofApp::kinectUnplugged);
+	drawMode = true;
 
-	featExtractor.setup(JointType_Head, JointType_SpineMid, 60);
+	ofAddListener(MoDe::ofxMoDeEvent::events, this, &ofApp::mocapExtreme);
 
-	ofAddListener(MoDe::ofxMoDeEvent::events, this, &ofApp::mocapBeat);
+	sound.loadSound("met.wav");
 
-	ofSetWindowShape(1080, 720);
-
-	font.loadFont("verdana.ttf", 18);
-
-	joint = JointType_HandRight;
-	feature = VELOCITY_MEAN;
+	beatLife = 3000;
+	ofPtr<ofxMoDeGraph> g1(new ofxMoDeGraph(30, 30, 400, 100, 0, "foo"));
+	graphs.push_back(g1);
+	ofPtr<ofxMoDeGraph> g2(new ofxMoDeGraph(30, 300, 400, 100, 100, "foo"));
+	graphs.push_back(g2);
+	ofPtr<ofxMoDeGraph> g3(new ofxMoDeGraph(30, 500, 400, 100, 200, "foo"));
+	graphs.push_back(g3);
 }
 
 //--------------------------------------------------------------
 void ofApp::update() {
 	kinect.update();
 
-	for (auto & body : kinect.getBodySource()->getBodies())
-	{
-		if (body.tracked)
-		{
-			map<int, ofPoint> joints;
-			for (auto joint : body.joints)
-				joints[joint.first] = joint.second.getPosition();
-			featExtractor.update(joints);
-		}
-	}
+	for (auto &beat : beats)
+		beat.update();
+	//--
+	//Getting joint positions (skeleton tracking)
+	//--
+	//
 
+	if (kinect.isFrameNew()) {
+		auto bodies = kinect.getBodySource()->getBodies();
+		for (auto body : bodies) {
+			if (body.tracked) {
+				map<int, ofPoint> joints;
+				for (auto joint : body.joints) {
+					//now do something with the joints
+					joints[joint.second.getType()] = joint.second.getPosition();
+				}
+				featExtractor.update(joints);
+			}
+		}
+		//for (auto graph : graphs)
+		//	addValueToGraph(graph);
+	}
 }
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-	ofBackground(0, 0, 0);
-	ofSetColor(ofColor::white);
-	float w = ofGetWidth(); //w
-	float h = ofGetHeight(); //h
-							 //image
-	kinect.getColorSource()->draw(0, 0, w, h);
-	kinect.getBodySource()->drawProjected(0, 0, w, h);
+	// Color is at 1920x1080 instead of 512x424 so we should fix aspect ratio
+	int h = ofGetHeight();
+	int w = h / 9 * 16;
+	int x = ofGetWidth() / 2 - w / 2;
+	if (drawMode)
+		kinect.getColorSource()->draw(x, 0, w, h);
+	else
+		kinect.getInfraredSource()->draw(x, 0, w, h);
+	//kinect.getBodySource()->drawProjected(0, 0, w, h);
+	int colorBrightness = ofMap(featExtractor.getQom(), 0, 0.05, 100, 255);
+	drawProjectedWithColor(x, 0, w, h);
 
-	ostringstream os;
-	os << "ofxKinectFeatures example " << endl;
-	os << "FPS: " << ofGetFrameRate() << endl;
 
-	for (auto & body : kinect.getBodySource()->getBodies())
+	for (auto beat : beats)
 	{
-		if (body.tracked) {
-			os << "Quantity of Motion: " << featExtractor.getQom() << endl;
-			//os << "Symmetry: " << featExtractor.getSymmetry() << endl;
-			os << "Contraction Index: " << featExtractor.getCI() << endl << endl;
-			os << "Current joint (left-right to change): ";
-			switch (joint)
-			{
-			case JointType_SpineMid:
-				os << "SPINE" << endl;
-				break;
-			case JointType_SpineShoulder:
-				os << "SPINE SHOULDER" << endl;
-				break;
-			case JointType_Head:
-				os << "HEAD" << endl;
-				break;
-			case JointType_ShoulderLeft:
-				os << "LEFT SHOULDER" << endl;
-				break;
-			case JointType_ElbowLeft:
-				os << "LEFT ELBOW" << endl;
-				break;
-			case JointType_WristLeft:
-				os << "LEFT WRIST" << endl;
-				break;
-			case JointType_HandLeft:
-				os << "LEFT HAND" << endl;
-				break;
-			case JointType_ShoulderRight:
-				os << "RIGHT SHOULDER" << endl;
-				break;
-			case JointType_ElbowRight:
-				os << "RIGHT ELBOW" << endl;
-				break;
-			case JointType_WristRight:
-				os << "RIGHT WRIST" << endl;
-				break;
-			case JointType_HandRight:
-				os << "RIGHT HAND" << endl;
-				break;
-			case JointType_HipLeft:
-				os << "LEFT HIP" << endl;
-				break;
-			case JointType_KneeLeft:
-				os << "LEFT KNEE" << endl;
-				break;
-			case JointType_AnkleLeft:
-				os << "LEFT ANKLE" << endl;
-				break;
-			case JointType_FootLeft:
-				os << "LEFT FOOT" << endl;
-				break;
-			case JointType_HipRight:
-				os << "RIGHT HIP" << endl;
-				break;
-			case JointType_KneeRight:
-				os << "RIGHT KNEE" << endl;
-				break;
-			case JointType_AnkleRight:
-				os << "RIGHT ANKLE" << endl;
-				break;
-			case JointType_FootRight:
-				os << "RIGHT FOOT" << endl;
-				break;
-			default:
-				break;
-			}
-
-
-			ofxKinectForWindows2::Data::Joint j = body.joints.at((JointType)joint);
-			ofVec2f jointProjectivePosition = j.getProjected(kinect.getBodySource()->getCoordinateMapper());
-			jointProjectivePosition.x *= w / kinect.getColorSource()->getWidth();
-			jointProjectivePosition.y *= h / kinect.getColorSource()->getHeight();
-			os << "Current feature (up-down to change): ";
-			ofSetColor(255);
-			switch (feature) {
-			case VELOCITY_MEAN:
-				os << "Velocity magnitude mean" << endl;
-				os << jointProjectivePosition << endl;
-				font.drawString(ofToString(featExtractor.getJoint(joint).velocity.getMagnitude()), jointProjectivePosition.x, jointProjectivePosition.y);
-				break;
-			case ACCELERATION_Y:
-				os << "Acceleration along y axis (up-down movement)" << endl;
-				font.drawString(ofToString(featExtractor.getJoint(joint).acceleration.getCurrent().y), jointProjectivePosition.x, jointProjectivePosition.y);
-				break;
-			case RELPOSTOTORSO_X:
-				os << "Relative position to torso in x axis" << endl;
-				font.drawString(ofToString(featExtractor.getJoint(joint).relativePositionToTorso.getCurrent().x), jointProjectivePosition.x, jointProjectivePosition.y);
-				break;
-			default:
-				break;
-			}
+		if (ofGetElapsedTimeMillis() - beat.getTimeStamp() <= beatLife)
+		{
+			beat.draw(x, 0, w, h);
 		}
 	}
 
-	ofSetColor(0, 0, 0, 100);
-	ofRect(10, 10, 700, 150);
-	ofSetColor(255, 255, 255);
-	ofDrawBitmapString(os.str(), 20, 30);
+	for (auto graph : graphs)
+		graph->draw();
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
-	switch (key) {
-	case OF_KEY_RIGHT:
-		if (joint < JointType_Count - 1) {
-			joint++;
-		}
-		break;
-	case OF_KEY_LEFT:
-		if (joint > 0) {
-			joint--;
-		}
-		break;
-	case OF_KEY_UP:
-		if (feature < RELPOSTOTORSO_X) {
-			feature++;
-		}
-		break;
-	case OF_KEY_DOWN:
-		if (feature > 0) {
-			feature--;
-		}
-	default:
-		break;
+	if (key == 'f' | key == 'F')
+	{
+		ofToggleFullscreen();
+	}
+	else if (key == 'C' | key == 'c') {
+		drawMode = !drawMode;
 	}
 }
 
@@ -217,12 +127,138 @@ void ofApp::gotMessage(ofMessage msg) {
 
 }
 
-void ofApp::mocapBeat(MoDe::ofxMoDeEvent & e)
+void ofApp::drawProjectedWithColor(int x, int y, int width, int height)
 {
-	if (e.feature == MoDe::FEAT_VELOCITY && e.extremeType == MoDe::EXTREME_TYPE_MAX && e.joint == JointType_HandRight && e.axis == MoDe::MOCAP_Y && e.value > 1.0) {
-		cout << "max in velocity right hand!" << endl;
+	ofPushMatrix();
+	ofPushStyle();
+	ofTranslate(x, y);
+	ofScale((float)width / 1920, (float)height / 1080);
+
+	//Draw graph colors on top of corresponding joints
+	//for (auto body : kinect.getBodySource()->getBodies())
+	//{
+	//	if (body.tracked)
+	//	{
+	//		for (auto graph : graphs) {
+	//			ofSetColor(ofColor::fromHsb(graph->getHue(), 255, 255, 100));
+	//			if (graph->getDescriptor() != FEAT_QOM && graph->getDescriptor() != FEAT_CI)
+	//				ofCircle(body.joints[(JointType)graph->getJoint()].getProjected(kinect.getBodySource()->getCoordinateMapper()), 30);
+	//		}
+	//	}
+	//}
+
+
+	auto bodies = kinect.getBodySource()->getBodies();
+	auto boneAtlas = ofxKinectForWindows2::Data::Body::getBonesAtlas();
+
+	for (auto body : bodies) {
+		if (body.tracked)
+		{
+			for (auto bone : boneAtlas) {
+				auto firstJointInBone = body.joints[bone.first];
+				auto secondJointInBone = body.joints[bone.second];
+				float brightness = ofMap(featExtractor.getJoint(bone.first).getDescriptor(MoDe::FEAT_VELOCITY).getMagnitude(), 0, 0.04, 70, 255, true);
+				ofSetColor(brightness, 150);
+				//ofSetLineWidth(3 + 500 * featExtractor.getVelocityMagnitude(bone.first));
+				ofSetLineWidth(3 + 500 * featExtractor.getJoint(bone.first).getDescriptor(MoDe::FEAT_VELOCITY).getMagnitude());
+				ofLine(firstJointInBone.getProjected(kinect.getBodySource()->getCoordinateMapper()), secondJointInBone.getProjected(kinect.getBodySource()->getCoordinateMapper()));
+			}
+		}
+	}
+
+	ofPopStyle();
+	ofPopMatrix();
+}
+
+void ofApp::mocapExtreme(MoDe::ofxMoDeEvent & e) {
+	if (e.feature == MoDe::FEAT_ACCELERATION && e.axis == MoDe::MOCAP_Y && e.joint == JointType_HandRight) {
+		ColorSpacePoint projected = { 0 };
+		CameraSpacePoint position = { featExtractor.getJoint(JointType_HandRight).getDescriptor(MoDe::FEAT_POSITION).getData().end()[-2].x, featExtractor.getJoint(JointType_HandRight).getDescriptor(MoDe::FEAT_POSITION).getData().end()[-2].y, featExtractor.getJoint(JointType_HandRight).getDescriptor(MoDe::FEAT_POSITION).getData().end()[-2].z };
+		kinect.getBodySource()->getCoordinateMapper()->MapCameraPointToColorSpace(position, &projected);
+
+		Beat newBeat(ofGetElapsedTimeMillis(), ofVec2f(projected.X, projected.Y), featExtractor.getJoint(JointType_HandRight).getDescriptor(MoDe::FEAT_VELOCITY).getData().end()[-2]);
+
+		if (beats.size() <= N_BEATS) {
+			beats.insert(beats.begin(), newBeat);
+		}
+		if (beats.size() > N_BEATS) {
+			beats.pop_back();
+		}
+
+		//for (auto &graph : graphs) {
+		//	if (graph->getJoint() == JointType_HandRight)
+		//		graph->newEvent();
+		//}
+
+		sound.play();
+	}
+
+	else if (e.feature == MoDe::FEAT_ACCELERATION && e.axis == MoDe::MOCAP_Y && e.joint == JointType_HandLeft) {
+		ColorSpacePoint projected = { 0 };
+		CameraSpacePoint position = { featExtractor.getJoint(JointType_HandLeft).getDescriptor(MoDe::FEAT_POSITION).getData().end()[-2].x, featExtractor.getJoint(JointType_HandLeft).getDescriptor(MoDe::FEAT_POSITION).getData().end()[-2].y, featExtractor.getJoint(JointType_HandLeft).getDescriptor(MoDe::FEAT_POSITION).getData().end()[-2].z };
+		kinect.getBodySource()->getCoordinateMapper()->MapCameraPointToColorSpace(position, &projected);
+
+		Beat newBeat(ofGetElapsedTimeMillis(), ofVec2f(projected.X, projected.Y), featExtractor.getJoint(JointType_HandLeft).getDescriptor(MoDe::FEAT_VELOCITY).getData().end()[-2]);
+
+		if (beats.size() <= N_BEATS) {
+			beats.insert(beats.begin(), newBeat);
+		}
+		if (beats.size() > N_BEATS) {
+			beats.pop_back();
+		}
+
+		//for (auto &graph : graphs) {
+		//	if (graph->getJoint() == JointType_HandLeft)
+		//		graph->newEvent();
+		//}
+
+		sound.play();
 	}
 }
+
+//void ofApp::addValueToGraph(ofPtr<Graph> graph) {
+//	switch (graph->getDescriptor())
+//	{
+//	case FEAT_VELOCITY:
+//		graph->addValue(featExtractor.getVelocity(graph->getJoint()));
+//		break;
+//	case FEAT_VELOCITY_MAG:
+//		graph->addValue(featExtractor.getVelocityMagnitude(graph->getJoint()));
+//		break;
+//	case FEAT_VELOCITY_MEAN:
+//		graph->addValue(featExtractor.getVelocityMagnitudeMean(graph->getJoint()));
+//		break;
+//	case FEAT_ACCELERATION:
+//		graph->addValue(featExtractor.getAcceleration(graph->getJoint()));
+//		break;
+//	case FEAT_ACCELERATION_MAG:
+//		graph->addValue(featExtractor.getAccelerationMagnitude(graph->getJoint()));
+//		break;
+//	case FEAT_ACCELERATION_MEAN:
+//		graph->addValue(featExtractor.getAccelerationMagnitudeMean(graph->getJoint()));
+//		break;
+//	case FEAT_ACCELERATION_TRAJECTORY:
+//		graph->addValue(featExtractor.getAccelerationTrajectory(graph->getJoint()));
+//		break;
+//	case FEAT_ACCELERATION_TRAJECTORY_MEAN:
+//		graph->addValue(featExtractor.getAccelerationTrajectoryMean(graph->getJoint()));
+//		break;
+//	case FEAT_DISTANCETOTORSO:
+//		graph->addValue(featExtractor.getDistanceToTorso(graph->getJoint()));
+//		break;
+//	case FEAT_RELATIVEPOSTOTORSO:
+//		graph->addValue(featExtractor.getRelativePositionToTorso(graph->getJoint()));
+//		break;
+//	case FEAT_QOM:
+//		graph->addValue(featExtractor.getQom());
+//		break;
+//	case FEAT_CI:
+//		graph->addValue(featExtractor.getCI());
+//		break;
+//	default:
+//		break;
+//	}
+//}
 
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo) {

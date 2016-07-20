@@ -13,6 +13,9 @@
     <ClCompile Include="..\ofxMoDe\src\ofxModeGraph.cpp">
       <Filter>addons\ofxMoDe\src</Filter>
     </ClCompile>
+    <ClCompile Include="src\beat.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -49,6 +52,9 @@
     </ClInclude>
     <ClInclude Include="..\ofxMoDe\src\ofxMoDeGraph.h">
       <Filter>addons\ofxMoDe\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\beat.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

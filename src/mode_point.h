@@ -316,6 +316,7 @@ namespace MoDe
     #if OPENFRAMEWORKS
         
         operator ofPoint();
+		operator ofVec2f();
         
     #endif
 
@@ -626,6 +627,10 @@ namespace MoDe
     inline MoDePoint::operator ofPoint(){
         return ofPoint(x, y, z);
     }
+
+	inline MoDePoint::operator ofVec2f() {
+		return ofVec2f(x, y);
+	}
 
     #endif
 

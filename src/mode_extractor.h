@@ -30,23 +30,6 @@ namespace MoDe {
         FILTER_MED,
         FILTER_HARD
     };
-    
-    enum
-    {
-        FEAT_POSITION,
-        FEAT_POSITION_FILTERED,
-        FEAT_VELOCITY,
-        FEAT_VELOCITY_MAG,
-        FEAT_VELOCITY_MEAN,
-        FEAT_ACCELERATION,
-        FEAT_ACCELERATION_MAG,
-        FEAT_ACCELERATION_MEAN,
-        FEAT_ACCELERATION_TRAJECTORY,
-        FEAT_ACCELERATION_TRAJECTORY_MEAN,
-        FEAT_RELATIVEPOSTOTORSO,
-        FEAT_QOM,
-        FEAT_CI
-    };
 
     class MoDeExtractor {
         vector <class ExtremeListener *> extremeListeners;
@@ -75,8 +58,6 @@ namespace MoDe {
         
         //SPECIAL DESCRIPTORS
         float getAngle(int j1, int j2, int j3);
-        MoDePoint getAccelerationCrest(int j);
-        MoDePoint getRms(int j, int frames);
         
         //OVERALL DESCRIPTORS
         float getQom();

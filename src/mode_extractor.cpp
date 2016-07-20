@@ -153,26 +153,26 @@ void MoDeExtractor::update(map<int, MoDePoint> joints){
         computeJointDescriptors(j, jointPos, h);
         
         //qom
-        meanVel += getJoint(j).velocity.getMagnitude();
+		meanVel += getJoint(j).getDescriptor(MoDe::FEAT_VELOCITY).getMagnitude();
         
         //ci
-        if (getJoint(j).positionFiltered.getCurrent().x > xMax) {
-            xMax = getJoint(j).positionFiltered.getCurrent().x;
+        if (getJoint(j).getDescriptor(MoDe::FEAT_POSITION_FILTERED).getCurrent().x > xMax) {
+            xMax = getJoint(j).getDescriptor(MoDe::FEAT_POSITION_FILTERED).getCurrent().x;
         }
-        if (getJoint(j).positionFiltered.getCurrent().y > yMax) {
-            yMax = getJoint(j).positionFiltered.getCurrent().y;
+        if (getJoint(j).getDescriptor(MoDe::FEAT_POSITION_FILTERED).getCurrent().y > yMax) {
+            yMax = getJoint(j).getDescriptor(MoDe::FEAT_POSITION_FILTERED).getCurrent().y;
         }
-        if (getJoint(j).positionFiltered.getCurrent().z > zMax) {
-            zMax = getJoint(j).positionFiltered.getCurrent().z;
+        if (getJoint(j).getDescriptor(MoDe::FEAT_POSITION_FILTERED).getCurrent().z > zMax) {
+            zMax = getJoint(j).getDescriptor(MoDe::FEAT_POSITION_FILTERED).getCurrent().z;
         }
-        if (getJoint(j).positionFiltered.getCurrent().x < xMin) {
-            xMin = getJoint(j).positionFiltered.getCurrent().x;
+        if (getJoint(j).getDescriptor(MoDe::FEAT_POSITION_FILTERED).getCurrent().x < xMin) {
+            xMin = getJoint(j).getDescriptor(MoDe::FEAT_POSITION_FILTERED).getCurrent().x;
         }
-        if (getJoint(j).positionFiltered.getCurrent().y < yMin) {
-            yMin = getJoint(j).positionFiltered.getCurrent().y;
+        if (getJoint(j).getDescriptor(MoDe::FEAT_POSITION_FILTERED).getCurrent().y < yMin) {
+            yMin = getJoint(j).getDescriptor(MoDe::FEAT_POSITION_FILTERED).getCurrent().y;
         }
-        if (getJoint(j).positionFiltered.getCurrent().z < zMin) {
-            zMin = getJoint(j).positionFiltered.getCurrent().z;
+        if (getJoint(j).getDescriptor(MoDe::FEAT_POSITION_FILTERED).getCurrent().z < zMin) {
+            zMin = getJoint(j).getDescriptor(MoDe::FEAT_POSITION_FILTERED).getCurrent().z;
         }
     }
     
@@ -201,38 +201,38 @@ void MoDeExtractor::update(map<int, MoDePoint> joints){
 }
 
 void MoDeExtractor::computeJointDescriptors(int jointId, MoDePoint jointPos, const float &h){
-    MoDeJoint* MoDeJoint = getElement(jointId);
+    MoDeJoint* joint = getElement(jointId);
     
     //Position
-    MoDeJoint->position.push(jointPos);
-    notify(MoDeJoint->position.getNewExtremes(), jointId, FEAT_POSITION);
+	joint->addValue(MoDe::FEAT_POSITION, jointPos);
+    notify(joint->getDescriptor(MoDe::FEAT_POSITION).getNewExtremes(), jointId, FEAT_POSITION);
     
     //Filtered position
-    MoDeJoint->positionFiltered.push(applyFilter(MoDeJoint->position.getData(), MoDeJoint->positionFiltered.getData(), aFilter, bFilter));
-    notify(MoDeJoint->positionFiltered.getNewExtremes(), jointId, FEAT_POSITION_FILTERED);
+	joint->addValue(MoDe::FEAT_POSITION, applyFilter(joint->getDescriptor(MoDe::FEAT_POSITION).getData(), joint->getDescriptor(MoDe::FEAT_POSITION_FILTERED).getData(), aFilter, bFilter));
+	notify(joint->getDescriptor(MoDe::FEAT_POSITION_FILTERED).getNewExtremes(), jointId, MoDe::FEAT_POSITION_FILTERED);
     
     //Velocity
-    MoDeJoint->velocity.push(applyFilter(MoDeJoint->position.getData(), MoDeJoint->velocity.getData(), aLpd1, bLpd1));
-	notify(MoDeJoint->velocity.getNewExtremes(), jointId, FEAT_VELOCITY);
+	joint->addValue(MoDe::FEAT_VELOCITY, applyFilter(joint->getDescriptor(MoDe::FEAT_POSITION).getData(), joint->getDescriptor(MoDe::FEAT_VELOCITY).getData(), aLpd1, bLpd1));
+	notify(joint->getDescriptor(MoDe::FEAT_VELOCITY).getNewExtremes(), jointId, MoDe::FEAT_VELOCITY);
     
     //Acceleration
-    MoDeJoint->acceleration.push(applyFilter(MoDeJoint->position.getData(), MoDeJoint->acceleration.getData(), aLpd2, bLpd2));
-    notify(MoDeJoint->acceleration.getNewExtremes(), jointId, FEAT_ACCELERATION);
+	joint->addValue(MoDe::FEAT_ACCELERATION, applyFilter(joint->getDescriptor(MoDe::FEAT_POSITION).getData(), joint->getDescriptor(MoDe::FEAT_ACCELERATION).getData(), aLpd2, bLpd2));
+	notify(joint->getDescriptor(MoDe::FEAT_ACCELERATION).getNewExtremes(), jointId, MoDe::FEAT_ACCELERATION);
     
     //Acceleration along trajectory
-    MoDePoint acc = MoDeJoint->acceleration.getData().back();
-	MoDePoint vel = MoDeJoint->velocity.getData().back();
-    MoDeJoint->accelerationTrajectory.push(acc.dot(vel) / vel.length());
-    notify(MoDeJoint->accelerationTrajectory.getNewExtremes(), jointId, FEAT_ACCELERATION_TRAJECTORY);
+	MoDePoint acc = joint->getDescriptor(MoDe::FEAT_ACCELERATION).getCurrent();
+	MoDePoint vel = joint->getDescriptor(MoDe::FEAT_VELOCITY).getCurrent();
+	joint->addValue(MoDe::FEAT_ACCELERATION_TRAJECTORY, acc.dot(vel) / vel.length());
+    notify(joint->getDescriptor(MoDe::FEAT_ACCELERATION_TRAJECTORY).getNewExtremes(), jointId, FEAT_ACCELERATION_TRAJECTORY);
     
     //Relative position to torso
     //TODO solve this!!
     vector<float> relPosToTorso (3);
-    relPosToTorso[0] = (jointPos.x - getJoint(torso_).positionFiltered.getCurrent().x) / (h * 1.8);
-    relPosToTorso[1] = (jointPos.y - getJoint(torso_).positionFiltered.getCurrent().y) / (h * 1.8);
-    relPosToTorso[2] = -((jointPos.z - getJoint(torso_).positionFiltered.getCurrent().z) / h) / 1.4;
-    MoDeJoint->relativePositionToTorso.push(relPosToTorso);
-    notify(MoDeJoint->relativePositionToTorso.getNewExtremes(), jointId, FEAT_RELATIVEPOSTOTORSO);
+    relPosToTorso[0] = (jointPos.x - getJoint(torso_).getDescriptor(MoDe::FEAT_POSITION_FILTERED).getCurrent().x) / (h * 1.8);
+    relPosToTorso[1] = (jointPos.y - getJoint(torso_).getDescriptor(MoDe::FEAT_POSITION_FILTERED).getCurrent().y) / (h * 1.8);
+    relPosToTorso[2] = -((jointPos.z - getJoint(torso_).getDescriptor(MoDe::FEAT_POSITION_FILTERED).getCurrent().z) / h) / 1.4;
+	joint->addValue(MoDe::FEAT_RELATIVEPOSTOTORSO, relPosToTorso);
+    notify(joint->getDescriptor(MoDe::FEAT_RELATIVEPOSTOTORSO).getNewExtremes(), jointId, FEAT_RELATIVEPOSTOTORSO);
 }
 
 const MoDeJoint MoDeExtractor::getJoint(int jointId){
@@ -288,26 +288,10 @@ vector<T> MoDeExtractor::createVector(T element){
 }
 
 float MoDeExtractor::getAngle(int j1, int j2, int j3){
-    float d12 = getJoint(j1).positionFiltered.getCurrent().distance(getJoint(j2).positionFiltered.getCurrent());
-    float d13 = getJoint(j1).positionFiltered.getCurrent().distance(getJoint(j3).positionFiltered.getCurrent());
-    float d23 = getJoint(j2).positionFiltered.getCurrent().distance(getJoint(j3).positionFiltered.getCurrent());
+    float d12 = getJoint(j1).getDescriptor(MoDe::FEAT_POSITION_FILTERED).getCurrent().distance(getJoint(j2).getDescriptor(MoDe::FEAT_POSITION_FILTERED).getCurrent());
+    float d13 = getJoint(j1).getDescriptor(MoDe::FEAT_POSITION_FILTERED).getCurrent().distance(getJoint(j3).getDescriptor(MoDe::FEAT_POSITION_FILTERED).getCurrent());
+    float d23 = getJoint(j2).getDescriptor(MoDe::FEAT_POSITION_FILTERED).getCurrent().distance(getJoint(j3).getDescriptor(MoDe::FEAT_POSITION_FILTERED).getCurrent());
     return (180/PI) * acos(( -(d13*d13) + d23*d23 + d12*d12 ) / (2*d23*d12 ) ); //cos rule
-}
-
-MoDePoint MoDeExtractor::getAccelerationCrest(int j){
-    if (getElement(j)) {
-        return getElement(j)->acceleration.getCrest();
-    } else {
-        return MoDePoint(0.0);
-    }
-}
-
-MoDePoint MoDeExtractor::getRms(int j, int frames){
-    if (getElement(j)) {
-        return getElement(j)->acceleration.getRms();
-    } else {
-        return MoDePoint(0.0,0.0,0.0);
-    }
 }
 
 float MoDeExtractor::getQom(){

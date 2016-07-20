@@ -2,7 +2,10 @@
 
 #include "ofMain.h"
 #include "mode_extractor.h"
+#include "ofxModeGraph.h"
 #include "ofxKinectForWindows2.h"
+#include "beat.h"
+#define N_BEATS 40
 
 class ofxKinectNuiDrawTexture;
 class ofxKinectNuiDrawSkeleton;
@@ -30,11 +33,21 @@ public:
 	void gotMessage(ofMessage msg);
 	//void userEvent(ofxOpenNIUserEvent & event);
 
-	void mocapBeat(MoDe::ofxMoDeEvent &e);
+	void drawProjectedWithColor(int x, int y, int width, int height);
+
+	void mocapExtreme(MoDe::ofxMoDeEvent &e);
+
+	vector<Beat> beats;
+	int beatLife;
+	vector<ofPtr<ofxMoDeGraph>> graphs;
 
 	ofxKFW2::Device kinect;
 	//bool hadUsers;
 	MoDe::ofxMoDe featExtractor;
 	int joint, feature;
 	ofTrueTypeFont font;
+
+	bool drawMode;
+
+	ofSoundPlayer sound;
 };
