@@ -43,7 +43,7 @@ void ofApp::update(){
         ofxOpenNIUser user = kinect.getTrackedUser(i);
         //The following "if" statement is a hard-coded alternative for if(kinect.getUserGenerator().IsNewDataAvailable()), which doesn't work properly in ofxOpenNI
         if (user.getJoint((Joint)0).getWorldPosition() != ofPoint(0,0,0) &&
-            user.getJoint((Joint)0).getWorldPosition() != featExtractor.getJoint(0).position.getCurrent() ) {
+            user.getJoint((Joint)0).getWorldPosition() != featExtractor.getJoint(0).getDescriptor(MoDe::DESC_POSITION).getCurrent() ) {
             map<int, ofPoint> joints;
             for (int j = 0; j < user.getNumJoints(); j++) {
                 joints[j] = user.getJoint((Joint)j).getWorldPosition();
@@ -55,7 +55,7 @@ void ofApp::update(){
     //This is a trick to reset the user generator if all users are lost
     if (kinect.getNumTrackedUsers()) {
         hadUsers = true;
-    } else if (!kinect.getNumTrackedUsers() && hadUsers){
+    } else if (!kinect.getNumTrackedUsers() && hadUsers){   
         hadUsers = false;
         kinect.setPaused(true);
         kinect.removeUserGenerator();
@@ -64,9 +64,9 @@ void ofApp::update(){
     }
     
     //graphs[0]->addValue(featExtractor.getAcceleration(j).y);
-    graphs[0]->addValue(featExtractor.getJoint(j).acceleration.getCurrent().y);
-    graphs[1]->addValue(featExtractor.getJoint(j).velocity.getCrest().y);
-    graphs[2]->addValue(featExtractor.getJoint(j).acceleration.getCrest().y);
+    graphs[0]->addValue(featExtractor.getJoint(j).getDescriptor(MoDe::DESC_ACCELERATION).getCurrent().y);
+    graphs[1]->addValue(featExtractor.getJoint(j).getDescriptor(MoDe::DESC_VELOCITY).getCrest().y);
+    graphs[2]->addValue(featExtractor.getJoint(j).getDescriptor(MoDe::DESC_ACCELERATION).getCrest().y);
     
 }
 
@@ -83,7 +83,7 @@ void ofApp::draw(){
     ostringstream os;
     os << "ofxMoDe example " << endl;
     os << "FPS: " << ofGetFrameRate() << endl;
-    ofPoint jointProjectivePosition = kinect.worldToProjective(featExtractor.getJoint(j).position.getCurrent());
+    ofPoint jointProjectivePosition = kinect.worldToProjective(featExtractor.getJoint(j).getDescriptor(MoDe::DESC_POSITION).getCurrent());
     os << "Quantity of Motion: " << featExtractor.getQom() << endl;
     //os << "Symmetry: " << featExtractor.getSymmetry() << endl;
     os << "Contraction Index: " << featExtractor.getCI() << endl << endl;
@@ -92,7 +92,7 @@ void ofApp::draw(){
     switch (f) {
         case VELOCITY_MEAN:
             os << "Velocity magnitude mean" << endl;
-            font.drawString(ofToString(featExtractor.getJoint(j).velocity.getCurrent().y), jointProjectivePosition.x, jointProjectivePosition.y);
+            font.drawString(ofToString(featExtractor.getJoint(j).getDescriptor(MoDe::DESC_VELOCITY).getCurrent().y), jointProjectivePosition.x, jointProjectivePosition.y);
             break;
         case ACCELERATION_Y:
             os << "Acceleration along y axis (up-down movement)" << endl;
@@ -107,7 +107,7 @@ void ofApp::draw(){
             break;
     }
     
-    os << featExtractor.getAccelerationCrest(JOINT_RIGHT_HAND).y;
+    os << featExtractor.getJoint(JOINT_RIGHT_HAND).getDescriptor(MoDe::DESC_ACCELERATION).getCrest().y;
     
     ofSetColor(0,0,0,100);
     ofDrawRectangle(10, 10, 500, 150);
@@ -153,10 +153,10 @@ void ofApp::userEvent(ofxOpenNIUserEvent &event){
 }
 
 void ofApp::mocapExtreme(MoDe::ofxMoDeEvent &e){
-    if (e.joint == JOINT_RIGHT_HAND && e.feature == MoDe::FEAT_ACCELERATION && e.axis == MoDe::MOCAP_Y && e.extremeType == MoDe::EXTREME_TYPE_MAX) {
+    if (e.joint == JOINT_RIGHT_HAND && e.feature == MoDe::DESC_ACCELERATION && e.axis == MoDe::MOCAP_Y && e.extremeType == MoDe::EXTREME_TYPE_MAX) {
         cout << "new MAX on right hand with value " << e.value << " in axis " << e.axis << endl;
     }
-    else if (e.joint == JOINT_RIGHT_HAND && e.feature == MoDe::FEAT_ACCELERATION && e.axis == MoDe::MOCAP_Y && e.extremeType == MoDe::EXTREME_TYPE_MIN) {
+    else if (e.joint == JOINT_RIGHT_HAND && e.feature == MoDe::DESC_ACCELERATION && e.axis == MoDe::MOCAP_Y && e.extremeType == MoDe::EXTREME_TYPE_MIN) {
         cout << "new MIN on right hand with value " << e.value << " in axis " << e.axis << endl;
     }
 }

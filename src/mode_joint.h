@@ -23,14 +23,14 @@ namespace MoDe {
 
 	enum
 	{
-		FEAT_POSITION,
-		FEAT_POSITION_FILTERED,
-		FEAT_VELOCITY,
-		FEAT_ACCELERATION,
-		FEAT_ACCELERATION_TRAJECTORY,
-		FEAT_RELATIVEPOSTOTORSO,
-		FEAT_QOM,
-		FEAT_CI
+		DESC_POSITION,
+		DESC_POSITION_FILTERED,
+		DESC_VELOCITY,
+		DESC_ACCELERATION,
+		DESC_ACCELERATION_TRAJECTORY,
+		DESC_RELATIVEPOSTOTORSO,
+		DESC_QOM,
+		DESC_CI
 	};
 
     class MoDeJoint{
@@ -52,15 +52,15 @@ namespace MoDe {
 		MoDeDescriptor<MoDePoint> getDescriptor(unsigned int descriptorId) const {
 			switch (descriptorId)
 			{
-			case FEAT_POSITION:
+			case DESC_POSITION:
 				return position;
-			case FEAT_POSITION_FILTERED:
+			case DESC_POSITION_FILTERED:
 				return positionFiltered;
-			case FEAT_VELOCITY:
+			case DESC_VELOCITY:
 				return velocity;
-			case FEAT_ACCELERATION:
+			case DESC_ACCELERATION:
 				return acceleration;
-			case FEAT_RELATIVEPOSTOTORSO:
+			case DESC_RELATIVEPOSTOTORSO:
 				return relativePositionToTorso;
 			default:
 				throw runtime_error("Descriptor ID doesn't match any existing 3D descriptor");
@@ -69,7 +69,7 @@ namespace MoDe {
 		MoDeDescriptor<float> getUniDescriptor(int descriptorId) const {
 			switch (descriptorId)
 			{
-			case FEAT_ACCELERATION_TRAJECTORY:
+			case DESC_ACCELERATION_TRAJECTORY:
 				return accelerationTrajectory;
 			default:
 				throw runtime_error("Descriptor ID doesn't match any existing 1D descriptor");
@@ -79,15 +79,15 @@ namespace MoDe {
 		void addValue(unsigned int descriptorId, MoDePoint value) {
 			switch (descriptorId)
 			{
-			case FEAT_POSITION:
+			case DESC_POSITION:
 				position.push(value);
-			case FEAT_POSITION_FILTERED:
+			case DESC_POSITION_FILTERED:
 				positionFiltered.push(value);
-			case FEAT_VELOCITY:
+			case DESC_VELOCITY:
 				velocity.push(value);
-			case FEAT_ACCELERATION:
+			case DESC_ACCELERATION:
 				acceleration.push(value);
-			case FEAT_RELATIVEPOSTOTORSO:
+			case DESC_RELATIVEPOSTOTORSO:
 				relativePositionToTorso.push(value);
 			default:
 				throw runtime_error("Descriptor ID doesn't match any existing 3D descriptor");
@@ -97,7 +97,7 @@ namespace MoDe {
 		void addValue(unsigned int descriptorId, float value) {
 			switch (descriptorId)
 			{
-			case FEAT_ACCELERATION_TRAJECTORY:
+			case DESC_ACCELERATION_TRAJECTORY:
 				accelerationTrajectory.push(value);
 			default:
 				throw runtime_error("Descriptor ID doesn't match any existing 1D descriptor");

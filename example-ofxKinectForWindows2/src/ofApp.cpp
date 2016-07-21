@@ -141,7 +141,7 @@ void ofApp::drawProjectedWithColor(int x, int y, int width, int height)
 	//	{
 	//		for (auto graph : graphs) {
 	//			ofSetColor(ofColor::fromHsb(graph->getHue(), 255, 255, 100));
-	//			if (graph->getDescriptor() != FEAT_QOM && graph->getDescriptor() != FEAT_CI)
+	//			if (graph->getDescriptor() != DESC_QOM && graph->getDescriptor() != DESC_CI)
 	//				ofCircle(body.joints[(JointType)graph->getJoint()].getProjected(kinect.getBodySource()->getCoordinateMapper()), 30);
 	//		}
 	//	}
@@ -157,10 +157,10 @@ void ofApp::drawProjectedWithColor(int x, int y, int width, int height)
 			for (auto bone : boneAtlas) {
 				auto firstJointInBone = body.joints[bone.first];
 				auto secondJointInBone = body.joints[bone.second];
-				float brightness = ofMap(featExtractor.getJoint(bone.first).getDescriptor(MoDe::FEAT_VELOCITY).getMagnitude(), 0, 0.04, 70, 255, true);
+				float brightness = ofMap(featExtractor.getJoint(bone.first).getDescriptor(MoDe::DESC_VELOCITY).getMagnitude(), 0, 0.04, 70, 255, true);
 				ofSetColor(brightness, 150);
 				//ofSetLineWidth(3 + 500 * featExtractor.getVelocityMagnitude(bone.first));
-				ofSetLineWidth(3 + 500 * featExtractor.getJoint(bone.first).getDescriptor(MoDe::FEAT_VELOCITY).getMagnitude());
+				ofSetLineWidth(3 + 500 * featExtractor.getJoint(bone.first).getDescriptor(MoDe::DESC_VELOCITY).getMagnitude());
 				ofLine(firstJointInBone.getProjected(kinect.getBodySource()->getCoordinateMapper()), secondJointInBone.getProjected(kinect.getBodySource()->getCoordinateMapper()));
 			}
 		}
@@ -171,12 +171,12 @@ void ofApp::drawProjectedWithColor(int x, int y, int width, int height)
 }
 
 void ofApp::mocapExtreme(MoDe::ofxMoDeEvent & e) {
-	if (e.feature == MoDe::FEAT_ACCELERATION && e.axis == MoDe::MOCAP_Y && e.joint == JointType_HandRight) {
+	if (e.feature == MoDe::DESC_ACCELERATION && e.axis == MoDe::MOCAP_Y && e.joint == JointType_HandRight) {
 		ColorSpacePoint projected = { 0 };
-		CameraSpacePoint position = { featExtractor.getJoint(JointType_HandRight).getDescriptor(MoDe::FEAT_POSITION).getData().end()[-2].x, featExtractor.getJoint(JointType_HandRight).getDescriptor(MoDe::FEAT_POSITION).getData().end()[-2].y, featExtractor.getJoint(JointType_HandRight).getDescriptor(MoDe::FEAT_POSITION).getData().end()[-2].z };
+		CameraSpacePoint position = { featExtractor.getJoint(JointType_HandRight).getDescriptor(MoDe::DESC_POSITION).getData().end()[-2].x, featExtractor.getJoint(JointType_HandRight).getDescriptor(MoDe::DESC_POSITION).getData().end()[-2].y, featExtractor.getJoint(JointType_HandRight).getDescriptor(MoDe::DESC_POSITION).getData().end()[-2].z };
 		kinect.getBodySource()->getCoordinateMapper()->MapCameraPointToColorSpace(position, &projected);
 
-		Beat newBeat(ofGetElapsedTimeMillis(), ofVec2f(projected.X, projected.Y), featExtractor.getJoint(JointType_HandRight).getDescriptor(MoDe::FEAT_VELOCITY).getData().end()[-2]);
+		Beat newBeat(ofGetElapsedTimeMillis(), ofVec2f(projected.X, projected.Y), featExtractor.getJoint(JointType_HandRight).getDescriptor(MoDe::DESC_VELOCITY).getData().end()[-2]);
 
 		if (beats.size() <= N_BEATS) {
 			beats.insert(beats.begin(), newBeat);
@@ -193,12 +193,12 @@ void ofApp::mocapExtreme(MoDe::ofxMoDeEvent & e) {
 		sound.play();
 	}
 
-	else if (e.feature == MoDe::FEAT_ACCELERATION && e.axis == MoDe::MOCAP_Y && e.joint == JointType_HandLeft) {
+	else if (e.feature == MoDe::DESC_ACCELERATION && e.axis == MoDe::MOCAP_Y && e.joint == JointType_HandLeft) {
 		ColorSpacePoint projected = { 0 };
-		CameraSpacePoint position = { featExtractor.getJoint(JointType_HandLeft).getDescriptor(MoDe::FEAT_POSITION).getData().end()[-2].x, featExtractor.getJoint(JointType_HandLeft).getDescriptor(MoDe::FEAT_POSITION).getData().end()[-2].y, featExtractor.getJoint(JointType_HandLeft).getDescriptor(MoDe::FEAT_POSITION).getData().end()[-2].z };
+		CameraSpacePoint position = { featExtractor.getJoint(JointType_HandLeft).getDescriptor(MoDe::DESC_POSITION).getData().end()[-2].x, featExtractor.getJoint(JointType_HandLeft).getDescriptor(MoDe::DESC_POSITION).getData().end()[-2].y, featExtractor.getJoint(JointType_HandLeft).getDescriptor(MoDe::DESC_POSITION).getData().end()[-2].z };
 		kinect.getBodySource()->getCoordinateMapper()->MapCameraPointToColorSpace(position, &projected);
 
-		Beat newBeat(ofGetElapsedTimeMillis(), ofVec2f(projected.X, projected.Y), featExtractor.getJoint(JointType_HandLeft).getDescriptor(MoDe::FEAT_VELOCITY).getData().end()[-2]);
+		Beat newBeat(ofGetElapsedTimeMillis(), ofVec2f(projected.X, projected.Y), featExtractor.getJoint(JointType_HandLeft).getDescriptor(MoDe::DESC_VELOCITY).getData().end()[-2]);
 
 		if (beats.size() <= N_BEATS) {
 			beats.insert(beats.begin(), newBeat);
@@ -219,40 +219,40 @@ void ofApp::mocapExtreme(MoDe::ofxMoDeEvent & e) {
 //void ofApp::addValueToGraph(ofPtr<Graph> graph) {
 //	switch (graph->getDescriptor())
 //	{
-//	case FEAT_VELOCITY:
+//	case DESC_VELOCITY:
 //		graph->addValue(featExtractor.getVelocity(graph->getJoint()));
 //		break;
-//	case FEAT_VELOCITY_MAG:
+//	case DESC_VELOCITY_MAG:
 //		graph->addValue(featExtractor.getVelocityMagnitude(graph->getJoint()));
 //		break;
-//	case FEAT_VELOCITY_MEAN:
+//	case DESC_VELOCITY_MEAN:
 //		graph->addValue(featExtractor.getVelocityMagnitudeMean(graph->getJoint()));
 //		break;
-//	case FEAT_ACCELERATION:
+//	case DESC_ACCELERATION:
 //		graph->addValue(featExtractor.getAcceleration(graph->getJoint()));
 //		break;
-//	case FEAT_ACCELERATION_MAG:
+//	case DESC_ACCELERATION_MAG:
 //		graph->addValue(featExtractor.getAccelerationMagnitude(graph->getJoint()));
 //		break;
-//	case FEAT_ACCELERATION_MEAN:
+//	case DESC_ACCELERATION_MEAN:
 //		graph->addValue(featExtractor.getAccelerationMagnitudeMean(graph->getJoint()));
 //		break;
-//	case FEAT_ACCELERATION_TRAJECTORY:
+//	case DESC_ACCELERATION_TRAJECTORY:
 //		graph->addValue(featExtractor.getAccelerationTrajectory(graph->getJoint()));
 //		break;
-//	case FEAT_ACCELERATION_TRAJECTORY_MEAN:
+//	case DESC_ACCELERATION_TRAJECTORY_MEAN:
 //		graph->addValue(featExtractor.getAccelerationTrajectoryMean(graph->getJoint()));
 //		break;
-//	case FEAT_DISTANCETOTORSO:
+//	case DESC_DISTANCETOTORSO:
 //		graph->addValue(featExtractor.getDistanceToTorso(graph->getJoint()));
 //		break;
-//	case FEAT_RELATIVEPOSTOTORSO:
+//	case DESC_RELATIVEPOSTOTORSO:
 //		graph->addValue(featExtractor.getRelativePositionToTorso(graph->getJoint()));
 //		break;
-//	case FEAT_QOM:
+//	case DESC_QOM:
 //		graph->addValue(featExtractor.getQom());
 //		break;
-//	case FEAT_CI:
+//	case DESC_CI:
 //		graph->addValue(featExtractor.getCI());
 //		break;
 //	default:
