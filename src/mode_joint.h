@@ -81,14 +81,19 @@ namespace MoDe {
 			{
 			case DESC_POSITION:
 				position.push(value);
+				break;
 			case DESC_POSITION_FILTERED:
 				positionFiltered.push(value);
+				break;
 			case DESC_VELOCITY:
 				velocity.push(value);
+				break;
 			case DESC_ACCELERATION:
 				acceleration.push(value);
+				break;
 			case DESC_RELATIVEPOSTOTORSO:
 				relativePositionToTorso.push(value);
+				break;
 			default:
 				throw runtime_error("Descriptor ID doesn't match any existing 3D descriptor");
 			}
@@ -99,6 +104,7 @@ namespace MoDe {
 			{
 			case DESC_ACCELERATION_TRAJECTORY:
 				accelerationTrajectory.push(value);
+				break;
 			default:
 				throw runtime_error("Descriptor ID doesn't match any existing 1D descriptor");
 			}
