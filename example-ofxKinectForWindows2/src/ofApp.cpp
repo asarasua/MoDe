@@ -7,7 +7,7 @@ void ofApp::setup() {
 	kinect.initBodySource();
 	kinect.initInfraredSource();
 	featExtractor.setup(JointType_Head, JointType_SpineShoulder, 60);
-	featExtractor.setFilterLevel(MoDe::FILTER_HARD);
+	//featExtractor.setFilterLevel(MoDe::FILTER_HARD);
 
 	ofSetFrameRate(30.0);
 
@@ -49,6 +49,9 @@ void ofApp::update() {
 				featExtractor.update(joints);
 			}
 		}
+		featExtractor.getJoint(JointType_HandRight).getUniDescriptor(MoDe::DESC_ACCELERATION_TRAJECTORY).getCrest();
+		graphs[0]->addValue(featExtractor.getJoint(JointType_HandRight).getDescriptor(MoDe::DESC_ACCELERATION).getCurrent().y);
+		graphs[0]->setThreshold(featExtractor.getJoint(JointType_HandRight).getDescriptor(MoDe::DESC_ACCELERATION).getUpperThreshold().y);
 		//for (auto graph : graphs)
 		//	addValueToGraph(graph);
 	}
@@ -171,7 +174,7 @@ void ofApp::drawProjectedWithColor(int x, int y, int width, int height)
 }
 
 void ofApp::mocapExtreme(MoDe::ofxMoDeEvent & e) {
-	if (e.feature == MoDe::DESC_ACCELERATION && e.axis == MoDe::MOCAP_Y && e.joint == JointType_HandRight) {
+	if (e.feature == MoDe::DESC_ACCELERATION && e.axis == MoDe::AXIS_Y && e.joint == JointType_HandRight && e.extremeType == MoDe::EXTREME_TYPE_MAX) {
 		ColorSpacePoint projected = { 0 };
 		CameraSpacePoint position = { featExtractor.getJoint(JointType_HandRight).getDescriptor(MoDe::DESC_POSITION).getData().end()[-2].x, featExtractor.getJoint(JointType_HandRight).getDescriptor(MoDe::DESC_POSITION).getData().end()[-2].y, featExtractor.getJoint(JointType_HandRight).getDescriptor(MoDe::DESC_POSITION).getData().end()[-2].z };
 		kinect.getBodySource()->getCoordinateMapper()->MapCameraPointToColorSpace(position, &projected);
@@ -185,6 +188,8 @@ void ofApp::mocapExtreme(MoDe::ofxMoDeEvent & e) {
 			beats.pop_back();
 		}
 
+		//cout << "MAX at RH with value: " << e.value << endl;
+
 		//for (auto &graph : graphs) {
 		//	if (graph->getJoint() == JointType_HandRight)
 		//		graph->newEvent();
@@ -193,7 +198,7 @@ void ofApp::mocapExtreme(MoDe::ofxMoDeEvent & e) {
 		sound.play();
 	}
 
-	else if (e.feature == MoDe::DESC_ACCELERATION && e.axis == MoDe::MOCAP_Y && e.joint == JointType_HandLeft) {
+	else if (e.feature == MoDe::DESC_ACCELERATION && e.axis == MoDe::AXIS_Y && e.joint == JointType_HandLeft) {
 		ColorSpacePoint projected = { 0 };
 		CameraSpacePoint position = { featExtractor.getJoint(JointType_HandLeft).getDescriptor(MoDe::DESC_POSITION).getData().end()[-2].x, featExtractor.getJoint(JointType_HandLeft).getDescriptor(MoDe::DESC_POSITION).getData().end()[-2].y, featExtractor.getJoint(JointType_HandLeft).getDescriptor(MoDe::DESC_POSITION).getData().end()[-2].z };
 		kinect.getBodySource()->getCoordinateMapper()->MapCameraPointToColorSpace(position, &projected);
@@ -206,6 +211,8 @@ void ofApp::mocapExtreme(MoDe::ofxMoDeEvent & e) {
 		if (beats.size() > N_BEATS) {
 			beats.pop_back();
 		}
+
+		//cout << "MAX at LH with value: " << e.value << endl;
 
 		//for (auto &graph : graphs) {
 		//	if (graph->getJoint() == JointType_HandLeft)

@@ -48,25 +48,25 @@ namespace MoDe
         /// \endcond
 
         /// \brief Stores the `X` component of the mocap point.
-        float x;
+        double x;
 
         /// \brief Stores the `Y` component of the mocap point.
-        float y;
+        double y;
 
         /// \brief Stores the `Z` component of the mocap point.
-        float z;
+        double z;
 
         
         MoDePoint();
         
         /// \brief Construt a 3D vector with same value for three axes
-        MoDePoint(float v);
+        MoDePoint(double v);
 
         /// \brief Construt a 3D vector with `x`, `y` and `z` specified
-        MoDePoint(float x, float y, float z = 0);
+        MoDePoint(double x, double y, double z = 0);
 
-        /// \brief Construct a 3D from a float vector
-        MoDePoint(vector<float> floatVector);
+        /// \brief Construct a 3D from a double vector
+        MoDePoint(vector<double> doubleVector);
 
 
         /// \brief Set 'x', 'y' and 'z' components of this vector with just one function call.
@@ -75,7 +75,7 @@ namespace MoDe
         /// MoDePoint v1;
         /// v1.set(40, 20, 70);
         /// ~~~~
-        void set(float x, float y, float z);
+        void set(double x, double y, double z);
 
 
         /// \brief Setting the values by using other 3 dimension vector MoDePoint.
@@ -132,15 +132,15 @@ namespace MoDe
         /// // v1.match(v2, 0.01) is false (because (70.5-70) > 0.01)
         /// ~~~~
         /// 
-        bool match(const MoDePoint& vec, float tolerance = 0.0001f) const;
+        bool match(const MoDePoint& vec, double tolerance = 0.0001f) const;
         
-        bool operator<(const float f) const;
+        bool operator<(const double f) const;
         
-        bool operator<=(const float f) const;
+        bool operator<=(const double f) const;
         
-        bool operator>(const float f) const;
+        bool operator>(const double f) const;
         
-        bool operator>=(const float f) const;
+        bool operator>=(const double f) const;
 
         //---------------------
         /// \name Operators
@@ -156,7 +156,7 @@ namespace MoDe
         /// ~~~~
         MoDePoint  operator+(const MoDePoint& pnt) const;
 
-        /// Returns a new vector with a float value 'f' added to 'x', 'y' and 'z'
+        /// Returns a new vector with a double value 'f' added to 'x', 'y' and 'z'
         /// members.
         /// 
         /// ~~~~{.cpp}
@@ -164,7 +164,7 @@ namespace MoDe
         /// MoDePoint v2 = v1 + 10; // (12, 15, 11)
         /// ~~~~
 
-        MoDePoint  operator+(const float f) const;
+        MoDePoint  operator+(const double f) const;
 
         /// Super easy addition assignment. Adds 'vec.x' to 'x', adds 'vec.y' to 'y' and
         /// adds 'vec.z' to 'z'.
@@ -176,13 +176,13 @@ namespace MoDe
         /// ~~~~
         MoDePoint& operator+=(const MoDePoint& pnt);
 
-        /// Adds a float value 'f' to 'x', 'y' and 'z' members.
+        /// Adds a double value 'f' to 'x', 'y' and 'z' members.
         /// 
         /// ~~~~{.cpp}
         /// MoDePoint v1(2, 5, 1);
         /// v1 += 10; // (12, 15, 11)
         /// ~~~~
-        MoDePoint& operator+=(const float f);
+        MoDePoint& operator+=(const double f);
 
         /// Super easy vector subtraction. Returns a new vector
         /// ('x'-'vec.x','y'-'vec.y','z'-'vec.z').	
@@ -196,14 +196,14 @@ namespace MoDe
 
 
 
-        /// Returns a new vector with a float value 'f' subtracted from 'x', 'y' and 'z'
+        /// Returns a new vector with a double value 'f' subtracted from 'x', 'y' and 'z'
         /// members.
         /// 
         /// ~~~~{.cpp}
         /// MoDePoint v1(2, 5, 1);
         /// MoDePoint v2 = v1 - 10; // (-8, -5, -9)
         /// ~~~~
-        MoDePoint  operator-(const float f) const;
+        MoDePoint  operator-(const double f) const;
 
         /// Returns a new 'MoDePoint' that is the inverted version (mirrored in X, Y and Z)
         /// of this vector.
@@ -225,13 +225,13 @@ namespace MoDe
         /// ~~~~    
         MoDePoint& operator-=(const MoDePoint& vec);
 
-        /// Subtract a float value 'f' from 'x', 'y', and 'z' members.
+        /// Subtract a double value 'f' from 'x', 'y', and 'z' members.
         /// 
         /// ~~~~{.cpp}
         /// MoDePoint v1(2, 5, 1);
         /// v1 -= 10; // (-8, -5, -9)
         /// ~~~~
-        MoDePoint& operator-=(const float f);
+        MoDePoint& operator-=(const double f);
 
         /// Returns a new vector ('x'*'vec.x','y'*'vec.y','z'*'vec.z').
         /// 
@@ -252,7 +252,7 @@ namespace MoDe
         /// MoDePoint v1(2, 5, 1);
         /// MoDePoint v2 = v1 * 4; // (8, 20, 4)
         /// ~~~~
-        MoDePoint  operator*(const float f) const;
+        MoDePoint  operator*(const double f) const;
 
         /// Multiplies 'x' by 'vec.x', and multiplies 'y' by 'vec.y', and multiplies 'z'
         /// by 'vec.z'.
@@ -272,7 +272,7 @@ namespace MoDe
         /// MoDePoint v1(2, 5, 1);
         /// v1 *= 4; // (8, 20, 4)
         /// ~~~~
-        MoDePoint& operator*=(const float f);
+        MoDePoint& operator*=(const double f);
 
         /// Returns a new vector ('x'/'vec.x','y'/'vec.y','z'/'vec.z').
         /// 
@@ -292,7 +292,7 @@ namespace MoDe
         /// MoDePoint v1(2, 5, 1);
         /// MoDePoint v2 = v1 / 4; // (0.5, 1.25, 0.25)
         /// ~~~~
-        MoDePoint  operator/(const float f) const;
+        MoDePoint  operator/(const double f) const;
 
         /// Divides 'x' by 'vec.x', divides 'y' by 'vec.y', and divides 'z' by 'vec.z'.
         /// 
@@ -311,7 +311,7 @@ namespace MoDe
         /// MoDePoint v1(2, 5, 1);
         /// v1 /= 4; // (0.5, 1.25, 0.25)
         /// ~~~~
-        MoDePoint& operator/=(const float f);
+        MoDePoint& operator/=(const double f);
         
     #if OPENFRAMEWORKS
         
@@ -334,7 +334,7 @@ namespace MoDe
         /// ~~~~{.cpp}
         /// MoDePoint p1(3, 4, 2);
         /// MoDePoint p2(6, 8, 5);
-        /// float distance = p1.distance( p2 ); // distance is 5.8310
+        /// double distance = p1.distance( p2 ); // distance is 5.8310
         /// ~~~~
         /// 	
         /// 'distance' involves a square root calculation, which is one of the
@@ -343,7 +343,7 @@ namespace MoDe
         /// finding the shortest distance of a bunch of points to a reference
         /// point, where it doesn't matter exactly what the distances are, you
         /// just want the shortest), you can use squareDistance() instead.
-        float distance(const MoDePoint& pnt) const;
+        double distance(const MoDePoint& pnt) const;
 
         /// \brief Treats both this vector and 'pnt' as points in 3D space, and calculates and
         /// returns the squared distance between them.
@@ -351,7 +351,7 @@ namespace MoDe
         /// ~~~~{.cpp}
         /// MoDePoint p1(3, 4, 2);
         /// MoDePoint p2(6, 8, 5);
-        /// float distance = p1.distance( p2 ); // distance is 5.8310
+        /// double distance = p1.distance( p2 ); // distance is 5.8310
         /// ~~~~
         /// 
         /// Use as a much faster alternative to distance() if you don't need
@@ -361,7 +361,7 @@ namespace MoDe
         /// shortest). It avoids the square root calculation that is ordinarily required
         /// to calculate a length.
         /// 
-        float squareDistance(const MoDePoint& pnt) const;
+        double squareDistance(const MoDePoint& pnt) const;
 
         //---------------------
         /// \name Measurement
@@ -372,7 +372,7 @@ namespace MoDe
         /// 
         /// ~~~~{.cpp}
         /// MoDePoint v(3, 4, 1);
-        /// float len = v.length(); // len is 5.0990
+        /// double len = v.length(); // len is 5.0990
         /// ~~~~
         /// 
         /// `length' involves a square root calculation, which is one of the
@@ -382,13 +382,13 @@ namespace MoDe
         /// point, where it doesn't matter exactly what the lengths are, you just
         /// want the shortest), you can use lengthSquared() instead.
         ///    
-        float length() const;
+        double length() const;
 
         /// \brief Return the squared length (squared magnitude) of this vector.
         /// 
         /// ~~~~{.cpp}
         /// MoDePoint v(3, 4, 1);
-        /// float len = v.length(); // len is 5.0990
+        /// double len = v.length(); // len is 5.0990
         /// ~~~~
         /// 
         /// Use as a much faster alternative to length() if you don't need
@@ -397,7 +397,7 @@ namespace MoDe
         /// reference point, where it doesn't matter exactly what the lengths are, you
         /// just want the shortest). It avoids the square root calculation that is
         /// ordinarily required to calculate a length.
-        float lengthSquared() const;
+        double lengthSquared() const;
 
 
         /// \brief Calculate and return the dot product of this vector with 'vec'.
@@ -420,14 +420,14 @@ namespace MoDe
         /// MoDePoint a2(1, 0, 0); 
         /// MoDePoint b2(1, 1, 0); // 45 degree angle to a2
         /// b2.normalize(); // vectors should to be unit vectors (normalized)
-        /// float dot = a2.dot(b2); // dot is 0.707, ie cos(45)
+        /// double dot = a2.dot(b2); // dot is 0.707, ie cos(45)
         /// 
         /// MoDePoint a3(0, 1, 0);
         /// MoDePoint b3(0, -1, 0); // 180 degree angle to a3
         /// dot = a3.dot(b3); // dot is -1, ie cos(180)
         /// ~~~~
         /// 
-        float dot(const MoDePoint& vec) const;
+        double dot(const MoDePoint& vec) const;
 
     };
 
@@ -438,10 +438,10 @@ namespace MoDe
     // Non-Member operators
     //
     //
-    MoDePoint operator+(float f, const MoDePoint& vec);
-    MoDePoint operator-(float f, const MoDePoint& vec);
-    MoDePoint operator*(float f, const MoDePoint& vec);
-    MoDePoint operator/(float f, const MoDePoint& vec);
+    MoDePoint operator+(double f, const MoDePoint& vec);
+    MoDePoint operator-(double f, const MoDePoint& vec);
+    MoDePoint operator*(double f, const MoDePoint& vec);
+    MoDePoint operator/(double f, const MoDePoint& vec);
 
 
     /////////////////
@@ -450,12 +450,12 @@ namespace MoDe
 
 
     inline MoDePoint::MoDePoint() : x(0), y(0), z(0) {}
-    inline MoDePoint::MoDePoint(float _v) : x(_v), y(_v), z(_v) {}
-    inline MoDePoint::MoDePoint(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {}
-    inline MoDePoint::MoDePoint(vector<float> floatVector) : x(floatVector[0]), y(floatVector[1]), z(floatVector[2]) {}
+    inline MoDePoint::MoDePoint(double _v) : x(_v), y(_v), z(_v) {}
+    inline MoDePoint::MoDePoint(double _x, double _y, double _z) : x(_x), y(_y), z(_z) {}
+    inline MoDePoint::MoDePoint(vector<double> doubleVector) : x(doubleVector[0]), y(doubleVector[1]), z(doubleVector[2]) {}
 
 
-    inline void MoDePoint::set(float _x, float _y, float _z) {
+    inline void MoDePoint::set(double _x, double _y, double _z) {
         x = _x;
         y = _y;
         z = _z;
@@ -479,25 +479,25 @@ namespace MoDe
         return (x != vec.x) || (y != vec.y) || (z != vec.z);
     }
 
-    inline bool MoDePoint::match(const MoDePoint& vec, float tolerance) const {
+    inline bool MoDePoint::match(const MoDePoint& vec, double tolerance) const {
         return (fabs(x - vec.x) < tolerance)
             && (fabs(y - vec.y) < tolerance)
             && (fabs(z - vec.z) < tolerance);
     }
 
-    inline bool MoDePoint::operator<(const float f) const{
+    inline bool MoDePoint::operator<(const double f) const{
         return (x < f) || (y < f) || (z < f);
     }
 
-    inline bool MoDePoint::operator<=(const float f) const{
+    inline bool MoDePoint::operator<=(const double f) const{
         return (x <= f) || (y <= f) || (z <= f);
     }
 
-    inline bool MoDePoint::operator>(const float f) const{
+    inline bool MoDePoint::operator>(const double f) const{
         return (x > f) || (y > f) || (z > f);
     }
 
-    inline bool MoDePoint::operator>=(const float f) const{
+    inline bool MoDePoint::operator>=(const double f) const{
         return (x >= f) || (y >= f) || (z >= f);
     }
 
@@ -565,55 +565,55 @@ namespace MoDe
     }
 
 
-    //operator overloading for float
+    //operator overloading for double
     //
     //
-    //inline void MoDePoint::operator=( const float f){
+    //inline void MoDePoint::operator=( const double f){
     //	x = f;
     //	y = f;
     //	z = f;
     //}
 
-    inline MoDePoint MoDePoint::operator+(const float f) const {
+    inline MoDePoint MoDePoint::operator+(const double f) const {
         return MoDePoint(x + f, y + f, z + f);
     }
 
-    inline MoDePoint& MoDePoint::operator+=(const float f) {
+    inline MoDePoint& MoDePoint::operator+=(const double f) {
         x += f;
         y += f;
         z += f;
         return *this;
     }
 
-    inline MoDePoint MoDePoint::operator-(const float f) const {
+    inline MoDePoint MoDePoint::operator-(const double f) const {
         return MoDePoint(x - f, y - f, z - f);
     }
 
-    inline MoDePoint& MoDePoint::operator-=(const float f) {
+    inline MoDePoint& MoDePoint::operator-=(const double f) {
         x -= f;
         y -= f;
         z -= f;
         return *this;
     }
 
-    inline MoDePoint MoDePoint::operator*(const float f) const {
+    inline MoDePoint MoDePoint::operator*(const double f) const {
         return MoDePoint(x*f, y*f, z*f);
     }
 
-    inline MoDePoint& MoDePoint::operator*=(const float f) {
+    inline MoDePoint& MoDePoint::operator*=(const double f) {
         x *= f;
         y *= f;
         z *= f;
         return *this;
     }
 
-    inline MoDePoint MoDePoint::operator/(const float f) const {
+    inline MoDePoint MoDePoint::operator/(const double f) const {
         if (f == 0) return MoDePoint(x, y, z);
 
         return MoDePoint(x / f, y / f, z / f);
     }
 
-    inline MoDePoint& MoDePoint::operator/=(const float f) {
+    inline MoDePoint& MoDePoint::operator/=(const double f) {
         if (f == 0) return *this;
 
         x /= f;
@@ -637,17 +637,17 @@ namespace MoDe
     // Distance between two points.
     //
     //
-    inline float MoDePoint::distance(const MoDePoint& pnt) const {
-        float vx = x - pnt.x;
-        float vy = y - pnt.y;
-        float vz = z - pnt.z;
-        return (float)sqrt(vx*vx + vy*vy + vz*vz);
+    inline double MoDePoint::distance(const MoDePoint& pnt) const {
+        double vx = x - pnt.x;
+        double vy = y - pnt.y;
+        double vz = z - pnt.z;
+        return (double)sqrt(vx*vx + vy*vy + vz*vz);
     }
 
-    inline float  MoDePoint::squareDistance(const MoDePoint& pnt) const {
-        float vx = x - pnt.x;
-        float vy = y - pnt.y;
-        float vz = z - pnt.z;
+    inline double  MoDePoint::squareDistance(const MoDePoint& pnt) const {
+        double vx = x - pnt.x;
+        double vy = y - pnt.y;
+        double vz = z - pnt.z;
         return vx*vx + vy*vy + vz*vz;
     }
 
@@ -655,37 +655,37 @@ namespace MoDe
     // Length
     //
     //
-    inline float MoDePoint::length() const {
-        return (float)sqrt(x*x + y*y + z*z);
+    inline double MoDePoint::length() const {
+        return (double)sqrt(x*x + y*y + z*z);
     }
 
-    inline float MoDePoint::lengthSquared() const {
-        return (float)(x*x + y*y + z*z);
+    inline double MoDePoint::lengthSquared() const {
+        return (double)(x*x + y*y + z*z);
     }
 
     /**
     * Dot Product.
     */
-    inline float MoDePoint::dot(const MoDePoint& vec) const {
+    inline double MoDePoint::dot(const MoDePoint& vec) const {
         return x*vec.x + y*vec.y + z*vec.z;
     }
 
     // Non-Member operators
     //
     //
-    inline MoDePoint operator+(float f, const MoDePoint& vec) {
+    inline MoDePoint operator+(double f, const MoDePoint& vec) {
         return MoDePoint(f + vec.x, f + vec.y, f + vec.z);
     }
 
-    inline MoDePoint operator-(float f, const MoDePoint& vec) {
+    inline MoDePoint operator-(double f, const MoDePoint& vec) {
         return MoDePoint(f - vec.x, f - vec.y, f - vec.z);
     }
 
-    inline MoDePoint operator*(float f, const MoDePoint& vec) {
+    inline MoDePoint operator*(double f, const MoDePoint& vec) {
         return MoDePoint(f*vec.x, f*vec.y, f*vec.z);
     }
 
-    inline MoDePoint operator/(float f, const MoDePoint& vec) {
+    inline MoDePoint operator/(double f, const MoDePoint& vec) {
         return MoDePoint(f / vec.x, f / vec.y, f / vec.z);
     }
 

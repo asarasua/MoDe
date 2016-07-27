@@ -75,6 +75,7 @@ void MoDeExtractor::setup(int head, int torso, int depth){
     setDepth(depth);
     qom.setDepth(depth);
     ci.setDepth(depth);
+	myfile.open(ofToDataPath("foo.txt"));
 }
 
 void MoDeExtractor::setFilterLevel(int filterLevel){
@@ -208,7 +209,7 @@ void MoDeExtractor::computeJointDescriptors(int jointId, MoDePoint jointPos, con
     notify(joint->getDescriptor(MoDe::DESC_POSITION).getNewExtremes(), jointId, DESC_POSITION);
     
     //Filtered position
-	joint->addValue(MoDe::DESC_POSITION, applyFilter(joint->getDescriptor(MoDe::DESC_POSITION).getData(), joint->getDescriptor(MoDe::DESC_POSITION_FILTERED).getData(), aFilter, bFilter));
+	joint->addValue(MoDe::DESC_POSITION_FILTERED, applyFilter(joint->getDescriptor(MoDe::DESC_POSITION).getData(), joint->getDescriptor(MoDe::DESC_POSITION_FILTERED).getData(), aFilter, bFilter));
 	notify(joint->getDescriptor(MoDe::DESC_POSITION_FILTERED).getNewExtremes(), jointId, MoDe::DESC_POSITION_FILTERED);
     
     //Velocity
@@ -216,18 +217,51 @@ void MoDeExtractor::computeJointDescriptors(int jointId, MoDePoint jointPos, con
 	notify(joint->getDescriptor(MoDe::DESC_VELOCITY).getNewExtremes(), jointId, MoDe::DESC_VELOCITY);
     
     //Acceleration
+	int foo = joint->getDescriptor(MoDe::DESC_ACCELERATION).outliers.size();
 	joint->addValue(MoDe::DESC_ACCELERATION, applyFilter(joint->getDescriptor(MoDe::DESC_POSITION).getData(), joint->getDescriptor(MoDe::DESC_ACCELERATION).getData(), aLpd2, bLpd2));
 	notify(joint->getDescriptor(MoDe::DESC_ACCELERATION).getNewExtremes(), jointId, MoDe::DESC_ACCELERATION);
+	
+	if (jointId == 11) //RH
+	{
+		myfile << endl << endl << "NEW FRAME ------" << endl << "DATA" << endl;
+		/*for (auto v : joint->getDescriptor(MoDe::DESC_ACCELERATION).getData())
+		{
+			myfile << v.y << ", ";
+		}*/
+
+		//myfile << endl << endl << "OUTLIERS: " << joint->getDescriptor(MoDe::DESC_ACCELERATION).outliers.size() / 3 << endl;
+
+		//long double sum_c(joint->getDescriptor(MoDe::DESC_ACCELERATION).sum.y);
+		//long double ssq_c(joint->getDescriptor(MoDe::DESC_ACCELERATION).ssq.y);
+
+		//for (auto o : joint->getDescriptor(MoDe::DESC_ACCELERATION).outliers)
+		//{
+		//	if (o.axis == AXIS_Y) {
+		//		myfile << o.value << " (" << o.framesPassed << "), ";
+		//		//sum_c -= o.value;
+		//		//ssq_c -= o.value * o.value;
+		//	}
+		//}
+
+		//myfile << endl << "MEAN = " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getMean().y << "\t STD = " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getStdev().y << endl;
+
+		myfile << "MEAN_C = " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getMean_C().y << "\t STD_C = " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getStdev_C().y << endl;
+		myfile << "TH = " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getUpperThreshold().y << ", " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getLowThreshold().y << endl;
+		myfile << "factor = " << (1 / (1 + 10.0 * joint->getDescriptor(MoDe::DESC_ACCELERATION).getStdev_C())).y << endl;
+		//myfile << "SUM_C = " << sum_c << "\tSSQ_C = " << ssq_c << endl;
+		cout << joint->getDescriptor(MoDe::DESC_ACCELERATION).getUpperThreshold().y << endl; // ", " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getData().end()[-2].y << endl;
+		//cout << joint->getDescriptor(MoDe::DESC_ACCELERATION).getStdev().y << ", " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getStdev_C().y << endl;
+	}
     
     //Acceleration along trajectory
 	MoDePoint acc = joint->getDescriptor(MoDe::DESC_ACCELERATION).getCurrent();
 	MoDePoint vel = joint->getDescriptor(MoDe::DESC_VELOCITY).getCurrent();
 	joint->addValue(MoDe::DESC_ACCELERATION_TRAJECTORY, acc.dot(vel) / vel.length());
-    notify(joint->getDescriptor(MoDe::DESC_ACCELERATION_TRAJECTORY).getNewExtremes(), jointId, DESC_ACCELERATION_TRAJECTORY);
+    notify(joint->getUniDescriptor(MoDe::DESC_ACCELERATION_TRAJECTORY).getNewExtremes(), jointId, DESC_ACCELERATION_TRAJECTORY);
     
     //Relative position to torso
     //TODO solve this!!
-    vector<float> relPosToTorso (3);
+    vector<double> relPosToTorso (3);
     relPosToTorso[0] = (jointPos.x - getJoint(torso_).getDescriptor(MoDe::DESC_POSITION_FILTERED).getCurrent().x) / (h * 1.8);
     relPosToTorso[1] = (jointPos.y - getJoint(torso_).getDescriptor(MoDe::DESC_POSITION_FILTERED).getCurrent().y) / (h * 1.8);
     relPosToTorso[2] = -((jointPos.z - getJoint(torso_).getDescriptor(MoDe::DESC_POSITION_FILTERED).getCurrent().z) / h) / 1.4;

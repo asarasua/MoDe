@@ -19,22 +19,26 @@ namespace MoDe {
     };
     
     enum {
-        MOCAP_X,
-        MOCAP_Y,
-        MOCAP_Z
+        AXIS_X,
+        AXIS_Y,
+        AXIS_Z,
+		AXIS_NONE
     };
     
     class MoDeExtreme {
     public:
         unsigned int axis, joint, feature, extremeType, framesPassed;
-        float value;
-        MoDeExtreme() : framesPassed(0) {};
+        double value;
+        MoDeExtreme() : framesPassed(0) {}; 
     };
     
     template <typename T> class MoDeDescriptor {
-    private:
+	public:
+		vector<MoDeExtreme> outliers;
+		double outlierInfluence;
         vector<T> data;
-        vector<MoDeExtreme> extrema;
+		vector<MoDeExtreme> extrema;
+		
         T sum;
         T ssq;
         T upThreshold, lowThreshold;
@@ -53,6 +57,47 @@ namespace MoDe {
         double toDouble(MoDePoint value) const {
             return value.x;
         }
+
+		double crest(double rms) const {
+			double count(0);
+			double mean(0);
+			for (auto extreme : extrema) {
+				if (extreme.axis == AXIS_NONE) {
+					mean += extreme.value;
+					count++;
+				}
+			}
+
+			double crest(0);
+			if (count) crest = (mean / count) / rms;
+			return crest;
+		}
+
+		MoDePoint crest(MoDePoint rms) const {
+			MoDePoint mean(0);
+			MoDePoint count(0);
+			for (auto extreme : extrema) {
+				if (extreme.axis == AXIS_X) {
+					mean.x += extreme.value;
+					count.x++;
+				}
+				else if (extreme.axis == AXIS_Y) {
+					mean.y += extreme.value;
+					count.y++;
+				}
+				else if (extreme.axis == AXIS_Z) {
+					mean.z += extreme.value;
+					count.z++;
+				}
+			}
+
+			MoDePoint crest(0);
+			if (count.x) crest.x = (mean.x / count.x) / rms.x;
+			if (count.y) crest.y = (mean.y / count.y) / rms.y;
+			if (count.z) crest.z = (mean.z / count.z) / rms.z;
+
+			return crest;
+		}
         
         double _sqrt(double value) const {
             return sqrt(value);
@@ -61,14 +106,147 @@ namespace MoDe {
         MoDePoint _sqrt(MoDePoint point) const {
             return MoDePoint(std::sqrt(point.x), std::sqrt(point.y), std::sqrt(point.z));
         }
-        
-        double stdev (int cnt, double sum, double ssq) const {
-            return sqrt((((double)(cnt))*ssq-pow((double)(sum),2)) / ((double)(cnt)*((double)(cnt)-1)));
-        }
-        
-        MoDePoint stdev(int cnt, MoDePoint sum, MoDePoint ssq) const {
-            return MoDePoint(stdev(cnt, sum.x, ssq.x), stdev(cnt, sum.y, ssq.y), stdev(cnt, sum.z, ssq.z)  );
-        }
+
+		double stdev(int cnt, double sum, double ssq) const {
+			double st = sqrt((((double)(cnt))*ssq - pow((double)(sum), 2)) / ((double)(cnt)*((double)(cnt)-1)));
+			if (!isnan(st) && !isinf(st))
+				return st;
+			else return 0;
+		}
+
+		MoDePoint stdev(int cnt, MoDePoint sum, MoDePoint ssq) const {
+			return MoDePoint(stdev(cnt, sum.x, ssq.x), stdev(cnt, sum.y, ssq.y), stdev(cnt, sum.z, ssq.z));
+		}
+
+		double mean_c(double sum) const {
+			double sum_c(sum);
+			for (auto o : outliers) {
+				sum_c += o.value * (outlierInfluence - 1.0);
+			}
+			double mean_c = sum_c / (size() - outliers.size());
+			return mean_c;
+		}
+
+		MoDePoint mean_c(MoDePoint sum) const {
+			MoDePoint sum_c(sum);
+			MoDePoint num_o(0);
+			for (auto o : outliers) {
+				if (o.axis == AXIS_X) {
+					sum_c.x += o.value * (outlierInfluence - 1.0);
+					num_o.x++;
+				}
+				else if (o.axis == AXIS_Y) {
+					sum_c.y += o.value * (outlierInfluence - 1.0);
+					num_o.y++;
+				}
+				else if (o.axis == AXIS_Z) {
+					sum_c.z += o.value * (outlierInfluence - 1.0);
+					num_o.z++;
+				}
+			}
+
+			MoDePoint mean_c = sum_c / (size() - num_o);
+			return mean_c;
+		}
+
+		double stdev_c(double sum, double ssq) const {
+			if (outliers.size() == size())
+			{
+				return stdev(size(), sum, ssq);
+			}
+			else {
+				double sum_c = sum;
+				double ssq_c = ssq;
+				for (auto o : outliers) {
+					sum_c += o.value * (outlierInfluence - 1.0);
+					ssq_c -= o.value * o.value;
+					ssq_c += o.value * o.value * outlierInfluence * outlierInfluence;
+				}
+
+				return stdev(size() - extrema.size(), sum_c, ssq_c);
+			}
+		}
+
+		MoDePoint stdev_c(MoDePoint sum, MoDePoint ssq) const {
+			MoDePoint sum_c(sum);
+			MoDePoint ssq_c(ssq);
+			MoDePoint num_o(0);
+			for (auto o : outliers) {
+				if (o.axis == AXIS_X)
+				{
+					sum_c.x -= o.value;
+					ssq_c.x -= o.value * o.value;
+					ssq_c.x += o.value * o.value * outlierInfluence * outlierInfluence;
+					num_o.x++;
+				}
+				else if (o.axis == AXIS_Y)
+				{
+					sum_c.y -= o.value;
+					ssq_c.y -= o.value * o.value;
+					ssq_c.y += o.value * o.value * outlierInfluence * outlierInfluence;
+					num_o.y++;
+				}
+				else if (o.axis == AXIS_Z)
+				{
+					sum_c.z -= o.value;
+					ssq_c.z -= o.value * o.value;
+					ssq_c.z += o.value * o.value * outlierInfluence * outlierInfluence;
+					num_o.z++;
+				}
+			}
+
+			MoDePoint std;
+			if (num_o.x != size())
+				std.x = stdev(size() - num_o.x, sum_c.x, ssq_c.x);
+			else
+				std.x = stdev(size(), sum.x, ssq.x);
+			if (num_o.y != size())
+				std.y = stdev(size() - num_o.y, sum_c.y, ssq_c.y);
+			else
+				std.y = stdev(size(), sum.y, ssq.y);
+			if (num_o.z != size())
+				std.z = stdev(size() - num_o.z, sum_c.z, ssq_c.z);
+			else
+				std.z = stdev(size(), sum.z, ssq.z);
+
+			return std;
+		}
+
+		void checkOutlier(double value) {
+			if (value > upThreshold || value < lowThreshold)
+			{
+				MoDeExtreme outlier;
+				outlier.value = value;
+				outlier.axis = AXIS_NONE;
+				outliers.push_back(outlier);
+			}
+		}
+
+		void checkOutlier(MoDePoint value) {
+			MoDePoint uth(upThreshold);
+			MoDePoint lth(lowThreshold);
+			//x
+			if (value.x > uth.x || value.x < lth.x) {
+				MoDeExtreme outlier;
+				outlier.value = value.x;
+				outlier.axis = AXIS_X;
+				outliers.push_back(outlier);
+			}
+			//y
+			if (value.y > uth.y || value.y < lth.y) {
+				MoDeExtreme outlier;
+				outlier.value = value.y;
+				outlier.axis = AXIS_Y;
+				outliers.push_back(outlier);
+			}
+			//z
+			if (value.z > uth.z || value.z < lth.z) {
+				MoDeExtreme outlier;
+				outlier.value = value.z;
+				outlier.axis = AXIS_Z;
+				outliers.push_back(outlier);
+			}
+		}
         
         void checkMaxAndMin(){
             //one dimensional case
@@ -81,18 +259,20 @@ namespace MoDe {
                     vec.push_back(toDouble(data[i]));
                 }
                 
-                if (distance(vec.begin(), max_element(vec.begin(), vec.end())) == 2
-                    && vec[2] > uth) {
+                if (vec[2] > uth && distance(vec.begin(), max_element(vec.begin(), vec.end())) == 2) {
                     MoDeExtreme max;
                     max.value = vec[2];
                     max.extremeType = EXTREME_TYPE_MAX;
+					max.axis = AXIS_NONE;
+					max.framesPassed = 2;
                     extrema.push_back(max);
                 }
-                else if (distance(vec.begin(), min_element(vec.begin(), vec.end())) == 2
-                         && vec[2] < lth) {
+                else if (vec[2] < lth && distance(vec.begin(), min_element(vec.begin(), vec.end())) == 2) {
                     MoDeExtreme min;
                     min.value = vec[2];
                     min.extremeType = EXTREME_TYPE_MIN;
+					min.axis = AXIS_NONE;
+					min.framesPassed = 2;
                     extrema.push_back(min);
                 }
             }
@@ -107,63 +287,63 @@ namespace MoDe {
                     y_vec.push_back(d.y);
                     z_vec.push_back(d.z);
                 }
-                
+                //TODO
                 //x
-                if (distance(x_vec.begin(), max_element(x_vec.begin(), x_vec.end())) == 2
-                    && x_vec[2] > uth.x) {
+                if (x_vec[2] > uth.x && distance(x_vec.begin(), max_element(x_vec.begin(), x_vec.end())) == 2) {
                     MoDeExtreme max;
                     max.value = x_vec[2];
-                    max.axis = MOCAP_X;
+                    max.axis = AXIS_X;
                     max.extremeType = EXTREME_TYPE_MAX;
+					max.framesPassed = 2;
                     extrema.push_back(max);
                 }
-                else if (distance(x_vec.begin(), min_element(x_vec.begin(), x_vec.end())) == 2
-                         && x_vec[2] < lth.x) {
+                else if (x_vec[2] < lth.x && distance(x_vec.begin(), min_element(x_vec.begin(), x_vec.end())) == 2) {
                     MoDeExtreme min;
                     min.value = x_vec[2];
-                    min.axis = MOCAP_X;
+                    min.axis = AXIS_X;
                     min.extremeType = EXTREME_TYPE_MIN;
-                    extrema.push_back(min);
+					min.framesPassed = 2;
+					extrema.push_back(min);
                 }
                 //y
-                if (distance(y_vec.begin(), max_element(y_vec.begin(), y_vec.end())) == 2
-                    && y_vec[2] > uth.y) {
+                if (y_vec[2] > uth.y && distance(y_vec.begin(), max_element(y_vec.begin(), y_vec.end())) == 2) {
                     MoDeExtreme max;
                     max.value = y_vec[2];
-                    max.axis = MOCAP_Y;
+                    max.axis = AXIS_Y;
                     max.extremeType = EXTREME_TYPE_MAX;
+					max.framesPassed = 2;
                     extrema.push_back(max);
                 }
-                else if (distance(y_vec.begin(), min_element(y_vec.begin(), y_vec.end())) == 2
-                         && y_vec[2] < lth.y) {
+                else if (y_vec[2] < lth.y && distance(y_vec.begin(), min_element(y_vec.begin(), y_vec.end())) == 2) {
                     MoDeExtreme min;
                     min.value = y_vec[2];
-                    min.axis = MOCAP_Y;
+                    min.axis = AXIS_Y;
                     min.extremeType = EXTREME_TYPE_MIN;
+					min.framesPassed = 2;
                     extrema.push_back(min);
                 }
                 //z
-                if (distance(z_vec.begin(), max_element(z_vec.begin(), z_vec.end())) == 2
-                    && z_vec[2] > uth.z) {
+                if (z_vec[2] > uth.z && distance(z_vec.begin(), max_element(z_vec.begin(), z_vec.end())) == 2) {
                     MoDeExtreme max;
                     max.value = z_vec[2];
-                    max.axis = MOCAP_Z;
+                    max.axis = AXIS_Z;
                     max.extremeType = EXTREME_TYPE_MAX;
+					max.framesPassed = 2;
                     extrema.push_back(max);
                 }
-                else if (distance(z_vec.begin(), min_element(z_vec.begin(), z_vec.end())) == 2
-                         && z_vec[2] < lth.z) {
+                else if (z_vec[2] < distance(z_vec.begin(), min_element(z_vec.begin(), z_vec.end())) == 2) {
                     MoDeExtreme min;
                     min.value = z_vec[2];
-                    min.axis = MOCAP_Z;
+                    min.axis = AXIS_Z;
                     min.extremeType = EXTREME_TYPE_MIN;
+					min.framesPassed = 2;
                     extrema.push_back(min);
                 }
             }
         }
         
     public:
-        MoDeDescriptor(int depth) : sum(0), ssq(0), upThreshold(0), lowThreshold(0)  {
+        MoDeDescriptor(int depth) : sum(0), ssq(0), upThreshold(0), lowThreshold(0), outlierInfluence(0.01)  {
             data.resize(depth);
         }
         ~MoDeDescriptor() {}
@@ -172,13 +352,23 @@ namespace MoDe {
             //delete extrema older than data size
             for (vector<MoDeExtreme>::iterator extreme = extrema.begin(); extreme!=extrema.end();)
             {
-                if(extreme->framesPassed >= data.size())
+				(*extreme).framesPassed++;
+                if(extreme->framesPassed == data.size())
                     extreme = extrema.erase(extreme);
                 else {
-                    (*extreme).framesPassed++;
                     ++extreme;
                 }
             }
+			//delete outliers older than data size
+			for (vector<MoDeExtreme>::iterator outlier = outliers.begin(); outlier != outliers.end();)
+			{
+				(*outlier).framesPassed++;
+				if (outlier->framesPassed == data.size())
+					outlier = outliers.erase(outlier);
+				else {
+					++outlier;
+				}
+			}
             
             if (data.size() == data.capacity()){
                 T oldestValue = data.front();
@@ -186,17 +376,18 @@ namespace MoDe {
                 ssq -= oldestValue * oldestValue;
                 data.erase(data.begin());
             }
+			checkOutlier(newValue);
+
             data.push_back(newValue);
             sum += newValue;
-            ssq += newValue*newValue;
-            
-            upThreshold = getRms() * (1.0 + 3.0 * ( 1.0 / ( getStdev() + 1.0 )) );
-            if (hasNegative()) {
-                lowThreshold = -upThreshold;
-            } else {
-                lowThreshold = getRms() * (1.0 - 3.0 * ( 1.0 / ( getStdev() + 1.0 )) );
-            }
-            
+            ssq += newValue*newValue;            
+
+			T factor = 1 / (1 + 10 * getStdev_C());
+
+			//upThreshold = getMean_C() + 3.0 * getStdev_C();
+			upThreshold = getMean_C() + ( 5.0 * factor ) * getStdev_C();
+			lowThreshold = getMean_C() - 3.0 * getStdev_C();
+			
             checkMaxAndMin();
             
         }
@@ -206,9 +397,18 @@ namespace MoDe {
         T getMean() const {
             return sum/size();
         }
+		T getMean_C() const {
+			return mean_c(sum);
+		}
+
         T getStdev() const {
             return stdev(size(), sum, ssq);
         }
+
+		T getStdev_C() const {
+			return stdev_c(sum, ssq);
+		}
+
         T getRms() const  {
             return _sqrt(ssq / size());
         }
@@ -231,39 +431,22 @@ namespace MoDe {
         vector<MoDeExtreme> getNewExtremes() const {
             vector<MoDeExtreme> newExtrema;
             for (auto extreme : extrema){
-                if (extreme.framesPassed == 0)
+                if (extreme.framesPassed == 2)
                     newExtrema.push_back(extreme);
             }
             return newExtrema;
         }
         T getCrest() const {
-            if (typeid(data[0]) == typeid(double)) {
-                return 0;
-            } else {
-                MoDePoint mean(0);
-                MoDePoint count(0);
-                for (auto extreme: extrema) {
-                    if (extreme.axis == MOCAP_X) {
-                        mean.x += extreme.value;
-                        count.x ++;
-                    } else if (extreme.axis == MOCAP_Y) {
-                        mean.y += extreme.value;
-                        count.y ++;
-                    } else if (extreme.axis == MOCAP_Z) {
-                        mean.z += extreme.value;
-                        count.z ++;
-                    }
-                }
-                
-                MoDePoint crest(0);
-                MoDePoint rms(getRms());
-                if (count.x) crest.x = ( mean.x / count.x ) / rms.x;
-                if (count.y) crest.y = ( mean.y / count.y ) / rms.y;
-                if (count.z) crest.z = ( mean.z / count.z ) / rms.z;
-                
-                return crest;
-            }
+			return crest(getRms());
         }
+
+		T getUpperThreshold() {
+			return upThreshold;
+		}
+
+		T getLowThreshold() {
+			return lowThreshold;
+		}
         
     };
 }

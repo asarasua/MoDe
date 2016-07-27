@@ -7,8 +7,10 @@ ofxMoDeGraph::ofxMoDeGraph()
     ofAddListener(ofEvents().mouseReleased, this, &ofxMoDeGraph::mouseReleased);
     
     hue = 0.0;
-    scale = 0.2;
+    scale = 10.0;
     text = "graph";
+
+	threshold = 0.0;
     
     screenPos = ofVec2f(0, 0);
     size = ofVec2f(400, 300);
@@ -34,8 +36,9 @@ ofxMoDeGraph::ofxMoDeGraph(float x, float y, float w, float h, float colorHue, s
     ofAddListener(ofEvents().mouseDragged, this, &ofxMoDeGraph::mouseDragged);
     ofAddListener(ofEvents().mouseReleased, this, &ofxMoDeGraph::mouseReleased);
     
-    scale = 0.2;
+    scale = 10.0;
     text = graphText;
+	threshold = 0.0;
     
     mode = MODE_1D;
     for (size_t i = 0; i < N_POINTS; i++)
@@ -86,6 +89,7 @@ void ofxMoDeGraph::addValue(float value)
         event += 1;
 }
 
+
 void ofxMoDeGraph::addValue(ofVec3f value)
 {
     mode = MODE_3D;
@@ -98,6 +102,11 @@ void ofxMoDeGraph::addValue(ofVec3f value)
     
     for (auto &event : events)
         event += 1;
+}
+
+void ofxMoDeGraph::setThreshold(float thresholdValue)
+{
+	threshold = thresholdValue;
 }
 
 void ofxMoDeGraph::newEvent()
@@ -159,6 +168,12 @@ void ofxMoDeGraph::draw()
         ofSetColor(ofColor::fromHsb(hue, 255, 255));
         line3.draw();
     }
+
+	if (threshold != 0.0)
+	{
+		ofSetColor(0);
+		ofDrawLine(0.05, 0.5 - scale * threshold, 0.95, 0.5 - scale * threshold);
+	}
     
     ofSetColor(ofColor::fromHsb(hue, 255, 10));
     for (auto event : events) {

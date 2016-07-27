@@ -74,6 +74,7 @@ namespace MoDe {
         const MoDeJoint getJoint(int jointId);
         
     private:
+		ofstream myfile;
         int head_, torso_;
 
         MoDeJoint* getElement(int jointId);

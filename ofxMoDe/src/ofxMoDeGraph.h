@@ -19,6 +19,7 @@ public:
     float getHue();
     void addValue(float value);
     void addValue(ofVec3f threeTimeSeries);
+	void setThreshold(float thresholdValue);
     void newEvent();
     void draw();
 private:
@@ -27,6 +28,7 @@ private:
     void mouseReleased(ofMouseEventArgs& event);
     ofVec2f screenPos, size, prevMouseMove, prevMouseResize, prevMouseScale;
     vector<float> oneTimeSeries;
+	float threshold;
     vector<ofVec3f> threeTimeSeries;
     vector<int> events;
     int mode;

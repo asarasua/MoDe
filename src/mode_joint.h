@@ -66,7 +66,7 @@ namespace MoDe {
 				throw runtime_error("Descriptor ID doesn't match any existing 3D descriptor");
 			}
 		}
-		MoDeDescriptor<float> getUniDescriptor(int descriptorId) const {
+		MoDeDescriptor<double> getUniDescriptor(int descriptorId) const {
 			switch (descriptorId)
 			{
 			case DESC_ACCELERATION_TRAJECTORY:
@@ -115,7 +115,7 @@ namespace MoDe {
         MoDeDescriptor<MoDePoint> positionFiltered;
         MoDeDescriptor<MoDePoint> velocity;
         MoDeDescriptor<MoDePoint> acceleration;    
-        MoDeDescriptor<float> accelerationTrajectory;
+        MoDeDescriptor<double> accelerationTrajectory;
         MoDeDescriptor<MoDePoint> relativePositionToTorso;
 
         int historyDepth_;
