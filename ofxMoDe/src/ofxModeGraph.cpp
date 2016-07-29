@@ -151,6 +151,10 @@ void ofxMoDeGraph::draw()
         }
         ofSetColor(ofColor::fromHsb(hue, 255, 255));
         line.draw();
+
+		stringstream stream;
+		stream << fixed << setprecision(3) << oneTimeSeries[0];
+		ofDrawBitmapString(stream.str(), 0.80, 0.15);
     }
     else if (mode == MODE_3D) {
         ofPolyline line1, line2, line3;

@@ -39,6 +39,10 @@ namespace MoDe {
         MoDeJoint(int elementId, int depth) : position(depth), positionFiltered(depth), velocity(depth), acceleration(depth), accelerationTrajectory(depth), relativePositionToTorso(depth){
             elementId_ = elementId;
             historyDepth_ = depth;
+
+			//TODO
+			acceleration.setUpperThreshold(MoDePoint(0.005));
+			acceleration.setLowThreshold(MoDePoint(0.005));
         }
         
         unsigned int getElementId(){

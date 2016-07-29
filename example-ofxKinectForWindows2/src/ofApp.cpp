@@ -52,6 +52,10 @@ void ofApp::update() {
 		featExtractor.getJoint(JointType_HandRight).getUniDescriptor(MoDe::DESC_ACCELERATION_TRAJECTORY).getCrest();
 		graphs[0]->addValue(featExtractor.getJoint(JointType_HandRight).getDescriptor(MoDe::DESC_ACCELERATION).getCurrent().y);
 		graphs[0]->setThreshold(featExtractor.getJoint(JointType_HandRight).getDescriptor(MoDe::DESC_ACCELERATION).getUpperThreshold().y);
+
+		graphs[1]->addValue(featExtractor.getJoint(JointType_HandRight).getDescriptor(MoDe::DESC_ACCELERATION).getCrest().y);
+
+		graphs[2]->addValue(featExtractor.getJoint(JointType_HandRight).getDescriptor(MoDe::DESC_ACCELERATION).getRms().y);
 		//for (auto graph : graphs)
 		//	addValueToGraph(graph);
 	}

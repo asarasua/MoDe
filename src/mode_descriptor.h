@@ -33,7 +33,7 @@ namespace MoDe {
     };
     
     template <typename T> class MoDeDescriptor {
-	public:
+	private:
 		vector<MoDeExtreme> outliers;
 		double outlierInfluence;
         vector<T> data;
@@ -81,7 +81,7 @@ namespace MoDe {
 					mean.x += extreme.value;
 					count.x++;
 				}
-				else if (extreme.axis == AXIS_Y) {
+				else if (extreme.axis == AXIS_Y && extreme.extremeType == EXTREME_TYPE_MAX) {
 					mean.y += extreme.value;
 					count.y++;
 				}
@@ -385,8 +385,8 @@ namespace MoDe {
 			T factor = 1 / (1 + 10 * getStdev_C());
 
 			//upThreshold = getMean_C() + 3.0 * getStdev_C();
-			upThreshold = getMean_C() + ( 5.0 * factor ) * getStdev_C();
-			lowThreshold = getMean_C() - 3.0 * getStdev_C();
+			//upThreshold = getMean_C() + ( 5.0 * factor ) * getStdev_C();
+			//lowThreshold = getMean_C() - 3.0 * getStdev_C();
 			
             checkMaxAndMin();
             
@@ -446,6 +446,14 @@ namespace MoDe {
 
 		T getLowThreshold() {
 			return lowThreshold;
+		}
+
+		void setUpperThreshold(T ut) {
+			upThreshold = ut;
+		}
+
+		void setLowThreshold(T lt) {
+			lowThreshold = lt;
 		}
         
     };

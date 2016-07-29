@@ -217,13 +217,12 @@ void MoDeExtractor::computeJointDescriptors(int jointId, MoDePoint jointPos, con
 	notify(joint->getDescriptor(MoDe::DESC_VELOCITY).getNewExtremes(), jointId, MoDe::DESC_VELOCITY);
     
     //Acceleration
-	int foo = joint->getDescriptor(MoDe::DESC_ACCELERATION).outliers.size();
 	joint->addValue(MoDe::DESC_ACCELERATION, applyFilter(joint->getDescriptor(MoDe::DESC_POSITION).getData(), joint->getDescriptor(MoDe::DESC_ACCELERATION).getData(), aLpd2, bLpd2));
 	notify(joint->getDescriptor(MoDe::DESC_ACCELERATION).getNewExtremes(), jointId, MoDe::DESC_ACCELERATION);
 	
 	if (jointId == 11) //RH
 	{
-		myfile << endl << endl << "NEW FRAME ------" << endl << "DATA" << endl;
+		//myfile << endl << endl << "NEW FRAME ------" << endl << "DATA" << endl;
 		/*for (auto v : joint->getDescriptor(MoDe::DESC_ACCELERATION).getData())
 		{
 			myfile << v.y << ", ";
@@ -245,11 +244,11 @@ void MoDeExtractor::computeJointDescriptors(int jointId, MoDePoint jointPos, con
 
 		//myfile << endl << "MEAN = " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getMean().y << "\t STD = " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getStdev().y << endl;
 
-		myfile << "MEAN_C = " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getMean_C().y << "\t STD_C = " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getStdev_C().y << endl;
-		myfile << "TH = " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getUpperThreshold().y << ", " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getLowThreshold().y << endl;
-		myfile << "factor = " << (1 / (1 + 10.0 * joint->getDescriptor(MoDe::DESC_ACCELERATION).getStdev_C())).y << endl;
+		//myfile << "MEAN_C = " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getMean_C().y << "\t STD_C = " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getStdev_C().y << endl;
+		//myfile << "TH = " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getUpperThreshold().y << ", " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getLowThreshold().y << endl;
+		//myfile << "factor = " << (1 / (1 + 10.0 * joint->getDescriptor(MoDe::DESC_ACCELERATION).getStdev_C())).y << endl;
 		//myfile << "SUM_C = " << sum_c << "\tSSQ_C = " << ssq_c << endl;
-		cout << joint->getDescriptor(MoDe::DESC_ACCELERATION).getUpperThreshold().y << endl; // ", " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getData().end()[-2].y << endl;
+		//cout << joint->getDescriptor(MoDe::DESC_ACCELERATION).getUpperThreshold().y << endl; // ", " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getData().end()[-2].y << endl;
 		//cout << joint->getDescriptor(MoDe::DESC_ACCELERATION).getStdev().y << ", " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getStdev_C().y << endl;
 	}
     
