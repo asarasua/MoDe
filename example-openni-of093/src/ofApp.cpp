@@ -13,17 +13,26 @@ void ofApp::setup(){
     kinect.start();
     hadUsers = false;
     
-    featExtractor.setup(JOINT_HEAD, JOINT_TORSO);
+    ofSetFrameRate(30);
+    
+    featExtractor.setup(JOINT_HEAD, JOINT_TORSO, 60);
     
     ofAddListener(kinect.userEvent, this, &ofApp::userEvent);
-    ofAddListener(MocapMaxEvent::events, this, &ofApp::mocapMax);
+    ofAddListener(MoDe::ofxMoDeEvent::events, this, &ofApp::mocapExtreme);
     
     ofSetWindowShape(640, 480);
     
-    font.loadFont("verdana.ttf", 18);
+    font.load("verdana.ttf", 18);
     
     j = JOINT_RIGHT_HAND;
     f = VELOCITY_MEAN;
+    
+    ofPtr<ofxMoDeGraph> g1(new ofxMoDeGraph(30, 30, 400, 100, 0, "acc"));
+    graphs.push_back(g1);
+    ofPtr<ofxMoDeGraph> g2(new ofxMoDeGraph(60, 30, 400, 100, 100, "rms"));
+    graphs.push_back(g2);
+    ofPtr<ofxMoDeGraph> g3(new ofxMoDeGraph(60, 70, 400, 100, 200, "crest"));
+    graphs.push_back(g3);
 }
 
 //--------------------------------------------------------------
@@ -34,7 +43,7 @@ void ofApp::update(){
         ofxOpenNIUser user = kinect.getTrackedUser(i);
         //The following "if" statement is a hard-coded alternative for if(kinect.getUserGenerator().IsNewDataAvailable()), which doesn't work properly in ofxOpenNI
         if (user.getJoint((Joint)0).getWorldPosition() != ofPoint(0,0,0) &&
-            user.getJoint((Joint)0).getWorldPosition() != featExtractor.getPosition(0) ) {
+            user.getJoint((Joint)0).getWorldPosition() != featExtractor.getJoint(0).getDescriptor(MoDe::DESC_POSITION).getCurrent() ) {
             map<int, ofPoint> joints;
             for (int j = 0; j < user.getNumJoints(); j++) {
                 joints[j] = user.getJoint((Joint)j).getWorldPosition();
@@ -46,13 +55,19 @@ void ofApp::update(){
     //This is a trick to reset the user generator if all users are lost
     if (kinect.getNumTrackedUsers()) {
         hadUsers = true;
-    } else if (!kinect.getNumTrackedUsers() && hadUsers){
+    } else if (!kinect.getNumTrackedUsers() && hadUsers){   
         hadUsers = false;
         kinect.setPaused(true);
         kinect.removeUserGenerator();
         kinect.addUserGenerator();
         kinect.setPaused(false);
     }
+    
+    //graphs[0]->addValue(featExtractor.getAcceleration(j).y);
+    graphs[0]->addValue(featExtractor.getJoint(j).getDescriptor(MoDe::DESC_ACCELERATION).getCurrent().y);
+    graphs[1]->addValue(featExtractor.getJoint(j).getDescriptor(MoDe::DESC_VELOCITY).getCrest().y);
+    graphs[2]->addValue(featExtractor.getJoint(j).getDescriptor(MoDe::DESC_ACCELERATION).getCrest().y);
+    
 }
 
 //--------------------------------------------------------------
@@ -66,9 +81,9 @@ void ofApp::draw(){
     kinect.drawSkeletons();
     
     ostringstream os;
-    os << "ofxKinectFeatures example " << endl;
+    os << "ofxMoDe example " << endl;
     os << "FPS: " << ofGetFrameRate() << endl;
-    ofPoint jointProjectivePosition = kinect.worldToProjective(featExtractor.getPosition(j));
+    ofPoint jointProjectivePosition = kinect.worldToProjective(featExtractor.getJoint(j).getDescriptor(MoDe::DESC_POSITION).getCurrent());
     os << "Quantity of Motion: " << featExtractor.getQom() << endl;
     //os << "Symmetry: " << featExtractor.getSymmetry() << endl;
     os << "Contraction Index: " << featExtractor.getCI() << endl << endl;
@@ -77,26 +92,30 @@ void ofApp::draw(){
     switch (f) {
         case VELOCITY_MEAN:
             os << "Velocity magnitude mean" << endl;
-            //font.drawString(ofToString(featExtractor.getVelocity(j).y), jointProjectivePosition.x, jointProjectivePosition.y);
-            font.drawString(ofToString(featExtractor.getVelocity(j).y), jointProjectivePosition.x, jointProjectivePosition.y);
+            font.drawString(ofToString(featExtractor.getJoint(j).getDescriptor(MoDe::DESC_VELOCITY).getCurrent().y), jointProjectivePosition.x, jointProjectivePosition.y);
             break;
         case ACCELERATION_Y:
             os << "Acceleration along y axis (up-down movement)" << endl;
-            font.drawString(ofToString(featExtractor.getAcceleration(j).y), jointProjectivePosition.x, jointProjectivePosition.y);
+            //font.drawString(ofToString(featExtractor.getAcceleration(j).y), jointProjectivePosition.x, jointProjectivePosition.y);
             break;
         case RELPOSTOTORSO_X:
             os << "Relative position to torso in x axis" << endl;
-            font.drawString(ofToString(featExtractor.getRelativePositionToTorso(j).x), jointProjectivePosition.x, jointProjectivePosition.y);
+            //font.drawString(ofToString(featExtractor.getRelativePositionToTorso(j).x), jointProjectivePosition.x, jointProjectivePosition.y);
             break;
             
         default:
             break;
     }
     
+    os << featExtractor.getJoint(JOINT_RIGHT_HAND).getDescriptor(MoDe::DESC_ACCELERATION).getCrest().y;
+    
     ofSetColor(0,0,0,100);
-    ofRect(10, 10, 500, 150);
+    ofDrawRectangle(10, 10, 500, 150);
     ofSetColor(255,255,255);
     ofDrawBitmapString(os.str(), 20, 30);
+    
+    for (auto graph : graphs)
+        graph->draw();
 }
 
 //--------------------------------------------------------------
@@ -133,13 +152,12 @@ void ofApp::userEvent(ofxOpenNIUserEvent &event){
     //    }
 }
 
-void ofApp::mocapMax(MocapMaxEvent &e){
-    //    if (e.joint == JOINT_RIGHT_HAND && e.value > 5.0) {
-    //        cout << "Max in right hand axis " << ofGetTimestampString() << endl;
-    //    }
-    
-    if (e.feature == FEAT_QOM && e.value > 20.0){
-        cout << "max in QOM!" << endl;
+void ofApp::mocapExtreme(MoDe::ofxMoDeEvent &e){
+    if (e.joint == JOINT_RIGHT_HAND && e.feature == MoDe::DESC_ACCELERATION && e.axis == MoDe::MOCAP_Y && e.extremeType == MoDe::EXTREME_TYPE_MAX) {
+        cout << "new MAX on right hand with value " << e.value << " in axis " << e.axis << endl;
+    }
+    else if (e.joint == JOINT_RIGHT_HAND && e.feature == MoDe::DESC_ACCELERATION && e.axis == MoDe::MOCAP_Y && e.extremeType == MoDe::EXTREME_TYPE_MIN) {
+        cout << "new MIN on right hand with value " << e.value << " in axis " << e.axis << endl;
     }
 }
 

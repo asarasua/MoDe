@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\ofApp.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mode_extractor.cpp">
+      <Filter>addons\ofxMoDe\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ofxMoDe\src\ofxModeGraph.cpp">
+      <Filter>addons\ofxMoDe\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\beat.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{d8376475-7454-4a24-b08a-aac121d3ad6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons">
+      <UniqueIdentifier>{79a8d3ec-5879-49dc-a8b7-b983649dd0c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxMoDe">
+      <UniqueIdentifier>{68c9f574-cfda-47d8-ab4e-d61b48c343c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxMoDe\src">
+      <UniqueIdentifier>{84aa364b-68fc-4e6c-a5e7-030575be35a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxMoDe\lib">
+      <UniqueIdentifier>{466ad751-0ad9-4e2a-9c46-45aeae1aab81}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\ofApp.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\mode_descriptor.h">
+      <Filter>addons\ofxMoDe\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\mode_extractor.h">
+      <Filter>addons\ofxMoDe\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\mode_joint.h">
+      <Filter>addons\ofxMoDe\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\mode_point.h">
+      <Filter>addons\ofxMoDe\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ofxMoDe\src\ofxMoDeGraph.h">
+      <Filter>addons\ofxMoDe\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\beat.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="icon.rc" />
+  </ItemGroup>
+</Project>
