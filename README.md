@@ -1,100 +1,120 @@
-#ofxKinectFeatures
+# MoDe
 
-ofxKinectFeatures: openFrameworks add-on for motion capture feature extraction from Kinect. It has been tested for openFrameworks 0.8.x in Mac OSX 10.9 and Windows 8.1. Working examples in both platforms are provided for XCode and Visual Studio 2012, respectively. 
+MoDe is a cross-platform C++ library for real-time feature extraction from Motion Capture (MoCap) data, particularly suited for Kinect devices. It has been developed for creative applications and as such it can be compiled as an addon for [**openFrameworks**](https://openframeworks.cc).
 
-##Features
-Features can correspond to a specific joint (e.g. velocity of right hand) or general body movement (e.g. quantity of motion). They can be extracted from more than one skeleton.
-The current list of features is:
-####Joint features
-* Position / filtered position
-* Velocity (3D)
-* Velocity magnitude (speed)
-* Velocity magnitude (speed) mean
-* Acceleration (3D)
-* Acceleration magnitude
-* Acceleration magnitude mean
-* Acceleration along the trajectory of movement
-* Acceleration along the trajectory of movement mean
-* Distance to torso
-* Relative position to torso (3D) (goes from -1 to 1 along all 3 axes, calculated relative to user's height)
+It uses nearly optimal features proposed by [Skogstad et al.](http://www.uio.no/english/research/groups/fourms/projects/sma/subprojects/mocapfilters/) for real-time filtering and differentiation. Even though it has been mainly used with Kinect devices, its API allows to provide positional data using standard C++ containers.
 
-####Overall descriptors
+Examples and projects for Kinect V1 and Kinect V2 devices are provided for OSX (only V1) and Windows platforms.
+
+<!-- MarkdownTOC autolink="true" autoanchor="true" bracket="round"-->
+
+- [API](#api)
+    - [MoDeExtractor](#modeextractor)
+    - [MoDeJoint](#modejoint)
+    - [MoDeDescriptor](#modedescriptor)
+- [Documentation](#documentation)
+- [Copyright](#copyright)
+- [Contact](#contact)
+
+<!-- /MarkdownTOC -->
+
+
+<a name="api"></a>
+## API
+
+All MoDe classes and constants are accessible within the `MoDe` namespace. 
+
+<a name="modeextractor"></a>
+### MoDeExtractor
+
+The `MoDeExtractor` class is used to compute descriptors for a body or set of joints. 
+
+```cpp
+MoDe::MoDeExtractor modeExtractor;
+```
+
+`MoDeExtractor` computes a number of features from all joints. It does not only give access to the current value of descriptors, but also to statistics such as the mean, standard deviation and RMS values. The number of stored frames from which this computation is done can be defined using the `setup` method. Default is 30 (1 second at 30 fps)
+
+```cpp
+modeExtractor.setup(30); 
+```
+
+Every time a new MoCap data frame arrives from the device, the `update` must be called passing a map<int, MoDePoint> as argument. This map contains pairs of joints IDs and positional data for the received frame. `MoDePoint` objects can cast `vector<double>`, `vector<float>` and `ofPoint` (for OpenFrameworks). Assuming we have an object `device` where the position of the jth joint at the current frame can be accessed through `device.getJoint(j).getPosition()`, the way to make `ModeExtractor` compute the descriptors for the current frame would be:
+
+```cpp
+map <int , MoDe::MoDePoint > joints;
+for (int j = 0; j < device.getNumJoints (); j++) {
+    joints[j] = device.getJoint(j).getPosition ();
+}
+modeExtractor.update(joints);
+```
+
+<a name="modejoint"></a>
+### MoDeJoint
+The `MoDeJoint` class objects contain all information from a joint, including the computed descriptor. If, for example, the right hand joint is associated with a constant `RIGHT_HAND`, it can be accessed using `getJoint` as:
+
+```cpp
+MoDe::MoDeJoint right_hand = modeExtractor.getJoint(RIGHT_HAND);
+```
+
+<a name="modedescriptor"></a>
+### MoDeDescriptor
+Descriptors can correspond to a single joint (joint descriptors) or can be computed combining information from different joints (body descriptors).
+
+<a name="body-descriptors"></a>
+#### Body descriptors
+Currently, `MoDe` allows to compute the following body descriptors:
+
 * Quantity Of Motion
 * Contraction Index
 
-##Installation
-Go to the addons directory and run
-
-```
-git clone https://github.com/asarasua/ofxKinectFeatures
-```
-
-Alternatively you can just click on "Downlaod ZIP" and extract the content in your addons directory.
-
-##Getting it to work
-ofxKinectFeatures only computes descriptors from motion capture data. To track the skeleton from a Kinect device, other addons have to be included in the project. Examples using [**ofxOpenNI**](https://github.com/gameoverhack/ofxOpenNI) and [**ofxKinectNui**](https://github.com/sadmb/ofxKinectNui) are provided for OSX (+XCode) and Windows (+VS 2012).
-
-###New project
-
-- Copy an empty example to your 'apps/myApps' (or equivalent) directory.
-- Include an addon for Kinect skeleton tracking following the indications provided in their repositories.
-- Create a new group called 'ofxKinectFeatures' under the 'addons' group.
-- Drag the 'src' folder from the 'addons/ofxKinectFeatures/' directory to the group you just created.
-
-###From the examples
-To make the **ofxOpenNI** example work in **OSX**, do the following:
-- Download ofxOpenNI to your addons directory.
-- Open an openFrameworks project.
-- Copy the 'example' folder to your 'apps/myApps' (or equivalent) directory.
-- Copy the 'bin' folder from 'addons/ofxOpenNI/examples/opeNI-SimpleExamples/' to your project directory (this is to have the correct folder structure and config files for openNI to work).
-- Copy the 'lib' folder from '**ofxOpenNI**/mac/copy_to_data_openni_path' to the 'bin/data/openni' directory of your project.
-
-For the **ofxKinectNui** example (**Windows**), you just need to have the latest Kinect 1.x SDK installed and ofxKinectNui in your addons directory.
-
-##API
-The API has been designed not to depend on a particular library for the skeleton tracking with Kinect. Examples using **ofxOpenNI** and **ofxKinectNui** are included.
-
-The features are accessed through an `ofxKinectFeatures` object, so declare it in ofApp.h:
+Both can be accessed directly from the `MoDeExtractor` object as:
 
 ```cpp
-ofxKinectFeatures featExtractor;
+MoDeDescriptor qom = modeExtractor.getDescriptor(MoDE::DESC_QOM);
 ```
 
-If you wish to extract features for more than one skeleton, just declare one ofxKinectFeatures object for each (e.g. by creating a `map<int,ofxKinectFeatures>` where keys correspond to an skeleton id).
+<a name=""></a>
+<a name="joint-descriptors"></a>
+#### Joint descriptors
+Joint descriptor are computed from a single joint. The current list of computed descriptors is the following:
+* Position / filtered position (3D)
+* Velocity (3D)
+* Acceleration (3D)
+* Jerk (3D)
+* Acceleration along the trajectory of velocity (1D)
 
-In `setup()`, it is necessary to tell ofxKinectFeatures which indices correspond to the **head** and **torso** joints, as some calculations need to know about this. This is easily done depending on the addon or libray being used for skeleton tracking.
+These can be accessed with `getDescriptor` from the `MoDeJoint` using constants defined in the `MoDe` namespace:
 
 ```cpp
-featExtractor.setup(JOINT_HEAD, JOINT_TORSO); //ofxOpenNI
-featExtractor.setup(NUI_SKELETON_POSITION_HEAD, NUI_SKELETON_POSITION_SPINE); //ofxKinectNui
+MoDe::MoDeDescriptor rh_vel = right_hand.getDescriptor(MoDe::DESC_VELOCITY);
 ```
 
-In `update()`, just update skeletons data sending a `map<int, ofPoint>` where keys are integers identifying joints and values are the x, y, z positions of these joints. For example, when using ofxOpenNI, this can be done as follows:
+This ```MoDeDescriptor``` object now contains different information accessible for the right hand velocity descriptor:
 
 ```cpp
-//kinect is an ofxOpenNI object
-if (kinect.getNumTrackedUsers()) {
-    ofxOpenNIUser user = kinect.getTrackedUser(0);
-    map<int, ofPoint> joints;
-    for (int j = 0; j < user.getNumJoints(); j++) {
-        joints[j] = user.getJoint((Joint)j).getWorldPosition();
-    }
-    featExtractor.update(joints);
-}
+// MoDePoint with current value of the descriptor
+rh_vel.getCurrent();
+// double with current velocity in the y axis
+rh_vel.getCurrent().y;
+// MoDePoint with mean value during the number of configured number of frames
+rh_vel.getMean(); 
+// double with mean value along the x axis during the configured nr of frames
+rh_vel.getMean().x; 
+// double with current magnitude of the velocity vector
+rh_vel.getMagnitude(); 
 ```
 
-From there, features can be accessed calling the appropriate methods.
+<a name="documentation"></a>
+## Documentation
+The automatically generated documentation is available at http://www.alvarosarasua.com/mode-documentation 
 
-For joint descriptors, joint id's. E.g., to get the x velocity of the right hand (in ofxOpenNI, identified by the `JOINT_RIGHT_HAND`constant):
+<a name="copyright"></a>
+## Copyright
+Copyright (C) 2017 MTG, Universitat Pompeu Fabra - Escola Superior de Música de Catalunya.
+This code has been mainly developed by Álvaro Sarasúa during his PhD thesis, supervised by Emilia Gómez and Enric Guaus. 
 
-```cpp
-if (featExtractor.skeletonExists(0)) {
-    featExtractor.getVelocity(JOINT_RIGHT_HAND).x;
-}
-```
-
-For ovearall descriptors, just by calling the method. E.g.:
-
-    featExtractor.getQom();
-
+<a name="contact"></a>
+## Contact
+Álvaro Sarasúa: [alvaro.sarasua@upf.edu](mailto:alvarosarasua@upf.edu)
 
