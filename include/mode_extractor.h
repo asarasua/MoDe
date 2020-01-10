@@ -13,12 +13,23 @@
  If you are willing to get a (non FOSS) commercial license, please contact us at mtg@upf.edu
  */
 
-#ifndef openNiWorm_MoDeExtractor_h
-#define openNiWorm_MoDeExtractor_h
+#ifndef __APPLE__
+#ifdef MODE_AS_DLL
+#define MODE_DLLEXPORT __declspec(dllexport)
+#else
+#define MODE_DLLEXPORT
+#endif
+#endif
+
+#ifndef MoDeExtractor_h
+#define MoDeExtractor_h
 
 #include "mode_joint.h"
 #include <map>
 #include <numeric>
+#include <fstream>
+
+
 
 namespace MoDe {
     

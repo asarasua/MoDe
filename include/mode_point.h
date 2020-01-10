@@ -18,8 +18,6 @@ If you are willing to get a (non FOSS) commercial license, please contact us at 
 
 #pragma once
 
-#define OPENFRAMEWORKS 1
-
 #if OPENFRAMEWORKS
 
 #include "ofMain.h"
@@ -38,7 +36,7 @@ namespace MoDe
 {
 
     #ifndef PI
-        #define PI       3.14159265358979323846
+        #define PI 3.14159265358979323846
     #endif
 
     class MoDePoint {

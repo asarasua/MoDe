@@ -16,6 +16,7 @@
 #include "mode_extractor.h"
 #include <algorithm>    // std::find_if
 
+
 //Real-time filters for MoCap by Skogstad et al ( http://www.uio.no/english/research/groups/fourms/projects/sma/subprojects/mocapfilters/ )
 
 float lpf_soft_a[] = {1,-1.2982434912,1.4634092217,-0.7106501488,0.2028836637};
@@ -75,7 +76,9 @@ void MoDeExtractor::setup(int head, int torso, int depth){
     setDepth(depth);
     qom.setDepth(depth);
     ci.setDepth(depth);
+#ifdef OPENFRAMEWORKS
 	myfile.open(ofToDataPath("foo.txt"));
+#endif
 }
 
 void MoDeExtractor::setFilterLevel(int filterLevel){
@@ -122,13 +125,14 @@ void MoDeExtractor::addExtremeListener(ExtremeListener * extremeListener)
 }
 
 void MoDeExtractor::update(map<int, MoDePoint> joints){
-    //Initialize elements
-    if (elements_.empty()) {
-		for (auto joint : joints) {
+
+	for (auto joint : joints) {
+		vector<MoDeJoint>::iterator it = find_if(elements_.begin(), elements_.end(), MatchId(joint.first));
+		if (it == elements_.end()){
 			MoDeJoint newElement(joint.first, depth_);
 			elements_.push_back(newElement);
 		}
-    }
+	}
     
     //Compute descriptors
 	newValues_ = true;
@@ -219,38 +223,6 @@ void MoDeExtractor::computeJointDescriptors(int jointId, MoDePoint jointPos, con
     //Acceleration
 	joint->addValue(MoDe::DESC_ACCELERATION, applyFilter(joint->getDescriptor(MoDe::DESC_POSITION).getData(), joint->getDescriptor(MoDe::DESC_ACCELERATION).getData(), aLpd2, bLpd2));
 	notify(joint->getDescriptor(MoDe::DESC_ACCELERATION).getNewExtremes(), jointId, MoDe::DESC_ACCELERATION);
-	
-	if (jointId == 11) //RH
-	{
-		//myfile << endl << endl << "NEW FRAME ------" << endl << "DATA" << endl;
-		/*for (auto v : joint->getDescriptor(MoDe::DESC_ACCELERATION).getData())
-		{
-			myfile << v.y << ", ";
-		}*/
-
-		//myfile << endl << endl << "OUTLIERS: " << joint->getDescriptor(MoDe::DESC_ACCELERATION).outliers.size() / 3 << endl;
-
-		//long double sum_c(joint->getDescriptor(MoDe::DESC_ACCELERATION).sum.y);
-		//long double ssq_c(joint->getDescriptor(MoDe::DESC_ACCELERATION).ssq.y);
-
-		//for (auto o : joint->getDescriptor(MoDe::DESC_ACCELERATION).outliers)
-		//{
-		//	if (o.axis == AXIS_Y) {
-		//		myfile << o.value << " (" << o.framesPassed << "), ";
-		//		//sum_c -= o.value;
-		//		//ssq_c -= o.value * o.value;
-		//	}
-		//}
-
-		//myfile << endl << "MEAN = " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getMean().y << "\t STD = " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getStdev().y << endl;
-
-		//myfile << "MEAN_C = " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getMean_C().y << "\t STD_C = " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getStdev_C().y << endl;
-		//myfile << "TH = " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getUpperThreshold().y << ", " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getLowThreshold().y << endl;
-		//myfile << "factor = " << (1 / (1 + 10.0 * joint->getDescriptor(MoDe::DESC_ACCELERATION).getStdev_C())).y << endl;
-		//myfile << "SUM_C = " << sum_c << "\tSSQ_C = " << ssq_c << endl;
-		//cout << joint->getDescriptor(MoDe::DESC_ACCELERATION).getUpperThreshold().y << endl; // ", " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getData().end()[-2].y << endl;
-		//cout << joint->getDescriptor(MoDe::DESC_ACCELERATION).getStdev().y << ", " << joint->getDescriptor(MoDe::DESC_ACCELERATION).getStdev_C().y << endl;
-	}
     
     //Acceleration along trajectory
 	MoDePoint acc = joint->getDescriptor(MoDe::DESC_ACCELERATION).getCurrent();
