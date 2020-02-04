@@ -25,7 +25,7 @@
     <ClInclude Include="..\..\include\mode_point.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\include\mode_joint.cpp" />
+    <ClCompile Include="..\..\src\mode_joint.cpp" />
     <ClCompile Include="..\..\src\mode_extractor.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
