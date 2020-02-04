@@ -77,12 +77,10 @@ namespace MoDe {
         float getCI();
         vector<float> getCIHistory();
         vector<float> getCIHistory(int frames);
-    //    float getSymmetry();
-    //    float getYMaxHands();
         
         bool isNewDataAvailable();
         
-        const MoDeJoint getJoint(int jointId);
+        MoDeJoint getJoint(int jointId);
         
     private:
 		ofstream myfile;
@@ -109,9 +107,6 @@ namespace MoDe {
         vector<MoDeJoint> elements_;
         
         int depth_;
-        
-        void computeJointDescriptors(int jointId, MoDePoint jointPos, const float &h);
-        MoDePoint applyFilter (vector<MoDePoint> x, vector<MoDePoint> y, float *a, float *b);
         void notify(vector<MoDeExtreme> newExtremes, int jointId, int featId);
        
         //Functor to look for mocap elements matching a Joint

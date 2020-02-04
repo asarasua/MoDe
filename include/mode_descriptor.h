@@ -10,6 +10,7 @@
 #define mode_descriptor_h
 
 #include "mode_point.h"
+#include <algorithm>
 
 namespace MoDe {
     

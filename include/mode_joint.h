@@ -18,6 +18,7 @@
 
 #include "mode_descriptor.h"
 #include <iostream>
+#include <map>
 
 namespace MoDe {
 
@@ -52,6 +53,11 @@ namespace MoDe {
         void setElementId(int newId){
             elementId_ = newId;
         }
+
+		int computeDescriptors(MoDePoint jointPos, float *aFilter, float *bFilter, float* aLpd1, float* bLpd1, float* aLpd2, float * bLpd2);
+		void computeRelativeJointDescriptors(MoDePoint torsoPos, const float &h);
+		MoDePoint applyFilter(vector<MoDePoint> x, vector<MoDePoint> y, float *a, float *b);
+		map<int, vector<MoDeExtreme>> getNewExtrema() const;
 
 		MoDeDescriptor<MoDePoint> getDescriptor(unsigned int descriptorId) const {
 			switch (descriptorId)
