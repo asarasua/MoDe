@@ -124,6 +124,7 @@ namespace MoDe {
 
     class ExtremeListener {
     public:
+		ExtremeListener() {};
         ExtremeListener(MoDeExtractor * featExt) {
             featExtractor = featExt;
             featExtractor->addExtremeListener(this);
