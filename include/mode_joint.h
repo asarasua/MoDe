@@ -46,11 +46,11 @@ namespace MoDe {
 			acceleration.setLowThreshold(MoDePoint(0.005));
         }
         
-        unsigned int getElementId(){
+        int getElementId() const {
             return elementId_;
         }
         
-        void setElementId(int newId){
+        void setElementId(const int & newId){
             elementId_ = newId;
         }
 

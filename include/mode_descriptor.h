@@ -28,7 +28,8 @@ namespace MoDe {
     
     class MoDeExtreme {
     public:
-        unsigned int axis, joint, feature, extremeType, framesPassed;
+        unsigned int axis, feature, extremeType, framesPassed;
+				int joint;
         double value;
         MoDeExtreme() : framesPassed(0) {}; 
     };
